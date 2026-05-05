@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Nursing School Planner helps pre-nursing students estimate admissions odds, compare nursing programs, and build a stronger application plan."
+    />
+    <meta name="theme-color" content="#0f8f8f" />
+    <meta property="og:title" content="Nursing School Planner" />
+    <meta
+      property="og:description"
+      content="Estimate nursing school admissions odds, compare programs, and plan stronger applications."
+    />
+    <meta property="og:url" content="https://nursingschoolplanner.com/" />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href="https://nursingschoolplanner.com/" />
+    <title>Nursing School Planner</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to dashboard</a>
+
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Application navigation">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">NSP</span>
+          <div>
+            <strong>Nursing School Planner</strong>
+            <span>nursingschoolplanner.com</span>
+          </div>
+        </div>
+
+        <nav class="nav-list" aria-label="Dashboard sections">
+          <a href="#study-tools" class="nav-link active">
+            <span class="nav-icon" aria-hidden="true">01</span>
+            Study tools
+          </a>
+          <a href="#estimator" class="nav-link">
+            <span class="nav-icon" aria-hidden="true">02</span>
+            Estimate odds
+          </a>
+          <a href="#programs" class="nav-link">
+            <span class="nav-icon" aria-hidden="true">03</span>
+            Program finder
+          </a>
+          <a href="#tools" class="nav-link">
+            <span class="nav-icon" aria-hidden="true">04</span>
+            Prep tools
+          </a>
+          <a href="#plan" class="nav-link">
+            <span class="nav-icon" aria-hidden="true">05</span>
+            Action plan
+          </a>
+        </nav>
+
+        <div class="sidebar-note">
+          <strong>For planning, not a guarantee.</strong>
+          Your profile, saved programs, and compare list stay in this browser.
+        </div>
+      </aside>
+
+      <main id="main" class="main">
+        <header class="topbar">
+          <div>
+            <p class="section-label">Nursing school admissions workspace</p>
+            <h1>Plan your nursing school applications with clearer odds.</h1>
+          </div>
+          <div class="topbar-actions">
+            <label class="file-action">
+              <input id="csvImport" type="file" accept=".csv,text/csv" />
+              Import CSV
+            </label>
+            <button id="downloadCsv" class="button ghost" type="button">Export data</button>
+            <button id="printReport" class="button ghost" type="button">Print report</button>
+            <a class="saved-count" href="#saved">
+              <strong id="savedCount">0</strong>
+              saved
+            </a>
+          </div>
+        </header>
+
+        <section id="study-tools" class="panel study-panel" aria-label="Study resources">
+          <div class="panel-heading study-heading">
+            <div>
+              <p class="section-label">Study tools</p>
+              <h2>Recommended prep resources</h2>
+            </div>
+            <p class="study-intro">
+              Build your study stack for TEAS, HESI A2, and CASPer without leaving your application plan.
+            </p>
+          </div>
+
+          <div class="resource-grid">
+            <article class="resource-card">
+              <div>
+                <span class="resource-type">TEAS 7 book</span>
+                <h3>TEAS 7 Prep Book</h3>
+                <p>Use this for structured ATI TEAS review, practice pacing, and content refreshers.</p>
+              </div>
+              <a class="button compact" href="https://amzn.to/4cQJmP5" target="_blank" rel="noopener noreferrer">View resource</a>
+            </article>
+
+            <article class="resource-card">
+              <div>
+                <span class="resource-type">CASPer guide</span>
+                <h3>BeMo's Ultimate Guide to CASPer Test Prep</h3>
+                <p>Helpful for scenario-based responses, ethics framing, and interview-style judgment practice.</p>
+              </div>
+              <a class="button compact" href="https://amzn.to/4tlOJuH" target="_blank" rel="noopener noreferrer">View resource</a>
+            </article>
+
+            <article class="resource-card">
+              <div>
+                <span class="resource-type">HESI A2 book</span>
+                <h3>HESI A2 Secrets Study Guide</h3>
+                <p>A focused HESI A2 option for reviewing tested subjects and identifying weak areas.</p>
+              </div>
+              <a class="button compact" href="https://amzn.to/3P7F9gJ" target="_blank" rel="noopener noreferrer">View resource</a>
+            </article>
+
+            <article class="resource-card">
+              <div>
+                <span class="resource-type">HESI A2 book</span>
+                <h3>HESI A2 Study Guide 2026</h3>
+                <p>Use this as a current study guide option while preparing a retake or first attempt.</p>
+              </div>
+              <a class="button compact" href="https://amzn.to/4cRNzC5" target="_blank" rel="noopener noreferrer">View resource</a>
+            </article>
+
+            <article class="resource-card video-resource">
+              <div>
+                <span class="resource-type">YouTube channel</span>
+                <h3>Nurse Cheung ATI TEAS</h3>
+                <p>Video lessons and TEAS walkthroughs for students who study better with explanations on screen.</p>
+              </div>
+              <a class="button ghost compact" href="https://www.youtube.com/@NurseCheung" target="_blank" rel="noopener noreferrer">Watch channel</a>
+            </article>
+
+            <article class="resource-card video-resource">
+              <div>
+                <span class="resource-type">CASPer video</span>
+                <h3>How to Ace the Casper Test</h3>
+                <p>Sample questions and answers for practicing clear, balanced CASPer responses.</p>
+              </div>
+              <a class="button ghost compact" href="https://www.youtube.com/watch?v=Pmv-HrQ7Q6E&t=9s" target="_blank" rel="noopener noreferrer">Watch video</a>
+            </article>
+          </div>
+
+          <p class="affiliate-note">
+            Some resource links may be affiliate links. Choose the prep tools that fit your exam, timeline, and budget.
+          </p>
+        </section>
+
+        <section id="estimator" class="dashboard-grid" aria-label="Admissions estimator">
+          <form class="panel estimator-panel" id="profileForm">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Your applicant profile</p>
+                <h2>Admissions inputs</h2>
+              </div>
+              <button class="button ghost compact" type="button" id="resetProfile">Reset</button>
+            </div>
+
+            <div class="field-grid">
+              <label class="field">
+                <span>Overall GPA</span>
+                <input id="gpa" type="number" min="0" max="4" step="0.01" value="3.48" />
+              </label>
+              <label class="field">
+                <span>Science GPA</span>
+                <input id="scienceGpa" type="number" min="0" max="4" step="0.01" value="3.34" />
+              </label>
+              <label class="field">
+                <span>Entrance test</span>
+                <select id="testType">
+                  <option value="TEAS">TEAS</option>
+                  <option value="HESI">HESI A2</option>
+                  <option value="None">Not required</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Test score</span>
+                <input id="testScore" type="number" min="0" max="100" step="1" value="82" />
+              </label>
+              <label class="field">
+                <span>Prereqs completed</span>
+                <input id="prereqsCompleted" type="number" min="0" max="12" step="1" value="7" />
+              </label>
+              <label class="field">
+                <span>Total prereqs</span>
+                <input id="prereqsTotal" type="number" min="1" max="14" step="1" value="9" />
+              </label>
+              <label class="field">
+                <span>Healthcare hours</span>
+                <input id="healthcareHours" type="number" min="0" max="5000" step="25" value="180" />
+              </label>
+              <label class="field">
+                <span>Volunteer hours</span>
+                <input id="volunteerHours" type="number" min="0" max="2500" step="10" value="40" />
+              </label>
+              <label class="field">
+                <span>Home state</span>
+                <select id="homeState"></select>
+              </label>
+              <label class="field">
+                <span>Degree goal</span>
+                <select id="degreeGoal">
+                  <option value="BSN">BSN</option>
+                  <option value="ADN">ADN</option>
+                  <option value="ABSN">ABSN</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="range-field">
+              <span>
+                <span>Essay and interview readiness</span>
+                <strong id="readinessValue">70</strong>
+              </span>
+              <input id="readiness" type="range" min="0" max="100" value="70" />
+            </label>
+          </form>
+
+          <section class="panel odds-panel" aria-label="Estimated odds">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Selected program estimate</p>
+                <h2 id="selectedProgramName">Program odds</h2>
+              </div>
+              <span id="programBand" class="status-pill">Target</span>
+            </div>
+
+            <div class="odds-meter" aria-live="polite">
+              <svg viewBox="0 0 160 160" role="img" aria-label="Estimated acceptance odds">
+                <circle class="meter-track" cx="80" cy="80" r="62"></circle>
+                <circle id="meterValue" class="meter-value" cx="80" cy="80" r="62"></circle>
+              </svg>
+              <div class="odds-copy">
+                <strong id="oddsPercent">--%</strong>
+                <span id="oddsLabel">Estimated chance</span>
+              </div>
+            </div>
+
+            <div class="match-strip" id="matchStrip"></div>
+            <p id="oddsExplanation" class="explanation"></p>
+          </section>
+
+          <section class="panel insight-panel" aria-label="Why this estimate changed">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Why this result</p>
+                <h2>Decision factors</h2>
+              </div>
+            </div>
+            <div id="factorList" class="factor-list"></div>
+          </section>
+        </section>
+
+        <section class="detail-grid" aria-label="Selected nursing program details and saved programs">
+          <section class="panel requirements-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Selected program</p>
+                <h2>Requirements snapshot</h2>
+              </div>
+              <button id="saveSelectedProgram" class="button compact" type="button">Save program</button>
+            </div>
+            <div id="programDetail" class="program-detail"></div>
+          </section>
+
+          <section id="saved" class="panel saved-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Compare list</p>
+                <h2>Saved programs</h2>
+              </div>
+              <button id="clearSaved" class="button ghost compact" type="button">Clear</button>
+            </div>
+            <div id="savedPrograms" class="saved-programs"></div>
+          </section>
+        </section>
+
+        <section id="programs" class="panel program-panel" aria-label="Nursing program dashboard">
+          <div class="panel-heading program-heading">
+            <div>
+              <p class="section-label">US nursing program dashboard</p>
+              <h2>Compare requirements and estimated odds</h2>
+            </div>
+            <div class="coverage-note">
+              <strong id="programCount">0</strong>
+              <span>program profiles loaded</span>
+            </div>
+          </div>
+
+          <div class="table-toolbar">
+            <label class="search-field">
+              <span class="sr-only">Search programs</span>
+              <input id="searchInput" type="search" placeholder="Search school, city, state, degree..." />
+            </label>
+            <label class="field inline">
+              <span>State</span>
+              <select id="stateFilter">
+                <option value="All">All</option>
+              </select>
+            </label>
+            <label class="field inline">
+              <span>Degree</span>
+              <select id="degreeFilter">
+                <option value="All">All</option>
+                <option value="BSN">BSN</option>
+                <option value="ADN">ADN</option>
+                <option value="ABSN">ABSN</option>
+              </select>
+            </label>
+            <label class="field inline">
+              <span>Minimum odds</span>
+              <select id="oddsFilter">
+                <option value="0">Any</option>
+                <option value="35">35%+</option>
+                <option value="50">50%+</option>
+                <option value="65">65%+</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Program</th>
+                  <th scope="col">State</th>
+                  <th scope="col">Degree</th>
+                  <th scope="col">GPA min</th>
+                  <th scope="col">Test</th>
+                  <th scope="col">Prereqs</th>
+                  <th scope="col">Deadline</th>
+                  <th scope="col">Accred.</th>
+                  <th scope="col">Estimated odds</th>
+                  <th scope="col">Save</th>
+                </tr>
+              </thead>
+              <tbody id="programTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="tools" class="tools-grid" aria-label="Planning tools">
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">GPA planner</p>
+                <h2>What grades would you need?</h2>
+              </div>
+            </div>
+            <div class="field-grid compact-grid">
+              <label class="field">
+                <span>Completed credits</span>
+                <input id="completedCredits" type="number" min="1" step="1" value="42" />
+              </label>
+              <label class="field">
+                <span>Future credits</span>
+                <input id="futureCredits" type="number" min="1" step="1" value="18" />
+              </label>
+              <label class="field">
+                <span>Target GPA</span>
+                <input id="targetGpa" type="number" min="0" max="4" step="0.01" value="3.60" />
+              </label>
+            </div>
+            <div id="gpaPlannerResult" class="tool-result"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Prerequisite tracker</p>
+                <h2>Core course checklist</h2>
+              </div>
+            </div>
+            <div id="courseChecklist" class="checklist"></div>
+          </section>
+
+          <section id="plan" class="panel action-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="section-label">Action plan</p>
+                <h2>Next best moves</h2>
+              </div>
+            </div>
+            <div id="recommendations" class="recommendation-list"></div>
+          </section>
+        </section>
+
+        <section class="panel source-panel" aria-label="Admissions estimate disclaimer">
+          <div>
+            <p class="section-label">Disclaimer</p>
+            <h2>Admissions decisions</h2>
+          </div>
+          <p>
+            This is an estimate of your odds. The ultimate decisions are up to the universities you apply to.
+          </p>
+          <div class="source-actions">
+            <button id="downloadTemplate" class="button" type="button">Download CSV template</button>
+            <button id="useSampleData" class="button ghost" type="button">Reload programs</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
