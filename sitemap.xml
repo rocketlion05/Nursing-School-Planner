@@ -4,4 +4,20 @@
     <loc>https://nursingschoolplanner.com/</loc>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://nursingschoolplanner.com/teas-requirements.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nursingschoolplanner.com/gpa-for-nursing-school.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nursingschoolplanner.com/how-to-get-into-nursing-school.html</loc>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://nursingschoolplanner.com/nursing-school-application-checklist.html</loc>
+    <priority>0.8</priority>
+  </url>
 </urlset>

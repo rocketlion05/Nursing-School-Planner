@@ -13,6 +13,7 @@ Production domain: `nursingschoolplanner.com`
 - GPA planner for target GPA scenarios
 - Prerequisite checklist that updates the applicant profile
 - Curated TEAS, HESI A2, and CASPer study resources
+- SEO guide pages for TEAS requirements, nursing school GPA, admissions strategy, and application checklists
 - Action plan with program-specific improvement suggestions and timeline reminders
 - CSV import/export for adding or editing program data
 - Saved-program compare list with local browser persistence
