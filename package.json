@@ -1,0 +1,10 @@
+{
+  "name": "nursing-school-planner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static nursing school admissions odds planner.",
+  "scripts": {
+    "check": "node --check app.js",
+    "serve": "node server.js"
+  }
+}

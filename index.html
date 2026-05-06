@@ -5,21 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Nursing School Planner helps pre-nursing students estimate admissions odds, compare nursing programs, and build a stronger application plan."
+      content="Estimate nursing school odds using TEAS scores, GPA, prerequisites, and program requirements. Compare programs and improve your nursing application planning."
     />
+    <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#0f8f8f" />
-    <meta property="og:title" content="Nursing School Planner" />
+    <meta property="og:title" content="Nursing School Odds Calculator & Application Planner" />
     <meta
       property="og:description"
-      content="Estimate nursing school admissions odds, compare programs, and plan stronger applications."
+      content="Estimate nursing school odds with GPA, TEAS scores, prerequisites, and program requirements. Compare schools and plan stronger applications."
     />
     <meta property="og:url" content="https://nursingschoolplanner.com/" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Nursing School Planner" />
+    <meta property="og:image" content="https://nursingschoolplanner.com/favicon.png" />
+    <meta property="og:image:alt" content="Nursing School Planner logo" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Nursing School Odds Calculator & Application Planner" />
+    <meta
+      name="twitter:description"
+      content="Estimate nursing school odds with TEAS scores, GPA, prerequisites, and program requirements."
+    />
+    <meta name="twitter:image" content="https://nursingschoolplanner.com/favicon.png" />
     <link rel="canonical" href="https://nursingschoolplanner.com/" />
-    <title>Nursing School Planner</title>
+    <title>Nursing School Odds Calculator & Application Planner | Nursing School Planner</title>
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://nursingschoolplanner.com/#organization",
+            "name": "Nursing School Planner",
+            "url": "https://nursingschoolplanner.com",
+            "logo": "https://nursingschoolplanner.com/favicon.png",
+            "description": "Nursing School Planner helps pre-nursing students estimate nursing school odds, compare program requirements, and plan stronger applications."
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://nursingschoolplanner.com/#website",
+            "name": "Nursing School Planner",
+            "alternateName": "Nursing School Odds Calculator",
+            "url": "https://nursingschoolplanner.com",
+            "publisher": {
+              "@id": "https://nursingschoolplanner.com/#organization"
+            },
+            "inLanguage": "en-US",
+            "description": "A nursing school odds calculator and application planner for comparing GPA, TEAS scores, prerequisites, and nursing program requirements."
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://nursingschoolplanner.com/#faq",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "How does the nursing school odds calculator work?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The planner compares your GPA, science GPA, TEAS or HESI score, completed prerequisites, experience, and readiness against nursing program requirements to create an estimated admissions range."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What GPA do I need for nursing school?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "GPA expectations vary by program. Many schools publish minimum GPA requirements, but competitive applicants often need stronger overall GPA, science GPA, and prerequisite grades."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What TEAS score do nursing schools want?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "TEAS score requirements vary by nursing program. Some schools use a minimum score, while others rank applicants by TEAS score along with GPA, prerequisites, and experience."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8PCF3V5LPD"></script>
     <script>
@@ -68,6 +139,10 @@
             <span class="nav-icon" aria-hidden="true">06</span>
             Action plan
           </a>
+          <a href="#faq" class="nav-link">
+            <span class="nav-icon" aria-hidden="true">07</span>
+            FAQ
+          </a>
         </nav>
 
         <div class="sidebar-note">
@@ -80,7 +155,11 @@
         <header class="topbar">
           <div>
             <p class="section-label">Nursing school admissions workspace</p>
-            <h1>Plan your nursing school applications with clearer odds.</h1>
+            <h1>Nursing School Odds Calculator & Application Planner</h1>
+            <p class="hero-summary">
+              Estimate nursing school odds with GPA, TEAS or HESI scores, prerequisites, healthcare experience,
+              and program requirements, then build a stronger nursing application plan.
+            </p>
           </div>
           <div class="topbar-actions">
             <label class="file-action">
@@ -440,6 +519,63 @@
             </div>
             <div id="recommendations" class="recommendation-list"></div>
           </section>
+        </section>
+
+        <section id="faq" class="panel faq-panel" aria-labelledby="faq-heading">
+          <div class="panel-heading study-heading">
+            <div>
+              <p class="section-label">Frequently asked questions</p>
+              <h2 id="faq-heading">Nursing school admissions FAQ</h2>
+            </div>
+            <p class="study-intro">
+              Quick answers for pre-nursing students comparing GPA, TEAS scores, prerequisites, and application timing.
+            </p>
+          </div>
+
+          <div class="faq-grid">
+            <article class="faq-item">
+              <h3>How does the nursing school odds calculator work?</h3>
+              <p>
+                The planner compares your GPA, science GPA, TEAS or HESI score, completed prerequisites,
+                experience, and readiness against each program's requirements to create an estimated admissions range.
+              </p>
+            </article>
+
+            <article class="faq-item">
+              <h3>What GPA do I need for nursing school?</h3>
+              <p>
+                Nursing school GPA expectations vary by program. Review minimum and competitive GPA guidance in the
+                <a href="gpa-for-nursing-school.html">nursing school GPA guide</a>, then use the planner to compare your profile.
+              </p>
+            </article>
+
+            <article class="faq-item">
+              <h3>What TEAS score do nursing schools want?</h3>
+              <p>
+                TEAS score requirements depend on the school. Some programs use a minimum score, while others rank applicants
+                by test score, GPA, prerequisites, and experience. Start with the
+                <a href="teas-requirements.html">TEAS score requirements guide</a>.
+              </p>
+            </article>
+
+            <article class="faq-item">
+              <h3>How can I improve my nursing application plan?</h3>
+              <p>
+                Build a balanced list of reach, target, and likely programs, finish prerequisites early, prepare for entrance
+                exams, and track deadlines with the
+                <a href="nursing-school-application-checklist.html">nursing application checklist</a>.
+              </p>
+            </article>
+
+            <article class="faq-item">
+              <h3>Where should I start if I am new to pre-nursing?</h3>
+              <p>
+                Read
+                <a href="how-to-get-into-nursing-school.html">how to get into nursing school</a>, then enter your current GPA,
+                test score, prerequisites, and home state in the planner to see which programs fit your profile.
+              </p>
+            </article>
+          </div>
         </section>
 
         <section class="panel source-panel" aria-label="Admissions estimate disclaimer">
