@@ -1106,6 +1106,18 @@ tbody tr {
   margin-bottom: 4px;
 }
 
+.guide-cta {
+  display: grid;
+  gap: 12px;
+  background:
+    linear-gradient(135deg, rgba(15, 143, 143, 0.08), rgba(40, 87, 200, 0.08)),
+    #ffffff;
+}
+
+.guide-cta .button {
+  justify-self: start;
+}
+
 .guide-resource-list,
 .related-links {
   display: grid;
@@ -1447,6 +1459,10 @@ tbody tr {
   .guide-sidebar,
   .guide-footer {
     padding: 16px;
+  }
+
+  .guide-cta .button {
+    width: 100%;
   }
 }
 

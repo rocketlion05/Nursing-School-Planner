@@ -7,6 +7,8 @@
       name="description"
       content="Estimate nursing school odds using TEAS scores, GPA, prerequisites, and program requirements. Compare programs and improve your nursing application planning."
     />
+    <meta name="application-name" content="Nursing School Planner" />
+    <meta name="apple-mobile-web-app-title" content="Nursing School Planner" />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#0f8f8f" />
     <meta property="og:title" content="Nursing School Odds Calculator & Application Planner" />
@@ -59,6 +61,24 @@
             "description": "A nursing school odds calculator and application planner for comparing GPA, TEAS scores, prerequisites, and nursing program requirements."
           },
           {
+            "@type": "WebApplication",
+            "@id": "https://nursingschoolplanner.com/#app",
+            "name": "Nursing School Planner",
+            "url": "https://nursingschoolplanner.com",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires JavaScript",
+            "description": "A pre-nursing planner with a nursing school acceptance calculator, GPA planner, prerequisite tracker, program comparison dashboard, and application checklist.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "publisher": {
+              "@id": "https://nursingschoolplanner.com/#organization"
+            }
+          },
+          {
             "@type": "FAQPage",
             "@id": "https://nursingschoolplanner.com/#faq",
             "mainEntity": [
@@ -84,6 +104,14 @@
                 "acceptedAnswer": {
                   "@type": "Answer",
                   "text": "TEAS score requirements vary by nursing program. Some schools use a minimum score, while others rank applicants by TEAS score along with GPA, prerequisites, and experience."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I use this as a nursing GPA calculator?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. The GPA planner estimates the future grades you may need to reach a target GPA, while the admissions calculator compares GPA and science GPA against program expectations."
                 }
               }
             ]
@@ -573,6 +601,14 @@
                 Read
                 <a href="how-to-get-into-nursing-school.html">how to get into nursing school</a>, then enter your current GPA,
                 test score, prerequisites, and home state in the planner to see which programs fit your profile.
+              </p>
+            </article>
+
+            <article class="faq-item">
+              <h3>Can I use this as a nursing GPA calculator?</h3>
+              <p>
+                Yes. The GPA planner estimates the future grades you may need for a target GPA, while the admissions
+                calculator compares GPA and science GPA with nursing school requirements.
               </p>
             </article>
           </div>
