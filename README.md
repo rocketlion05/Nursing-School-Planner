@@ -20,6 +20,12 @@ Production domain: `nursingschoolplanner.com`
 - Printable report view for advising meetings or application planning
 - Static deployment config for Netlify and Vercel
 
+## Program Data
+
+`data/programs.json` powers the calculator, saved-program compare list, CSV export, and the US nursing program dashboard for all restored nursing programs.
+
+The `/schools` and `/states` SEO pages are static programmatic SEO pages that can be generated gradually by state. The current Arkansas school pages stay in the sitemap because those files exist; restored national programs should not be added to `sitemap.xml` until their matching HTML pages are generated.
+
 ## Disclaimer
 
 This is an estimate of your odds. The ultimate decisions are up to the universities you apply to.
@@ -42,4 +48,4 @@ This is a static app. Deploy the folder directly to Netlify, Vercel, GitHub Page
 
 ## CSV Columns
 
-`id,name,city,state,degree,minGpa,competitiveGpa,minScience,test,minTest,prereqs,deadline,seats,applicants,accreditation`
+`slug,schoolName,city,state,degreeType,minimumGpa,competitiveGpa,scienceGpa,entranceExam,minimumScore,prerequisites,deadline,seats,estimatedApplicants,accreditation,sourceUrl,lastVerified,disclaimer`
