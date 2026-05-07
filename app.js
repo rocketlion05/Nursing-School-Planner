@@ -67,7 +67,8 @@ const CORE_COURSES = [
 
 // data/programs.json powers the calculator and US program dashboard for all programs.
 // Static /schools and /states SEO pages can be generated gradually by state from that catalog.
-const PROGRAM_DATA_URL = "data/programs.json";
+const PROGRAM_DATA_VERSION = "2026-05-07-national-149";
+const PROGRAM_DATA_URL = `data/programs.json?v=${PROGRAM_DATA_VERSION}`;
 
 let starterPrograms = [];
 let programs = [];
