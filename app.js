@@ -65,6 +65,8 @@ const CORE_COURSES = [
   ["Pathophysiology", "Upper division"],
 ];
 
+// data/programs.json powers the calculator and US program dashboard for all programs.
+// Static /schools and /states SEO pages can be generated gradually by state from that catalog.
 const PROGRAM_DATA_URL = "data/programs.json";
 
 let starterPrograms = [];
