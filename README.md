@@ -24,6 +24,8 @@ Production domain: `nursingschoolplanner.com`
 
 `data/programs.json` powers the calculator, saved-program compare list, CSV export, and the US nursing program dashboard for all restored nursing programs.
 
+Restoration note: `data/programs.json` was restored from the old `starterPrograms` list in `app.js` at commit `20be31d10b73c2c51af2cbd19fa54b532a34d07d`. Final restored catalog count: 149 programs. Represented states: AK, AL, AR, AZ, CA, CO, CT, DC, FL, GA, HI, IA, ID, IL, IN, KS, KY, LA, MA, MD, ME, MI, MN, MO, MS, MT, NC, ND, NE, NH, NJ, NM, NV, NY, OH, OK, OR, PA, RI, SC, SD, TN, TX, UT, VA, VT, WA, WI, WV, WY.
+
 The `/schools` and `/states` SEO pages are static programmatic SEO pages that can be generated gradually by state. The current Arkansas school pages stay in the sitemap because those files exist; restored national programs should not be added to `sitemap.xml` until their matching HTML pages are generated.
 
 ## Disclaimer
