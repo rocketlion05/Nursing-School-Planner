@@ -1082,6 +1082,22 @@ tbody tr {
   margin: 0 0 12px;
 }
 
+.guide-section a,
+.guide-sidebar a,
+.guide-footer a,
+.detail-note a {
+  color: var(--teal-dark);
+  font-weight: 780;
+  text-decoration: none;
+}
+
+.guide-section a:hover,
+.guide-sidebar a:hover,
+.guide-footer a:hover,
+.detail-note a:hover {
+  text-decoration: underline;
+}
+
 .guide-section ul,
 .guide-section ol,
 .guide-sidebar ul {
@@ -1158,6 +1174,10 @@ tbody tr {
   display: grid;
   gap: 14px;
   margin-top: 18px;
+}
+
+.guide-footer .related-links {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .guide-footer p {
@@ -1499,6 +1519,10 @@ tbody tr {
 
   .guide-card-grid,
   .guide-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .guide-footer .related-links {
     grid-template-columns: 1fr;
   }
 

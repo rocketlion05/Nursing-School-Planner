@@ -4,7 +4,8 @@
   "private": true,
   "description": "Static nursing school admissions odds planner.",
   "scripts": {
-    "check": "node --check app.js",
+    "check": "node --check app.js && node --check scripts/generate-seo-pages.js",
+    "generate:seo": "node scripts/generate-seo-pages.js",
     "serve": "node server.js"
   }
 }
