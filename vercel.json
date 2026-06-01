@@ -1,5 +1,6 @@
 {
-  "buildCommand": "npm --prefix nurseprep-app install && npm --prefix nurseprep-app run build",
+  "installCommand": "npm --prefix nurseprep-app install",
+  "buildCommand": "npm --prefix nurseprep-app run build",
   "outputDirectory": "nurseprep-app/dist",
   "framework": null,
   "rewrites": [
