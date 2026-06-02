@@ -1,7 +1,9 @@
 import { getProfile } from '@/app/actions/profile'
+import { requireUser } from '@/app/lib/dal'
 import ProfileForm from '@/components/ProfileForm'
 
 export default async function ProfilePage() {
+  await requireUser()
   const profile = await getProfile()
 
   return (

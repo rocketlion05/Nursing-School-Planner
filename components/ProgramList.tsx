@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { Heart, ChevronRight, Star } from 'lucide-react'
+import { Heart, ChevronRight } from 'lucide-react'
 import FitBadge from '@/components/FitBadge'
 import { toggleFavorite } from '@/app/actions/favorites'
 import type { ScoredProgram, FitStatus } from '@/types'
@@ -10,11 +10,12 @@ import type { ScoredProgram, FitStatus } from '@/types'
 type Props = {
   programs: ScoredProgram[]
   tier: 'free' | 'cycle'
+  isAuthed: boolean
 }
 
 const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach', 'Not eligible']
 
-export default function ProgramList({ programs, tier }: Props) {
+export default function ProgramList({ programs, tier, isAuthed }: Props) {
   const [stateFilter, setStateFilter] = useState<'All' | 'AR' | 'TX'>('All')
   const [statusFilter, setStatusFilter] = useState<FitStatus | 'All'>('All')
   const [examFilter, setExamFilter] = useState<string>('All')
@@ -36,6 +37,11 @@ export default function ProgramList({ programs, tier }: Props) {
   })
 
   function handleFavorite(programId: string) {
+    if (!isAuthed) {
+      setToastMsg('Log in to save programs to your favorites.')
+      setTimeout(() => setToastMsg(null), 4000)
+      return
+    }
     startTransition(async () => {
       const result = await toggleFavorite(programId)
       if (result.error) {
@@ -79,8 +85,13 @@ export default function ProgramList({ programs, tier }: Props) {
       </div>
 
       {toastMsg && (
-        <div className="mb-4 text-sm bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-4 py-2">
-          {toastMsg}
+        <div className="mb-4 text-sm bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-4 py-2 flex items-center gap-2">
+          <span>{toastMsg}</span>
+          {!isAuthed && (
+            <Link href="/login" className="font-semibold underline shrink-0">
+              Log in
+            </Link>
+          )}
         </div>
       )}
 

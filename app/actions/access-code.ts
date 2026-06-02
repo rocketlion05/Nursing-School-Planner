@@ -1,14 +1,20 @@
 'use server'
 
-import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
+import { getCurrentUser } from '@/app/lib/dal'
 
 export async function redeemAccessCode(code: string): Promise<{ success: boolean; error?: string }> {
   try {
-    const cookieStore = await cookies()
-    const profileId = cookieStore.get('profile_id')?.value
-    if (!profileId) return { success: false, error: 'Save your profile before redeeming a code.' }
+    const user = await getCurrentUser()
+    if (!user) return { success: false, error: 'Please log in to redeem a code.' }
+
+    const profile = await prisma.profile.findUnique({
+      where: { userId: user.id },
+      select: { id: true },
+    })
+    if (!profile) return { success: false, error: 'Save your profile before redeeming a code.' }
+    const profileId = profile.id
 
     const accessCode = await prisma.accessCode.findUnique({ where: { code: code.trim().toUpperCase() } })
 

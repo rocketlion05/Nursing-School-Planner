@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Compass } from 'lucide-react'
+import { Compass, LogOut } from 'lucide-react'
 import clsx from 'clsx'
+import { logout } from '@/app/actions/auth'
 
 const links = [
   { href: '/programs', label: 'Programs' },
@@ -12,7 +13,7 @@ const links = [
   { href: '/pricing', label: 'Pricing' },
 ]
 
-export default function Navbar() {
+export default function Navbar({ username }: { username: string | null }) {
   const pathname = usePathname()
 
   return (
@@ -38,6 +39,41 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+
+          <div className="w-px h-5 bg-gray-200 mx-1.5" />
+
+          {username ? (
+            <div className="flex items-center gap-1.5">
+              <span className="text-sm text-gray-500 px-1.5 hidden sm:inline">
+                {username}
+              </span>
+              <form action={logout}>
+                <button
+                  type="submit"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                  title="Log out"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden sm:inline">Log out</span>
+                </button>
+              </form>
+            </div>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/signup"
+                className="px-3 py-1.5 rounded-md text-sm font-semibold bg-teal-600 text-white hover:bg-teal-700 transition-colors"
+              >
+                Sign up
+              </Link>
+            </>
+          )}
         </nav>
       </div>
     </header>

@@ -1,6 +1,6 @@
-import { cookies } from 'next/headers'
 import { prisma } from '@/lib/prisma'
 import { getProfile } from '@/app/actions/profile'
+import { getCurrentUser } from '@/app/lib/dal'
 import { scorePrograms } from '@/lib/gap'
 import ProgramList from '@/components/ProgramList'
 import Disclaimer from '@/components/Disclaimer'
@@ -9,15 +9,15 @@ import { AlertCircle } from 'lucide-react'
 import type { ProgramData } from '@/types'
 
 export default async function ProgramsPage() {
-  const profile = await getProfile()
-
-  const cookieStore = await cookies()
-  const profileId = cookieStore.get('profile_id')?.value
+  const [profile, user] = await Promise.all([getProfile(), getCurrentUser()])
 
   const [rawPrograms, rawFavorites] = await Promise.all([
     prisma.program.findMany({ orderBy: [{ state: 'asc' }, { university: 'asc' }] }),
-    profileId
-      ? prisma.favorite.findMany({ where: { profileId }, select: { programId: true } })
+    user
+      ? prisma.favorite.findMany({
+          where: { profile: { userId: user.id } },
+          select: { programId: true },
+        })
       : Promise.resolve([]),
   ])
 
@@ -46,7 +46,7 @@ export default async function ProgramsPage() {
         )}
       </div>
 
-      <ProgramList programs={scored} tier={profile?.tier ?? 'free'} />
+      <ProgramList programs={scored} tier={profile?.tier ?? 'free'} isAuthed={Boolean(user)} />
 
       <div className="mt-8">
         <Disclaimer compact />

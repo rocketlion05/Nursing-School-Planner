@@ -1,8 +1,9 @@
 import 'dotenv/config'
 import { PrismaLibSql } from '@prisma/adapter-libsql'
 import { PrismaClient } from '../app/generated/prisma/client'
+import { libsqlConfig } from '../lib/libsql-config'
 
-const adapter = new PrismaLibSql({ url: process.env.DATABASE_URL ?? 'file:./dev.db' })
+const adapter = new PrismaLibSql(libsqlConfig())
 const prisma = new PrismaClient({ adapter })
 
 const programs = [

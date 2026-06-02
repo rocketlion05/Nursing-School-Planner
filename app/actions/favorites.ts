@@ -1,14 +1,29 @@
 'use server'
 
-import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
+import { getCurrentUser } from '@/app/lib/dal'
+
+/** Returns the logged-in user's profile id, creating an empty profile if needed. */
+async function getOrCreateProfileId(userId: string): Promise<string> {
+  const existing = await prisma.profile.findUnique({
+    where: { userId },
+    select: { id: true },
+  })
+  if (existing) return existing.id
+  const created = await prisma.profile.create({
+    data: { userId },
+    select: { id: true },
+  })
+  return created.id
+}
 
 export async function toggleFavorite(programId: string): Promise<{ isFavorite: boolean; error?: string }> {
   try {
-    const cookieStore = await cookies()
-    const profileId = cookieStore.get('profile_id')?.value
-    if (!profileId) return { isFavorite: false, error: 'No profile found. Save your profile first.' }
+    const user = await getCurrentUser()
+    if (!user) return { isFavorite: false, error: 'Please log in to save favorites.' }
+
+    const profileId = await getOrCreateProfileId(user.id)
 
     const existing = await prisma.favorite.findUnique({
       where: { profileId_programId: { profileId, programId } },

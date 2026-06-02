@@ -1,8 +1,8 @@
 'use server'
 
-import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
+import { getCurrentUser } from '@/app/lib/dal'
 import type { ProfileData } from '@/types'
 
 export type ProfileFormInput = {
@@ -23,10 +23,12 @@ export type ProfileFormInput = {
 }
 
 export async function saveProfile(input: ProfileFormInput): Promise<{ id: string; error?: string }> {
-  try {
-    const cookieStore = await cookies()
-    const existingId = cookieStore.get('profile_id')?.value
+  const user = await getCurrentUser()
+  if (!user) {
+    return { id: '', error: 'Please log in to save your profile.' }
+  }
 
+  try {
     const data = {
       name: input.name.trim(),
       email: input.email.trim(),
@@ -44,32 +46,16 @@ export async function saveProfile(input: ProfileFormInput): Promise<{ id: string
       otherExamScore: input.otherExamScore ? parseFloat(input.otherExamScore) : null,
     }
 
-    let profileId: string
-
-    if (existingId) {
-      const existing = await prisma.profile.findUnique({ where: { id: existingId } })
-      if (existing) {
-        await prisma.profile.update({ where: { id: existingId }, data })
-        profileId = existingId
-      } else {
-        const created = await prisma.profile.create({ data })
-        profileId = created.id
-      }
-    } else {
-      const created = await prisma.profile.create({ data })
-      profileId = created.id
-    }
-
-    cookieStore.set('profile_id', profileId, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 365,
-      path: '/',
-      sameSite: 'lax',
+    const profile = await prisma.profile.upsert({
+      where: { userId: user.id },
+      create: { ...data, userId: user.id },
+      update: data,
+      select: { id: true },
     })
 
     revalidatePath('/programs')
     revalidatePath('/plan')
-    return { id: profileId }
+    return { id: profile.id }
   } catch (err) {
     console.error('saveProfile error:', err)
     return { id: '', error: 'Failed to save profile. Please try again.' }
@@ -77,11 +63,10 @@ export async function saveProfile(input: ProfileFormInput): Promise<{ id: string
 }
 
 export async function getProfile(): Promise<ProfileData | null> {
-  const cookieStore = await cookies()
-  const profileId = cookieStore.get('profile_id')?.value
-  if (!profileId) return null
+  const user = await getCurrentUser()
+  if (!user) return null
 
-  const raw = await prisma.profile.findUnique({ where: { id: profileId } })
+  const raw = await prisma.profile.findUnique({ where: { userId: user.id } })
   if (!raw) return null
 
   return {

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { getProfile } from '@/app/actions/profile'
 import { scorePrograms, computeGapSummary } from '@/lib/gap'
+import { requireUser } from '@/app/lib/dal'
 import Disclaimer from '@/components/Disclaimer'
 import FitBadge from '@/components/FitBadge'
 import type { ProgramData, FitStatus } from '@/types'
@@ -16,6 +17,7 @@ const STATUS_COLORS: Record<FitStatus, string> = {
 }
 
 export default async function PlanPage() {
+  await requireUser()
   const profile = await getProfile()
 
   if (!profile) {
