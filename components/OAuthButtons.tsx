@@ -1,6 +1,8 @@
 import { PROVIDERS, isProviderConfigured, type ProviderId } from '@/app/lib/oauth'
 
-const ORDER: ProviderId[] = ['google', 'microsoft']
+// Microsoft is wired up in the backend but intentionally hidden from the UI.
+// Add 'microsoft' back here to re-enable its button.
+const ORDER: ProviderId[] = ['google']
 
 export default function OAuthButtons() {
   return (
