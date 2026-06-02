@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar'
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
 
 export const metadata: Metadata = {
-  title: 'Pre-Nursing Compass',
+  title: 'Nursing School Planner',
   description: 'Compare your stats to BSN program requirements across Arkansas and Texas.',
 }
 
@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Navbar />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-gray-200 py-4 text-center text-xs text-gray-400">
-          Pre-Nursing Compass &mdash; for planning only, not official admissions advice.
+          Nursing School Planner &mdash; for planning only, not official admissions advice.
         </footer>
       </body>
     </html>

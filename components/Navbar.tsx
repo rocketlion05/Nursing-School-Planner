@@ -20,7 +20,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 font-semibold text-teal-700">
           <Compass className="w-5 h-5" />
-          <span>Pre-Nursing Compass</span>
+          <span>Nursing School Planner</span>
         </Link>
 
         <nav className="flex items-center gap-1">

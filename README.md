@@ -1,4 +1,4 @@
-# Pre-Nursing Compass
+# Nursing School Planner
 
 A micro-SaaS tool for pre-nursing students to compare their stats against BSN program requirements in Arkansas and Texas, identify prerequisite gaps, and build an application strategy.
 
@@ -150,7 +150,7 @@ Program data is approximate. To add real data:
 
 ## Deployment (Vercel + Turso)
 
-1. Create a Turso database: `turso db create pre-nursing-compass`
+1. Create a Turso database: `turso db create nursing-school-planner`
 2. Get the connection URL and auth token from Turso
 3. Set env vars in Vercel: `DATABASE_URL=libsql://...` and `DATABASE_AUTH_TOKEN=...`
 4. Update `prisma.config.ts` to use `process.env.DATABASE_AUTH_TOKEN`
