@@ -136,7 +136,11 @@ export default function ProgramList({ programs, tier, isAuthed }: Props) {
                   )}
                 </div>
                 <p className="text-sm text-gray-500 mb-2">{program.name} · {program.city}</p>
-                <p className="text-sm text-gray-600 line-clamp-1">{program.fit.explanation}</p>
+                <p className="text-sm text-gray-600 line-clamp-1">
+                  {program.fit.status === 'No profile' && !isAuthed
+                    ? 'Log in to see your fit for this program.'
+                    : program.fit.explanation}
+                </p>
               </div>
 
               {/* Right side */}
