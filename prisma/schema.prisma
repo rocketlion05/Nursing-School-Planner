@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Profile {
+  id               String     @id @default(cuid())
+  name             String     @default("")
+  email            String     @default("")
+  statePrefs       String     @default("[]")
+  targetTerm       String     @default("")
+  overallGPA       Float?
+  scienceGPA       Float?
+  totalCredits     Int?
+  coursesCompleted String     @default("[]")
+  teasScore        Float?
+  hesiScore        Float?
+  casperQuartile   Int?
+  casperPercentile Int?
+  otherExamName    String?
+  otherExamScore   Float?
+  tier             String     @default("free")
+  favorites        Favorite[]
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+}
+
+model Program {
+  id              String     @id @default(cuid())
+  name            String
+  university      String
+  city            String
+  state           String
+  isPublic        Boolean    @default(true)
+  programType     String     @default("Traditional BSN")
+  minOverallGPA   Float?
+  minScienceGPA   Float?
+  requiredCourses String     @default("[]")
+  examType        String?
+  minExamScore    Float?
+  casperRequired  Boolean    @default(false)
+  deadlines       String?
+  notes           String?
+  favorites       Favorite[]
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  profileId String
+  programId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  program   Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([profileId, programId])
+}
+
+model AccessCode {
+  id        String    @id @default(cuid())
+  code      String    @unique
+  usedBy    String?
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}

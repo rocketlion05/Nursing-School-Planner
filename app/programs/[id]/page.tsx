@@ -1,0 +1,157 @@
+import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import { prisma } from '@/lib/prisma'
+import { getProfile } from '@/app/actions/profile'
+import { computeFit } from '@/lib/scoring'
+import { COURSE_MAP } from '@/lib/constants'
+import Disclaimer from '@/components/Disclaimer'
+import FitBadge from '@/components/FitBadge'
+import { ChevronLeft, CheckCircle, XCircle, Circle } from 'lucide-react'
+import type { ProgramData } from '@/types'
+
+export default async function ProgramDetailPage(props: PageProps<'/programs/[id]'>) {
+  const { id } = await props.params
+  const [raw, profile] = await Promise.all([
+    prisma.program.findUnique({ where: { id } }),
+    getProfile(),
+  ])
+
+  if (!raw) notFound()
+
+  const program: ProgramData = {
+    ...raw,
+    requiredCourses: JSON.parse(raw.requiredCourses) as string[],
+  }
+
+  const fit = computeFit(profile, program)
+
+  const allCourses = Object.entries(COURSE_MAP)
+
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <Link href="/programs" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 mb-6">
+        <ChevronLeft className="w-4 h-4" /> Back to Programs
+      </Link>
+
+      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{program.state}</span>
+              {!program.isPublic && (
+                <span className="text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded-full">Private</span>
+              )}
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900">{program.university}</h1>
+            <p className="text-gray-500">{program.name} · {program.city}, {program.state}</p>
+          </div>
+          <FitBadge status={fit.status} />
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6 mb-6">
+        {/* Program Requirements */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <h2 className="font-semibold text-gray-900 mb-4">Program Requirements</h2>
+          <dl className="space-y-3 text-sm">
+            <Row label="Min. Overall GPA" value={program.minOverallGPA != null ? `${program.minOverallGPA.toFixed(2)}` : 'Not specified'} />
+            <Row label="Min. Science GPA" value={program.minScienceGPA != null ? `${program.minScienceGPA.toFixed(2)}` : 'Not specified'} />
+            <Row label="Entrance Exam" value={program.examType ?? 'None required'} />
+            <Row label="Min. Exam Score" value={program.minExamScore != null ? `${program.minExamScore}%` : '—'} />
+            <Row label="CASPer Required" value={program.casperRequired ? 'Yes' : 'No'} />
+            <Row label="Application Deadline" value={program.deadlines ?? '—'} />
+            <Row label="Program Type" value={program.programType} />
+          </dl>
+          {program.notes && (
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <p className="text-xs font-medium text-gray-500 mb-1">Notes</p>
+              <p className="text-sm text-gray-600">{program.notes}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Fit Analysis */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <h2 className="font-semibold text-gray-900 mb-1">Your Fit</h2>
+          {!profile ? (
+            <div className="text-sm text-gray-500 py-4">
+              <Link href="/profile" className="text-teal-600 underline">Complete your profile</Link> to see your fit analysis.
+            </div>
+          ) : (
+            <>
+              <p className="text-sm text-gray-600 mb-4">{fit.explanation}</p>
+              {fit.gpaNote && (
+                <div className="text-sm bg-gray-50 rounded-lg p-3 mb-3">
+                  <span className="font-medium">GPA: </span>{fit.gpaNote}
+                </div>
+              )}
+              {fit.examNote && (
+                <div className="text-sm bg-gray-50 rounded-lg p-3 mb-3">
+                  <span className="font-medium">Exam: </span>{fit.examNote}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Prerequisites checklist */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <h2 className="font-semibold text-gray-900 mb-4">Prerequisites</h2>
+        <div className="grid sm:grid-cols-2 gap-2">
+          {allCourses.map(([key, label]) => {
+            const required = program.requiredCourses.includes(key)
+            const completed = profile?.coursesCompleted.includes(key) ?? false
+
+            if (!required) {
+              return (
+                <div key={key} className="flex items-center gap-2 text-sm text-gray-300 py-1">
+                  <Circle className="w-4 h-4 shrink-0" />
+                  <span className="line-through">{label}</span>
+                  <span className="ml-auto text-xs">not required</span>
+                </div>
+              )
+            }
+
+            return (
+              <div key={key} className={`flex items-center gap-2 text-sm py-1 ${completed ? 'text-green-700' : 'text-red-600'}`}>
+                {completed
+                  ? <CheckCircle className="w-4 h-4 shrink-0 text-green-500" />
+                  : <XCircle className="w-4 h-4 shrink-0 text-red-400" />
+                }
+                <span>{label}</span>
+                {!completed && <span className="ml-auto text-xs font-medium">missing</span>}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* What to do next */}
+      <div className="bg-teal-50 border border-teal-200 rounded-xl p-6 mb-6">
+        <h2 className="font-semibold text-teal-900 mb-3">What to Do Next</h2>
+        <ul className="space-y-2">
+          {fit.nextSteps.map((step, i) => (
+            <li key={i} className="flex items-start gap-2 text-sm text-teal-800">
+              <span className="shrink-0 w-5 h-5 bg-teal-200 text-teal-800 rounded-full flex items-center justify-center text-xs font-bold mt-0.5">
+                {i + 1}
+              </span>
+              {step}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <Disclaimer compact />
+    </div>
+  )
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between gap-2">
+      <dt className="text-gray-500">{label}</dt>
+      <dd className="text-gray-900 font-medium text-right">{value}</dd>
+    </div>
+  )
+}
