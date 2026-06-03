@@ -6,8 +6,14 @@ import { computeFit } from '@/lib/scoring'
 import { COURSE_MAP } from '@/lib/constants'
 import Disclaimer from '@/components/Disclaimer'
 import FitBadge from '@/components/FitBadge'
-import { ChevronLeft, CheckCircle, XCircle, Circle } from 'lucide-react'
+import { ChevronLeft, CheckCircle, XCircle, Circle, AlertTriangle } from 'lucide-react'
 import type { ProgramData } from '@/types'
+
+const DQ_BADGE: Record<string, { label: string; cls: string }> = {
+  verified: { label: 'Requirements verified', cls: 'bg-green-100 text-green-700' },
+  partial: { label: 'Requirements partially verified', cls: 'bg-amber-100 text-amber-700' },
+  placeholder: { label: 'Requirements not fully verified', cls: 'bg-gray-100 text-gray-500' },
+}
 
 export default async function ProgramDetailPage(props: PageProps<'/programs/[id]'>) {
   const { id } = await props.params
@@ -45,9 +51,27 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
             <h1 className="text-2xl font-bold text-gray-900">{program.university}</h1>
             <p className="text-gray-500">{program.name} · {program.city}, {program.state}</p>
           </div>
-          <FitBadge status={fit.status} />
+          <div className="flex flex-col items-end gap-2">
+            <FitBadge status={fit.status} />
+            {(() => {
+              const dq = DQ_BADGE[program.dataQuality] ?? DQ_BADGE.placeholder
+              return (
+                <span className={`text-xs px-2 py-0.5 rounded-full ${dq.cls}`}>{dq.label}</span>
+              )
+            })()}
+          </div>
         </div>
       </div>
+
+      {program.dataQuality === 'placeholder' && (
+        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+          <span>
+            <strong>Exploratory estimate</strong> — requirements for this program are still being verified.
+            Always check the school&apos;s official website before applying.
+          </span>
+        </div>
+      )}
 
       <div className="grid md:grid-cols-2 gap-6 mb-6">
         {/* Program Requirements */}

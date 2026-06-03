@@ -6,7 +6,12 @@ import { Compass, LogOut } from 'lucide-react'
 import clsx from 'clsx'
 import { logout } from '@/app/actions/auth'
 
-const links = [
+const PUBLIC_LINKS = [
+  { href: '/programs', label: 'Programs' },
+  { href: '/pricing', label: 'Pricing' },
+]
+const AUTH_LINKS = [
+  { href: '/dashboard', label: 'Dashboard' },
   { href: '/programs', label: 'Programs' },
   { href: '/plan', label: 'My Plan' },
   { href: '/profile', label: 'My Profile' },
@@ -15,6 +20,7 @@ const links = [
 
 export default function Navbar({ username }: { username: string | null }) {
   const pathname = usePathname()
+  const links = username ? AUTH_LINKS : PUBLIC_LINKS
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">

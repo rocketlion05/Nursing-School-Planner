@@ -23,17 +23,17 @@ export default async function Home() {
         {user ? (
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              href="/profile"
+              href="/dashboard"
               className="inline-flex items-center gap-2 bg-teal-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
             >
-              Enter My Stats
+              See my nursing school odds
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              href="/plan"
+              href="/programs"
               className="inline-flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
             >
-              View My Plan
+              Browse programs
             </Link>
           </div>
         ) : (

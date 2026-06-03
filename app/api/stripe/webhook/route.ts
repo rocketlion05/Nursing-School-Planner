@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
+import { sendCyclePassConfirmationEmail } from '@/lib/email'
 
 // Stripe requires the raw body to verify the webhook signature.
 // In Next.js App Router the body is already a ReadableStream.
@@ -45,6 +46,9 @@ export async function POST(req: NextRequest) {
           update: { tier: 'cycle' },
         })
         console.log(`Upgraded user ${userId} to Cycle Pass (session ${session.id})`)
+        // Send confirmation email — look up user email from userId
+        const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
+        if (user?.email) sendCyclePassConfirmationEmail(user.email).catch(() => {})
       } catch (err) {
         console.error('Failed to upgrade user tier:', err)
         return NextResponse.json({ error: 'DB error' }, { status: 500 })

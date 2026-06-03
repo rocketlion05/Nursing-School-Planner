@@ -44,6 +44,7 @@ export interface ProgramData {
   casperRequired: boolean
   deadlines: string | null
   notes: string | null
+  dataQuality: string
 }
 
 export interface FitResult {

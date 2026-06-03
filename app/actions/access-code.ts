@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
+import { sendCyclePassConfirmationEmail } from '@/lib/email'
 
 export async function redeemAccessCode(code: string): Promise<{ success: boolean; error?: string }> {
   try {
@@ -34,6 +35,8 @@ export async function redeemAccessCode(code: string): Promise<{ success: boolean
 
     revalidatePath('/programs')
     revalidatePath('/pricing')
+    revalidatePath('/dashboard')
+    sendCyclePassConfirmationEmail(user.email).catch(() => {})
     return { success: true }
   } catch (err) {
     console.error('redeemAccessCode error:', err)

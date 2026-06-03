@@ -10,6 +10,7 @@ import {
   parseUserInfo,
   type ProviderId,
 } from '@/app/lib/oauth'
+import { sendWelcomeEmail } from '@/lib/email'
 
 function loginError(origin: string, code: string) {
   return NextResponse.redirect(new URL(`/login?error=${code}`, origin))
@@ -72,19 +73,22 @@ export async function GET(
     if (!info.providerAccountId) return loginError(origin, 'oauth_userinfo')
 
     // 3. Resolve to a User and sign in.
-    const userId = await resolveUser(provider, info)
+    const { userId, isNew, email: userEmail } = await resolveUser(provider, info)
     await createSession(userId)
-    return NextResponse.redirect(new URL('/profile', origin))
+    if (isNew && userEmail) sendWelcomeEmail(userEmail).catch(() => {})
+    return NextResponse.redirect(new URL('/dashboard', origin))
   } catch (err) {
     console.error('OAuth callback error:', provider, err)
     return loginError(origin, 'oauth_failed')
   }
 }
 
+type ResolvedUser = { userId: string; isNew: boolean; email: string | null }
+
 async function resolveUser(
   provider: ProviderId,
   info: { providerAccountId: string; email: string | null; name: string },
-): Promise<string> {
+): Promise<ResolvedUser> {
   // Already linked? Sign straight in.
   const linked = await prisma.oAuthAccount.findUnique({
     where: {
@@ -92,7 +96,7 @@ async function resolveUser(
     },
     select: { userId: true },
   })
-  if (linked) return linked.userId
+  if (linked) return { userId: linked.userId, isNew: false, email: info.email }
 
   // Link to an existing account with the same email, if any.
   if (info.email) {
@@ -104,7 +108,7 @@ async function resolveUser(
       await prisma.oAuthAccount.create({
         data: { provider, providerAccountId: info.providerAccountId, userId: existing.id },
       })
-      return existing.id
+      return { userId: existing.id, isNew: false, email: info.email }
     }
   }
 
@@ -123,7 +127,7 @@ async function resolveUser(
     },
     select: { id: true },
   })
-  return user.id
+  return { userId: user.id, isNew: true, email: info.email }
 }
 
 /** Derives a unique username from the email/name, appending digits on collision. */

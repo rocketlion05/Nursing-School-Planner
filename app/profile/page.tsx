@@ -3,7 +3,7 @@ import { requireUser } from '@/app/lib/dal'
 import ProfileForm from '@/components/ProfileForm'
 
 export default async function ProfilePage() {
-  await requireUser()
+  const user = await requireUser()
   const profile = await getProfile()
 
   return (
@@ -14,7 +14,7 @@ export default async function ProfilePage() {
           Enter your academic stats to see how you compare to BSN program requirements.
         </p>
       </div>
-      <ProfileForm initialProfile={profile} />
+      <ProfileForm initialProfile={profile} userEmail={user.email} />
     </div>
   )
 }

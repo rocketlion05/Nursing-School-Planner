@@ -74,6 +74,7 @@ model Program {
   casperRequired  Boolean    @default(false)
   deadlines       String?
   notes           String?
+  dataQuality     String     @default("placeholder") // placeholder | partial | verified
   favorites       Favorite[]
 }
 
@@ -105,7 +106,7 @@ model SchoolRequest {
   programType String    @default("BSN")
   reason      String?
   requestedBy String?
-  status      String    @default("pending") // pending | fulfilled | rejected
+  status      String    @default("new") // new | in_progress | added | wont_add
   resolution  String? // notes from the agent (e.g. added slug, why rejected)
   resolvedAt  DateTime?
   createdAt   DateTime  @default(now())

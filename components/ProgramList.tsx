@@ -168,6 +168,11 @@ export default function ProgramList({ programs, tier, isAuthed }: Props) {
                     ? 'Log in to see your fit for this program.'
                     : program.fit.explanation}
                 </p>
+                {program.dataQuality === 'placeholder' && (
+                  <p className="text-xs text-gray-400 mt-1 italic">
+                    Requirements not fully verified — check the school&apos;s website before applying.
+                  </p>
+                )}
               </div>
 
               {/* Right side */}

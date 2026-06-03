@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import { createSession, deleteSession } from '@/app/lib/session'
 import { SignupSchema, LoginSchema, type AuthFormState } from '@/app/lib/auth-validation'
+import { sendWelcomeEmail } from '@/lib/email'
 
 export async function signup(
   _prevState: AuthFormState,
@@ -51,7 +52,9 @@ export async function signup(
   }
 
   await createSession(userId)
-  redirect('/profile')
+  // fire-and-forget — don't block redirect on email delivery
+  sendWelcomeEmail(email).catch(() => {})
+  redirect('/dashboard')
 }
 
 export async function login(
@@ -95,7 +98,7 @@ export async function login(
   if (!ok) return invalid
 
   await createSession(user.id)
-  redirect('/profile')
+  redirect('/dashboard')
 }
 
 export async function logout(): Promise<void> {

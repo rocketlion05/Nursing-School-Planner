@@ -36,6 +36,7 @@ async function main() {
       casperRequired: p.casperRequired,
       deadlines: p.deadlines,
       notes: p.notes,
+      dataQuality: p.dataQuality,
     }
 
     const existing = await prisma.program.findUnique({ where: { slug: p.slug }, select: { id: true } })

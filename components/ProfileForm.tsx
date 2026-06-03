@@ -7,17 +7,17 @@ import { COURSES, US_STATES, TARGET_TERMS, EXAM_TYPES } from '@/lib/constants'
 import ProfileSummary from '@/components/ProfileSummary'
 import { Save, CheckCircle, AlertCircle } from 'lucide-react'
 
-type Props = { initialProfile: ProfileData | null }
+type Props = { initialProfile: ProfileData | null; userEmail: string }
 
 function toStr(v: number | null | undefined): string {
   return v == null ? '' : String(v)
 }
 
-export default function ProfileForm({ initialProfile }: Props) {
+export default function ProfileForm({ initialProfile, userEmail }: Props) {
   const p = initialProfile
 
   const [name, setName] = useState(p?.name ?? '')
-  const [email, setEmail] = useState(p?.email ?? '')
+  const email = p?.email || userEmail
   const [statePrefs, setStatePrefs] = useState<string[]>(p?.statePrefs ?? [])
   const [targetTerm, setTargetTerm] = useState(p?.targetTerm ?? '')
   const [overallGPA, setOverallGPA] = useState(toStr(p?.overallGPA))
@@ -76,7 +76,7 @@ export default function ProfileForm({ initialProfile }: Props) {
 
   const currentProfile: ProfileData = {
     id: p?.id ?? '',
-    name, email, statePrefs, targetTerm,
+    name, email: email, statePrefs, targetTerm,
     overallGPA: overallGPA ? parseFloat(overallGPA) : null,
     scienceGPA: scienceGPA ? parseFloat(scienceGPA) : null,
     totalCredits: totalCredits ? parseInt(totalCredits, 10) : null,
@@ -103,7 +103,10 @@ export default function ProfileForm({ initialProfile }: Props) {
               <input className={input} value={name} onChange={e => setName(e.target.value)} placeholder="Your name" />
             </Field>
             <Field label="Email">
-              <input className={input} type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@email.com" />
+              <div className="flex items-center gap-2">
+                <input className={`${input} bg-gray-50 text-gray-500 cursor-default`} type="email" value={email} readOnly />
+                <span className="text-xs text-gray-400 whitespace-nowrap">from your account</span>
+              </div>
             </Field>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
