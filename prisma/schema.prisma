@@ -97,13 +97,16 @@ model AccessCode {
 }
 
 model SchoolRequest {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   schoolName  String
   university  String
   city        String
   state       String
-  programType String   @default("BSN")
+  programType String    @default("BSN")
   reason      String?
   requestedBy String?
-  createdAt   DateTime @default(now())
+  status      String    @default("pending") // pending | fulfilled | rejected
+  resolution  String? // notes from the agent (e.g. added slug, why rejected)
+  resolvedAt  DateTime?
+  createdAt   DateTime  @default(now())
 }
