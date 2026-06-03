@@ -1,6 +1,8 @@
 import { getProfile } from '@/app/actions/profile'
-import { getCurrentUser } from '@/app/lib/dal'
+import { getCurrentUser, getIsAdmin } from '@/app/lib/dal'
+import { listAccessCodes } from '@/app/actions/access-code'
 import AccessCodeForm from '@/components/AccessCodeForm'
+import AdminCodeGenerator from '@/components/AdminCodeGenerator'
 import CheckoutButton from '@/components/CheckoutButton'
 import { Check, Zap } from 'lucide-react'
 
@@ -25,9 +27,10 @@ export default async function PricingPage({
   searchParams: Promise<{ canceled?: string }>
 }) {
   const { canceled } = await searchParams
-  const [profile, user] = await Promise.all([getProfile(), getCurrentUser()])
+  const [profile, user, isAdmin] = await Promise.all([getProfile(), getCurrentUser(), getIsAdmin()])
   const tier = profile?.tier ?? 'free'
   const hasCycle = tier === 'cycle'
+  const accessCodes = isAdmin ? await listAccessCodes() : []
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
@@ -98,7 +101,7 @@ export default async function PricingPage({
       </div>
 
       {/* Access Code */}
-      {!hasCycle && (
+      {(!hasCycle || isAdmin) && (
         <div className="bg-white border border-gray-200 rounded-xl p-6 max-w-md mx-auto">
           <h3 className="font-semibold text-gray-900 mb-1">Have an Access Code?</h3>
           <p className="text-sm text-gray-500 mb-4">
@@ -111,6 +114,7 @@ export default async function PricingPage({
               <a href="/profile" className="underline">Save your profile first</a> to redeem an access code.
             </p>
           )}
+          {isAdmin && <AdminCodeGenerator initialCodes={accessCodes} />}
         </div>
       )}
     </div>

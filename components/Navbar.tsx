@@ -20,9 +20,13 @@ const AUTH_LINKS = [
   { href: '/pricing', label: 'Pricing' },
 ]
 
-export default function Navbar({ username }: { username: string | null }) {
+export default function Navbar({ username, isAdmin = false }: { username: string | null; isAdmin?: boolean }) {
   const pathname = usePathname()
-  const links = username ? AUTH_LINKS : PUBLIC_LINKS
+  const links = username
+    ? isAdmin
+      ? [...AUTH_LINKS, { href: '/admin/requests', label: 'Admin' }]
+      : AUTH_LINKS
+    : PUBLIC_LINKS
 
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">

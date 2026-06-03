@@ -1,14 +1,12 @@
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
+import { isAdminEmail } from '@/lib/admin'
 import { updateRequestStatus } from './actions'
 
 function isAdmin(userEmail: string | undefined, secret: string | undefined): boolean {
   const adminSecret = process.env.ADMIN_SECRET
-  const allowedEmails = (process.env.ALLOWED_ADMIN_EMAILS ?? '')
-    .split(',').map(s => s.trim()).filter(Boolean)
-  return (!!adminSecret && secret === adminSecret) ||
-         (!!userEmail && allowedEmails.includes(userEmail))
+  return (!!adminSecret && secret === adminSecret) || isAdminEmail(userEmail)
 }
 
 const STATUS_OPTIONS = ['new', 'in_progress', 'added', 'wont_add']

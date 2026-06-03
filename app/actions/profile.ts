@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
+import { isAdminEmail } from '@/lib/admin'
 import type { ProfileData } from '@/types'
 
 export type ProfileFormInput = {
@@ -85,6 +86,7 @@ export async function getProfile(): Promise<ProfileData | null> {
     casperPercentile: raw.casperPercentile,
     otherExamName: raw.otherExamName,
     otherExamScore: raw.otherExamScore,
-    tier: raw.tier as 'free' | 'cycle',
+    // Admins implicitly hold Cycle Pass everywhere, without changing the stored tier.
+    tier: (isAdminEmail(user.email) ? 'cycle' : raw.tier) as 'free' | 'cycle',
   }
 }

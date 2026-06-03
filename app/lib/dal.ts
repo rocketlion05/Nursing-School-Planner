@@ -3,6 +3,7 @@ import { cache } from 'react'
 import { redirect } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { getSessionUserId } from '@/app/lib/session'
+import { isAdminEmail } from '@/lib/admin'
 
 export type CurrentUser = {
   id: string
@@ -31,4 +32,10 @@ export async function requireUser(): Promise<CurrentUser> {
   const user = await getCurrentUser()
   if (!user) redirect('/login')
   return user
+}
+
+/** True when the logged-in user is on the admin allow-list. */
+export async function getIsAdmin(): Promise<boolean> {
+  const user = await getCurrentUser()
+  return isAdminEmail(user?.email)
 }

@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
+import { isAdminEmail } from '@/lib/admin'
 
 /** Returns the logged-in user's profile id, creating an empty profile if needed. */
 async function getOrCreateProfileId(userId: string): Promise<string> {
@@ -40,7 +41,7 @@ export async function toggleFavorite(programId: string): Promise<{ isFavorite: b
       include: { favorites: true },
     })
 
-    if (profile?.tier === 'free' && (profile.favorites?.length ?? 0) >= 2) {
+    if (!isAdminEmail(user.email) && profile?.tier === 'free' && (profile.favorites?.length ?? 0) >= 2) {
       return {
         isFavorite: false,
         error: 'Free tier is limited to 2 favorites. Upgrade to Cycle Pass for unlimited favorites.',

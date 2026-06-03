@@ -4,6 +4,7 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
+import { isAdminEmail } from '@/lib/admin'
 
 export type SchoolRequestInput = {
   schoolName: string
@@ -30,7 +31,7 @@ export async function submitSchoolRequest(input: SchoolRequestInput): Promise<Sc
   if (!user) {
     return { ok: false, error: 'Please log in to request a school.', needsUpgrade: true }
   }
-  if (!(await isPremium(user.id))) {
+  if (!isAdminEmail(user.email) && !(await isPremium(user.id))) {
     return {
       ok: false,
       error: 'Requesting a school is a Cycle Pass feature. Upgrade to unlock it.',
