@@ -14,13 +14,14 @@
  * NOTE: for a database that was migrated BEFORE this tracking existed, baseline it first
  * (mark existing migrations as applied) — see scripts/baseline-db.ts.
  */
-import 'dotenv/config'
+import { loadEnv } from './_env'
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { createClient } from '@libsql/client'
 import { libsqlConfig } from '../lib/libsql-config'
 
 async function main() {
+  loadEnv() // pass --prod to migrate the live Turso database
   const cfg = libsqlConfig()
   console.log(`Applying migrations to: ${cfg.url}`)
   const client = createClient(cfg)

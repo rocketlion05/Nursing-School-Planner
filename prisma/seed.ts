@@ -1,16 +1,19 @@
-import 'dotenv/config'
+import { loadEnv } from '../scripts/_env'
 import { PrismaLibSql } from '@prisma/adapter-libsql'
 import { PrismaClient } from '../app/generated/prisma/client'
 import { libsqlConfig } from '../lib/libsql-config'
 import { SEED_PROGRAMS } from './programs-data'
 
-const adapter = new PrismaLibSql(libsqlConfig())
+loadEnv() // pass --prod to seed the live Turso database
+const cfg = libsqlConfig()
+const adapter = new PrismaLibSql(cfg)
 const prisma = new PrismaClient({ adapter })
 
 const accessCodes = [{ code: 'COMPASS2025' }, { code: 'NURSING-BETA' }, { code: 'CYCLE-DEMO' }]
 
 async function main() {
-  console.log('Seeding programs (idempotent upsert by slug)...')
+  const target = cfg.url.startsWith('file:') ? `LOCAL (${cfg.url})` : `REMOTE/PROD (${cfg.url})`
+  console.log(`Seeding programs (idempotent upsert by slug) -> ${target}`)
 
   let created = 0
   let updated = 0

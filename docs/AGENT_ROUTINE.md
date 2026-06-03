@@ -1,82 +1,76 @@
-# School-research routine (set up later)
+# School-maintenance routine
 
-This is the scaffolding for a scheduled AI agent (e.g. a Claude Code routine) that
-keeps the program database current. It does two jobs:
+Scheduled agent that keeps the Nursing School Planner program database accurate and
+current. It runs every 3 days (scheduled task `school-maintenance`) and does three jobs:
 
-1. **Fulfill school requests** — research each pending `SchoolRequest`, add the program,
-   mark the request resolved.
-2. **Fill in missing requirements** — for existing programs that still have NULL
-   GPA / exam / prereq data, research and fill them in.
-
-Nothing here runs automatically yet — wire it into a schedule when you're ready
-(see "Scheduling it" below).
+1. **Fulfill new school requests** — research each pending `SchoolRequest` on the school's
+   official site, add the program if it's a real BSN, and resolve the request.
+2. **Re-verify a rotating batch** of existing schools against official sources, correcting
+   anything that changed. Over successive runs the rotation covers all 87 programs.
+3. **Ship it live** — seed the prod Turso DB and push to GitHub (triggers a Vercel redeploy).
 
 ## How the pieces fit
 
 - **Source of truth for programs:** [`prisma/programs-data.ts`](../prisma/programs-data.ts).
-  The agent edits entries here (or appends new ones), then runs the seed to push to the
-  live DB. Seeding is idempotent (upsert by `slug`), so editing an entry updates that
-  one program; adding an entry creates a new one.
-- **Requests inbox:** the `SchoolRequest` table, read/updated via the scripts below.
-- **Prod credentials:** the scripts read `DATABASE_URL` + `DATABASE_AUTH_TOKEN`. Keep them
-  in the gitignored `.env.production.local`, or export them in the routine's shell.
+  The agent edits/append entries here, then runs the seed (idempotent upsert by `slug`).
+- **Live data:** lives in the Turso prod DB. Editing `programs-data.ts` does NOT change the
+  live site until `prisma/seed.ts --prod` runs. A git push alone only redeploys code.
+- **Requests inbox:** the `SchoolRequest` table.
+- **Rotation state:** [`prisma/verification-log.json`](../prisma/verification-log.json) maps
+  `slug -> ISO timestamp` of last re-verification. `verify-queue.ts` reads it to pick the
+  least-recently-checked batch; `mark-verified.ts` bumps it. Commit it so rotation persists.
+- **Prod credentials:** gitignored `.env.production.local` (DATABASE_URL=libsql://… +
+  DATABASE_AUTH_TOKEN). The `--prod` flag on the DB scripts loads it; without `--prod` they
+  use `.env` (local `dev.db`).
 
-## Commands the routine uses
+## Commands
 
 ```bash
-# 1. See what users have requested (JSON on stdout)
-npx tsx scripts/list-school-requests.ts          # pending only
+# Read live requests (new + in_progress)
+npx tsx scripts/list-school-requests.ts --prod
 
-# 2. (agent edits prisma/programs-data.ts — fills requirements / appends new schools)
+# Pick the next rotating re-verify batch (no DB; reads the log). Default 12.
+npx tsx scripts/verify-queue.ts            # or: verify-queue.ts 15
 
-# 3. Push the edits to the live DB
-npx tsx prisma/seed.ts                            # upsert by slug; prints a summary
+# (agent edits prisma/programs-data.ts — fills/corrects requirements, appends new schools)
 
-# 4. Mark each handled request resolved
-npx tsx scripts/resolve-request.ts <id> --fulfilled --note "Added as slug <slug>"
-npx tsx scripts/resolve-request.ts <id> --rejected  --note "Not a BSN program"
+# Record which schools were re-checked this run (every slug in the batch, changed or not)
+npx tsx scripts/mark-verified.ts <slug> <slug> ...
+
+# Push edits to the LIVE DB (prints the target so you can confirm it says REMOTE/PROD)
+npx tsx prisma/seed.ts --prod
+
+# Resolve each handled request (status must be added | wont_add)
+npx tsx scripts/resolve-request.ts <id> --added    --note "Added as <slug>"
+npx tsx scripts/resolve-request.ts <id> --wont-add --note "Not a BSN program"
 ```
 
-> First time on a fresh machine/DB, apply migrations: `npx tsx scripts/deploy-db.ts`
-> (it tracks applied migrations, so it's safe to re-run).
+> First run on a fresh DB only: `npx tsx scripts/deploy-db.ts --prod` (idempotent migrations).
 
-## Data rules (so the agent writes valid records)
+## Data rules (so the agent writes valid, trustworthy records)
 
-- `slug`: `"<state>-<university>-<city>"` lowercased, non-alphanumeric → `-` (must be unique).
-- `region`: `"Arkansas"` | `"Texas"` | `"National"`. `tier`: `"Local"` | `"Top TX"` | `"Top US"`.
+- **Official sources only.** Use the school's own `.edu` nursing/admission page or official
+  catalog for requirement VALUES. Ignore aggregators (US News, Niche, CampusReel, Cappex,
+  nursing directories) for numbers — they're often wrong or stale.
+- **Never invent a value.** Leave a field `null` if the official page doesn't state it.
+- **Never downgrade on a weak signal.** If a field is already populated and you can't find a
+  clearly-authoritative contradicting value on the official page, LEAVE IT UNCHANGED.
+- **Right program track.** Only the TRADITIONAL / pre-licensure BSN. Do not mix in accelerated
+  (ABSN), RN-to-BSN, or second-degree requirements.
+- `slug`: `"<state>-<university>-<city>"` lowercased, non-alphanumeric → `-` (unique).
+- `region`: `Arkansas` | `Texas` | `National`. `tier`: `Local` | `Top TX` | `Top US`.
+- `isPublic`: `false` for private / religious / for-profit schools, else `true`.
 - `requiredCourses`: array of course **keys**, not labels:
   `ANAT_PHYS_1, ANAT_PHYS_2, MICRO, CHEM, STATS, NUTRITION, LIFESPAN, ENGLISH_COMP`.
-- `examType`: `"TEAS"` | `"HESI A2"` | `"NLN PAX"` | `null`. `minExamScore`: percent 0–100.
-- `minOverallGPA` / `minScienceGPA`: 0.0–4.0, or `null` if you can't verify it.
-- **Never guess.** Leave a field `null` rather than inventing it, and cite the source in `notes`.
+- `examType`: `TEAS` | `HESI A2` | `NLN PAX` | `null`. `minExamScore`: percent 0–100.
+- `minOverallGPA` / `minScienceGPA`: 0.0–4.0, or `null` if unverified.
+- `dataQuality`: `verified` only when every populated requirement came from the official page;
+  `partial` if sourced but incomplete; `placeholder` if no requirement data. Cite source +
+  date in `notes`. Programs with no requirement signals correctly score "Unverified" in-app.
 
-## Ready-to-use routine prompt
+## The routine prompt
 
-Paste this as the routine's instruction (adjust the batch size to taste):
-
-```
-You maintain the Nursing School Planner program database. Working dir is the
-pre-nursing-compass project. Prod DB creds are in .env.production.local.
-
-1. Run `npx tsx scripts/list-school-requests.ts` to get pending school requests.
-2. For each request: research the program on the official school site. If it's a real
-   BSN program, add an entry to prisma/programs-data.ts following the field rules in
-   docs/AGENT_ROUTINE.md (verified data only; null where unsure; cite source in notes).
-   If it's not a valid BSN program, skip adding it.
-3. Then pick up to 5 existing programs in programs-data.ts that have minOverallGPA: null
-   and research + fill their requirements from the official site (GPA, examType,
-   minExamScore, requiredCourses, deadlines). Only use verified data.
-4. Run `npx tsx prisma/seed.ts` to push all edits to the live DB and confirm the summary.
-5. For each request you handled, run `npx tsx scripts/resolve-request.ts <id>
-   --fulfilled --note "..."` (or --rejected with a reason).
-6. Summarize what you added, updated, and rejected.
-
-Make a git commit of the programs-data.ts changes, but do NOT push unless explicitly
-told to. Do not invent requirements — leave fields null when unverified.
-```
-
-## Scheduling it (when ready)
-
-Use the `/schedule` command in Claude Code to create a recurring remote agent (cron),
-or `/loop` for a self-paced run. Point it at the prompt above. Start with a manual
-one-off run to confirm it behaves before putting it on a schedule.
+The live prompt is stored in the scheduled task at
+`C:\Users\nwcon\.claude\scheduled-tasks\school-maintenance\SKILL.md`. Keep this doc and that
+prompt in sync. To change cadence or behavior, edit the task with
+`mcp__scheduled-tasks__update_scheduled_task` (or `/schedule`).
