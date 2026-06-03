@@ -8,11 +8,13 @@ import { logout } from '@/app/actions/auth'
 
 const PUBLIC_LINKS = [
   { href: '/programs', label: 'Programs' },
+  { href: '/study-tools', label: 'Study Tools' },
   { href: '/pricing', label: 'Pricing' },
 ]
 const AUTH_LINKS = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/programs', label: 'Programs' },
+  { href: '/study-tools', label: 'Study Tools' },
   { href: '/plan', label: 'My Plan' },
   { href: '/profile', label: 'My Profile' },
   { href: '/pricing', label: 'Pricing' },
