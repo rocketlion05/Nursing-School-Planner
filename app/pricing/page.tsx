@@ -1,6 +1,8 @@
 import { getProfile } from '@/app/actions/profile'
+import { getCurrentUser } from '@/app/lib/dal'
 import AccessCodeForm from '@/components/AccessCodeForm'
-import { Check, Lock, Zap } from 'lucide-react'
+import CheckoutButton from '@/components/CheckoutButton'
+import { Check, Zap } from 'lucide-react'
 
 const FREE_FEATURES = [
   'View fit scores for all programs (Safe/Match/Reach)',
@@ -17,8 +19,13 @@ const CYCLE_FEATURES = [
   'Priority email support (coming soon)',
 ]
 
-export default async function PricingPage() {
-  const profile = await getProfile()
+export default async function PricingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ canceled?: string }>
+}) {
+  const { canceled } = await searchParams
+  const [profile, user] = await Promise.all([getProfile(), getCurrentUser()])
   const tier = profile?.tier ?? 'free'
   const hasCycle = tier === 'cycle'
 
@@ -30,6 +37,12 @@ export default async function PricingPage() {
           Start free. Upgrade when you need more. No subscriptions — just a one-time Cycle Pass for the application season.
         </p>
       </div>
+
+      {canceled && (
+        <div className="max-w-md mx-auto mb-6 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-center">
+          Payment was canceled — no charge was made. You can try again anytime.
+        </div>
+      )}
 
       <div className="grid sm:grid-cols-2 gap-6 mb-10">
         {/* Free tier */}
@@ -79,13 +92,7 @@ export default async function PricingPage() {
               <Zap className="w-4 h-4" /> Active — Cycle Pass
             </div>
           ) : (
-            <button
-              disabled
-              className="w-full bg-gray-200 text-gray-500 py-2.5 rounded-lg font-semibold text-sm cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              <Lock className="w-4 h-4" />
-              Pay Now — Coming Soon
-            </button>
+            <CheckoutButton isAuthed={Boolean(user)} />
           )}
         </div>
       </div>
