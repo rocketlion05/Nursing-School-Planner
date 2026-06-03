@@ -7,6 +7,7 @@ const styles: Record<FitStatus, string> = {
   Reach: 'bg-amber-100 text-amber-800 border-amber-200',
   'Not eligible': 'bg-red-100 text-red-700 border-red-200',
   'No profile': 'bg-gray-100 text-gray-600 border-gray-200',
+  Unverified: 'bg-slate-100 text-slate-600 border-slate-200',
 }
 
 export default function FitBadge({ status, size = 'md' }: { status: FitStatus; size?: 'sm' | 'md' }) {

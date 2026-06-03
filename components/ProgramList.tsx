@@ -13,7 +13,7 @@ type Props = {
   isAuthed: boolean
 }
 
-const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach', 'Not eligible']
+const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach', 'Not eligible', 'Unverified']
 const REGION_OPTIONS = ['All', 'Arkansas', 'Texas', 'National'] as const
 const TIER_OPTIONS = ['All', 'Top TX', 'Top US', 'Local'] as const
 

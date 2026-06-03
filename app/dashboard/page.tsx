@@ -43,7 +43,7 @@ export default async function DashboardPage() {
   })
 
   // Fit counts for the summary bar
-  const fitCounts: Record<FitStatus, number> = { Safe: 0, Match: 0, Reach: 0, 'Not eligible': 0, 'No profile': 0 }
+  const fitCounts: Record<FitStatus, number> = { Safe: 0, Match: 0, Reach: 0, 'Not eligible': 0, 'No profile': 0, Unverified: 0 }
   favPrograms.forEach(p => { fitCounts[p.fit.status] = (fitCounts[p.fit.status] ?? 0) + 1 })
 
   // Profile completeness checklist

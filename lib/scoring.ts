@@ -22,6 +22,29 @@ export function computeFit(profile: ProfileData | null, program: ProgramData): F
     }
   }
 
+  // --- Unscoreable: no verified requirement data to evaluate against ---
+  // Without any requirements (placeholder programs), every profile would otherwise
+  // come back "Safe" — a dangerously misleading green light for schools like Duke
+  // or UT Austin. Surface honest uncertainty instead.
+  const hasRequirementData =
+    program.requiredCourses.length > 0 ||
+    program.minOverallGPA !== null ||
+    program.minScienceGPA !== null ||
+    program.examType !== null ||
+    program.casperRequired
+  if (!hasRequirementData) {
+    return {
+      status: 'Unverified',
+      explanation:
+        "We don't have verified admission requirements for this program yet, so we can't score your fit. Check the school's official nursing page for current GPA, prerequisite, and entrance-exam requirements.",
+      missingCourses: [],
+      completedCourses: [],
+      examNote: null,
+      gpaNote: null,
+      nextSteps: ["Verify this program's requirements on the school's official website."],
+    }
+  }
+
   const completed = new Set(profile.coursesCompleted)
   const requiredCourses = program.requiredCourses
 

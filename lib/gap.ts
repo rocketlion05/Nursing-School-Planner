@@ -24,6 +24,7 @@ export function computeGapSummary(
     Reach: 0,
     'Not eligible': 0,
     'No profile': 0,
+    Unverified: 0,
   }
 
   scoredPrograms.forEach(p => {
