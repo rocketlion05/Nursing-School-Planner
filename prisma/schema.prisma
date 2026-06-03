@@ -56,10 +56,14 @@ model Profile {
 
 model Program {
   id              String     @id @default(cuid())
+  slug            String?    @unique
   name            String
   university      String
   city            String
   state           String
+  region          String     @default("")
+  tier            String     @default("Local")
+  isFlagship      Boolean    @default(false)
   isPublic        Boolean    @default(true)
   programType     String     @default("Traditional BSN")
   minOverallGPA   Float?

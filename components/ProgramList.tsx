@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { Heart, ChevronRight } from 'lucide-react'
+import { Heart, ChevronRight, Search } from 'lucide-react'
 import FitBadge from '@/components/FitBadge'
 import { toggleFavorite } from '@/app/actions/favorites'
 import type { ScoredProgram, FitStatus } from '@/types'
@@ -14,11 +14,14 @@ type Props = {
 }
 
 const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach', 'Not eligible']
+const REGION_OPTIONS = ['All', 'Arkansas', 'Texas', 'National'] as const
+const TIER_OPTIONS = ['All', 'Top TX', 'Top US', 'Local'] as const
 
 export default function ProgramList({ programs, tier, isAuthed }: Props) {
-  const [stateFilter, setStateFilter] = useState<'All' | 'AR' | 'TX'>('All')
+  const [query, setQuery] = useState('')
+  const [regionFilter, setRegionFilter] = useState<(typeof REGION_OPTIONS)[number]>('All')
+  const [tierFilter, setTierFilter] = useState<(typeof TIER_OPTIONS)[number]>('All')
   const [statusFilter, setStatusFilter] = useState<FitStatus | 'All'>('All')
-  const [examFilter, setExamFilter] = useState<string>('All')
   const [favoritesOnly, setFavoritesOnly] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [favoriteStates, setFavoriteStates] = useState<Record<string, boolean>>(
@@ -26,13 +29,16 @@ export default function ProgramList({ programs, tier, isAuthed }: Props) {
   )
   const [toastMsg, setToastMsg] = useState<string | null>(null)
 
-  const examTypes = ['All', ...Array.from(new Set(programs.map(p => p.examType ?? 'None')))]
-
+  const q = query.trim().toLowerCase()
   const filtered = programs.filter(p => {
-    if (stateFilter !== 'All' && p.state !== stateFilter) return false
+    if (regionFilter !== 'All' && p.region !== regionFilter) return false
+    if (tierFilter !== 'All' && p.tier !== tierFilter) return false
     if (statusFilter !== 'All' && p.fit.status !== statusFilter) return false
-    if (examFilter !== 'All' && (p.examType ?? 'None') !== examFilter) return false
     if (favoritesOnly && !favoriteStates[p.id]) return false
+    if (q) {
+      const haystack = `${p.university} ${p.name} ${p.city} ${p.state}`.toLowerCase()
+      if (!haystack.includes(q)) return false
+    }
     return true
   })
 
@@ -55,21 +61,33 @@ export default function ProgramList({ programs, tier, isAuthed }: Props) {
 
   return (
     <div>
+      {/* Search */}
+      <div className="relative mb-3">
+        <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+        <input
+          type="search"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          placeholder="Search by school, program, or city…"
+          className="w-full border border-gray-300 rounded-xl pl-9 pr-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+        />
+      </div>
+
       {/* Filters */}
       <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 flex flex-wrap gap-3 items-center">
-        <FilterGroup label="State">
-          {(['All', 'AR', 'TX'] as const).map(s => (
-            <FilterBtn key={s} active={stateFilter === s} onClick={() => setStateFilter(s)}>{s}</FilterBtn>
+        <FilterGroup label="Region">
+          {REGION_OPTIONS.map(r => (
+            <FilterBtn key={r} active={regionFilter === r} onClick={() => setRegionFilter(r)}>{r}</FilterBtn>
+          ))}
+        </FilterGroup>
+        <FilterGroup label="Tier">
+          {TIER_OPTIONS.map(t => (
+            <FilterBtn key={t} active={tierFilter === t} onClick={() => setTierFilter(t)}>{t}</FilterBtn>
           ))}
         </FilterGroup>
         <FilterGroup label="Status">
           {STATUS_OPTIONS.map(s => (
             <FilterBtn key={s} active={statusFilter === s} onClick={() => setStatusFilter(s)}>{s}</FilterBtn>
-          ))}
-        </FilterGroup>
-        <FilterGroup label="Exam">
-          {examTypes.map(e => (
-            <FilterBtn key={e} active={examFilter === e} onClick={() => setExamFilter(e)}>{e}</FilterBtn>
           ))}
         </FilterGroup>
         <label className="flex items-center gap-1.5 text-sm text-gray-600 cursor-pointer ml-auto">
@@ -131,6 +149,15 @@ export default function ProgramList({ programs, tier, isAuthed }: Props) {
                 <div className="flex flex-wrap items-start gap-2 mb-1">
                   <span className="font-medium text-gray-900 truncate">{program.university}</span>
                   <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{program.state}</span>
+                  {program.tier === 'Top US' && (
+                    <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">Top US</span>
+                  )}
+                  {program.tier === 'Top TX' && (
+                    <span className="text-xs bg-sky-100 text-sky-700 px-2 py-0.5 rounded-full">Top TX</span>
+                  )}
+                  {program.isFlagship && (
+                    <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">★ Flagship</span>
+                  )}
                   {!program.isPublic && (
                     <span className="text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded-full">Private</span>
                   )}

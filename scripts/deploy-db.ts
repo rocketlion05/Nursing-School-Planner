@@ -30,8 +30,20 @@ async function main() {
   for (const dir of dirs) {
     const sql = readFileSync(join(migrationsDir, dir, 'migration.sql'), 'utf8')
     process.stdout.write(`  • ${dir} … `)
-    await client.executeMultiple(sql)
-    console.log('done')
+    try {
+      await client.executeMultiple(sql)
+      console.log('applied')
+    } catch (err) {
+      const msg = String((err as Error)?.message ?? err)
+      // Re-running an already-applied migration is expected on a live DB
+      // (e.g. "table ... already exists"). Skip those; surface anything else.
+      if (/already exists|duplicate column/i.test(msg)) {
+        console.log('skipped (already applied)')
+      } else {
+        console.log('ERROR')
+        throw err
+      }
+    }
   }
 
   console.log('\nSchema applied. Next: `npx tsx prisma/seed.ts` to load programs.')

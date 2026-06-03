@@ -2,356 +2,79 @@ import 'dotenv/config'
 import { PrismaLibSql } from '@prisma/adapter-libsql'
 import { PrismaClient } from '../app/generated/prisma/client'
 import { libsqlConfig } from '../lib/libsql-config'
+import { SEED_PROGRAMS } from './programs-data'
 
 const adapter = new PrismaLibSql(libsqlConfig())
 const prisma = new PrismaClient({ adapter })
 
-const programs = [
-  // ──────────────── Arkansas ────────────────
-  {
-    name: 'Traditional BSN',
-    university: 'University of Arkansas for Medical Sciences (UAMS)',
-    city: 'Little Rock',
-    state: 'AR',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 3.0,
-    minScienceGPA: 3.0,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS', 'NUTRITION', 'LIFESPAN', 'ENGLISH_COMP']),
-    examType: 'TEAS',
-    minExamScore: 60,
-    casperRequired: false,
-    deadlines: 'February 1 for Fall admission',
-    notes: 'Highly competitive flagship medical school nursing program in Arkansas. Data is approximate — verify with UAMS.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'University of Arkansas',
-    city: 'Fayetteville',
-    state: 'AR',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 2.75,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS']),
-    examType: 'TEAS',
-    minExamScore: 58,
-    casperRequired: false,
-    deadlines: 'March 1 for Fall admission',
-    notes: 'State flagship university BSN. Verify current requirements with the Eleanor Mann School of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Arkansas State University',
-    city: 'Jonesboro',
-    state: 'AR',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 3.0,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'STATS', 'ENGLISH_COMP']),
-    examType: 'TEAS',
-    minExamScore: 62,
-    casperRequired: false,
-    deadlines: 'February 15 for Fall admission',
-    notes: 'Data is approximate. Verify with ASU College of Nursing & Health Professions.',
-  },
-  {
-    name: 'Traditional BSN',
-    university: 'University of Central Arkansas',
-    city: 'Conway',
-    state: 'AR',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 2.8,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'NUTRITION']),
-    examType: 'TEAS',
-    minExamScore: 59,
-    casperRequired: false,
-    deadlines: 'March 1 for Fall admission',
-    notes: 'Verify requirements with UCA Department of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Harding University',
-    city: 'Searcy',
-    state: 'AR',
-    isPublic: false,
-    programType: 'Traditional BSN',
-    minOverallGPA: 3.0,
-    minScienceGPA: 3.0,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS', 'NUTRITION', 'LIFESPAN', 'ENGLISH_COMP']),
-    examType: null,
-    minExamScore: null,
-    casperRequired: true,
-    deadlines: 'January 15 for Fall admission',
-    notes: 'Private Christian university. CASPer used for holistic review. Data is approximate — verify with Harding.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Henderson State University',
-    city: 'Arkadelphia',
-    state: 'AR',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 2.5,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'STATS']),
-    examType: 'TEAS',
-    minExamScore: 55,
-    casperRequired: false,
-    deadlines: 'March 15 for Fall admission',
-    notes: 'One of the more accessible programs in Arkansas. Verify with Henderson Department of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Southern Arkansas University',
-    city: 'Magnolia',
-    state: 'AR',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 2.5,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'ENGLISH_COMP']),
-    examType: 'TEAS',
-    minExamScore: 55,
-    casperRequired: false,
-    deadlines: 'April 1 for Fall admission',
-    notes: 'Data is approximate. Verify with SAU School of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Arkansas Tech University',
-    city: 'Russellville',
-    state: 'AR',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 2.75,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS']),
-    examType: 'HESI A2',
-    minExamScore: 75,
-    casperRequired: false,
-    deadlines: 'March 1 for Fall admission',
-    notes: 'Uses HESI A2 rather than TEAS. Verify with ATU School of Nursing.',
-  },
-
-  // ──────────────── Texas ────────────────
-  {
-    name: 'Traditional BSN',
-    university: 'University of Texas at Austin',
-    city: 'Austin',
-    state: 'TX',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 3.0,
-    minScienceGPA: 3.2,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS', 'NUTRITION', 'LIFESPAN', 'ENGLISH_COMP']),
-    examType: 'TEAS',
-    minExamScore: 70,
-    casperRequired: true,
-    deadlines: 'October 1 for Spring; March 1 for Fall',
-    notes: 'Very competitive program. Average admitted GPA is typically above 3.5. Verify with UT Austin School of Nursing.',
-  },
-  {
-    name: 'Traditional BSN',
-    university: 'UT Health Houston (UTHealth)',
-    city: 'Houston',
-    state: 'TX',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 3.0,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS', 'NUTRITION']),
-    examType: 'HESI A2',
-    minExamScore: 75,
-    casperRequired: false,
-    deadlines: 'February 1 for Summer/Fall admission',
-    notes: 'Medical school-affiliated BSN. Highly competitive in the Houston area. Verify with Cizik School of Nursing.',
-  },
-  {
-    name: 'Traditional BSN',
-    university: 'Texas A&M University',
-    city: 'College Station',
-    state: 'TX',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 3.2,
-    minScienceGPA: 3.0,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS', 'NUTRITION', 'LIFESPAN', 'ENGLISH_COMP']),
-    examType: 'TEAS',
-    minExamScore: 72,
-    casperRequired: false,
-    deadlines: 'February 15 for Fall admission',
-    notes: 'Competitive public program. Average admitted TEAS closer to 80+. Verify with Texas A&M College of Nursing.',
-  },
-  {
-    name: 'Traditional BSN',
-    university: 'Texas Tech University Health Sciences Center',
-    city: 'Lubbock',
-    state: 'TX',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 3.0,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS', 'NUTRITION']),
-    examType: 'HESI A2',
-    minExamScore: 75,
-    casperRequired: true,
-    deadlines: 'March 1 for Fall admission',
-    notes: 'Multiple campuses. HESI A2 score weighted heavily. Verify with TTUHSC School of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Baylor University',
-    city: 'Waco',
-    state: 'TX',
-    isPublic: false,
-    programType: 'Traditional BSN',
-    minOverallGPA: 3.2,
-    minScienceGPA: 3.2,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS', 'NUTRITION', 'LIFESPAN', 'ENGLISH_COMP']),
-    examType: 'TEAS',
-    minExamScore: 75,
-    casperRequired: false,
-    deadlines: 'January 15 for Fall admission',
-    notes: 'Private Christian university with a highly regarded nursing program. Verify with Louise Herrington School of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'University of Houston',
-    city: 'Houston',
-    state: 'TX',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 2.9,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS']),
-    examType: 'HESI A2',
-    minExamScore: 75,
-    casperRequired: true,
-    deadlines: 'March 15 for Fall admission',
-    notes: 'Verify with UH College of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Sam Houston State University',
-    city: 'Huntsville',
-    state: 'TX',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 2.75,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'STATS', 'ENGLISH_COMP']),
-    examType: 'TEAS',
-    minExamScore: 62,
-    casperRequired: false,
-    deadlines: 'March 1 for Fall admission',
-    notes: 'Verify with SHSU Department of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Lamar University',
-    city: 'Beaumont',
-    state: 'TX',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 2.5,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM']),
-    examType: 'HESI A2',
-    minExamScore: 70,
-    casperRequired: false,
-    deadlines: 'April 1 for Fall admission',
-    notes: 'One of the more accessible TX programs. Verify with Lamar University Department of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Texas State University',
-    city: 'San Marcos',
-    state: 'TX',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 2.75,
-    minScienceGPA: 2.75,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS', 'NUTRITION']),
-    examType: 'TEAS',
-    minExamScore: 62,
-    casperRequired: false,
-    deadlines: 'February 15 for Fall admission',
-    notes: 'Verify with Texas State School of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Prairie View A&M University',
-    city: 'Prairie View',
-    state: 'TX',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 2.5,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'NUTRITION']),
-    examType: 'TEAS',
-    minExamScore: 55,
-    casperRequired: false,
-    deadlines: 'March 15 for Fall admission',
-    notes: 'Historically Black University with strong community health focus. Verify with PVAMU College of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Texas Christian University (TCU)',
-    city: 'Fort Worth',
-    state: 'TX',
-    isPublic: false,
-    programType: 'Traditional BSN',
-    minOverallGPA: 3.2,
-    minScienceGPA: 3.0,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'CHEM', 'STATS', 'NUTRITION', 'LIFESPAN', 'ENGLISH_COMP']),
-    examType: 'TEAS',
-    minExamScore: 70,
-    casperRequired: true,
-    deadlines: 'January 15 for Fall admission',
-    notes: 'Private university. Holistic admissions including CASPer. Verify with TCU Harris College of Nursing.',
-  },
-  {
-    name: 'BSN Program',
-    university: 'Tarleton State University',
-    city: 'Stephenville',
-    state: 'TX',
-    isPublic: true,
-    programType: 'Traditional BSN',
-    minOverallGPA: 2.7,
-    minScienceGPA: null,
-    requiredCourses: JSON.stringify(['ANAT_PHYS_1', 'ANAT_PHYS_2', 'MICRO', 'STATS', 'ENGLISH_COMP']),
-    examType: 'HESI A2',
-    minExamScore: 70,
-    casperRequired: false,
-    deadlines: 'March 1 for Fall admission',
-    notes: 'Verify with Tarleton State College of Health Sciences & Human Services.',
-  },
-]
-
-const accessCodes = [
-  { code: 'COMPASS2025' },
-  { code: 'NURSING-BETA' },
-  { code: 'CYCLE-DEMO' },
-]
+const accessCodes = [{ code: 'COMPASS2025' }, { code: 'NURSING-BETA' }, { code: 'CYCLE-DEMO' }]
 
 async function main() {
-  console.log('Seeding programs...')
-  await prisma.program.deleteMany()
-  await prisma.accessCode.deleteMany()
+  console.log('Seeding programs (idempotent upsert by slug)...')
 
-  for (const program of programs) {
-    await prisma.program.create({ data: program })
+  let created = 0
+  let updated = 0
+  const canonicalSlugs: string[] = []
+
+  for (const p of SEED_PROGRAMS) {
+    canonicalSlugs.push(p.slug)
+    const data = {
+      name: p.name,
+      university: p.university,
+      city: p.city,
+      state: p.state,
+      region: p.region,
+      tier: p.tier,
+      isFlagship: p.isFlagship,
+      isPublic: p.isPublic,
+      programType: p.programType,
+      minOverallGPA: p.minOverallGPA,
+      minScienceGPA: p.minScienceGPA,
+      requiredCourses: JSON.stringify(p.requiredCourses),
+      examType: p.examType,
+      minExamScore: p.minExamScore,
+      casperRequired: p.casperRequired,
+      deadlines: p.deadlines,
+      notes: p.notes,
+    }
+
+    const existing = await prisma.program.findUnique({ where: { slug: p.slug }, select: { id: true } })
+    await prisma.program.upsert({
+      where: { slug: p.slug },
+      create: { slug: p.slug, ...data },
+      update: data,
+    })
+    existing ? updated++ : created++
   }
-  console.log(`Seeded ${programs.length} programs.`)
 
+  // Remove legacy/stale programs no longer in the canonical list (favorites cascade).
+  const stale = await prisma.program.findMany({
+    where: { OR: [{ slug: null }, { slug: { notIn: canonicalSlugs } }] },
+    select: { id: true },
+  })
+  if (stale.length) {
+    await prisma.program.deleteMany({ where: { id: { in: stale.map(s => s.id) } } })
+  }
+
+  // Access codes (idempotent).
   for (const code of accessCodes) {
-    await prisma.accessCode.create({ data: code })
+    await prisma.accessCode.upsert({ where: { code: code.code }, create: code, update: {} })
   }
-  console.log(`Seeded ${accessCodes.length} access codes: ${accessCodes.map(c => c.code).join(', ')}`)
+
+  // Summary
+  const byRegion = { Arkansas: 0, Texas: 0, National: 0 } as Record<string, number>
+  const byTier = { Local: 0, 'Top TX': 0, 'Top US': 0 } as Record<string, number>
+  for (const p of SEED_PROGRAMS) {
+    byRegion[p.region] = (byRegion[p.region] ?? 0) + 1
+    byTier[p.tier] = (byTier[p.tier] ?? 0) + 1
+  }
+
+  console.log(`\nPrograms: ${created} created, ${updated} updated, ${stale.length} stale removed.`)
+  console.log(`Total BSN programs now: ${SEED_PROGRAMS.length}`)
+  console.log(`  By region — Arkansas: ${byRegion.Arkansas}, Texas: ${byRegion.Texas}, National: ${byRegion.National}`)
+  console.log(`  By tier   — Local: ${byTier.Local}, Top TX: ${byTier['Top TX']}, Top US: ${byTier['Top US']}`)
+  console.log(`  Flagship: ${SEED_PROGRAMS.filter(p => p.isFlagship).length}`)
+  console.log(`Access codes ensured: ${accessCodes.map(c => c.code).join(', ')}`)
   console.log('Done!')
 }
 

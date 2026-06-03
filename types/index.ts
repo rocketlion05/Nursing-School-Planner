@@ -31,6 +31,9 @@ export interface ProgramData {
   university: string
   city: string
   state: string
+  region: string
+  tier: string
+  isFlagship: boolean
   isPublic: boolean
   programType: string
   minOverallGPA: number | null
