@@ -95,3 +95,15 @@ model AccessCode {
   usedAt    DateTime?
   createdAt DateTime  @default(now())
 }
+
+model SchoolRequest {
+  id          String   @id @default(cuid())
+  schoolName  String
+  university  String
+  city        String
+  state       String
+  programType String   @default("BSN")
+  reason      String?
+  requestedBy String?
+  createdAt   DateTime @default(now())
+}

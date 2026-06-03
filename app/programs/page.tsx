@@ -3,6 +3,7 @@ import { getProfile } from '@/app/actions/profile'
 import { getCurrentUser } from '@/app/lib/dal'
 import { scorePrograms } from '@/lib/gap'
 import ProgramList from '@/components/ProgramList'
+import RequestSchoolButton from '@/components/RequestSchoolButton'
 import Disclaimer from '@/components/Disclaimer'
 import Link from 'next/link'
 import { AlertCircle } from 'lucide-react'
@@ -10,6 +11,7 @@ import type { ProgramData } from '@/types'
 
 export default async function ProgramsPage() {
   const [profile, user] = await Promise.all([getProfile(), getCurrentUser()])
+  const isPremium = profile?.tier === 'cycle'
 
   const [rawPrograms, rawFavorites] = await Promise.all([
     prisma.program.findMany({ orderBy: [{ state: 'asc' }, { university: 'asc' }] }),
@@ -38,28 +40,31 @@ export default async function ProgramsPage() {
             {scored.length} BSN programs across Arkansas, Texas, and top national schools
           </p>
         </div>
-        {!user ? (
-          <div className="flex flex-wrap items-center gap-2 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>Log in to save programs and see your personalized fit.</span>
-            <span className="flex items-center gap-2">
-              <Link href="/login" className="underline font-medium">Log in</Link>
-              <Link
-                href="/signup"
-                className="bg-teal-600 text-white px-2.5 py-1 rounded-md font-medium hover:bg-teal-700 transition-colors no-underline"
-              >
-                Sign up
-              </Link>
-            </span>
-          </div>
-        ) : !profile ? (
-          <div className="flex items-center gap-2 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>
-              <Link href="/profile" className="underline font-medium">Complete your profile</Link> to see fit scores.
-            </span>
-          </div>
-        ) : null}
+        <div className="flex flex-col items-start sm:items-end gap-2">
+          <RequestSchoolButton isPremium={isPremium} />
+          {!user ? (
+            <div className="flex flex-wrap items-center gap-2 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>Log in to save programs and see your personalized fit.</span>
+              <span className="flex items-center gap-2">
+                <Link href="/login" className="underline font-medium">Log in</Link>
+                <Link
+                  href="/signup"
+                  className="bg-teal-600 text-white px-2.5 py-1 rounded-md font-medium hover:bg-teal-700 transition-colors no-underline"
+                >
+                  Sign up
+                </Link>
+              </span>
+            </div>
+          ) : !profile ? (
+            <div className="flex items-center gap-2 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>
+                <Link href="/profile" className="underline font-medium">Complete your profile</Link> to see fit scores.
+              </span>
+            </div>
+          ) : null}
+        </div>
       </div>
 
       <ProgramList programs={scored} tier={profile?.tier ?? 'free'} isAuthed={Boolean(user)} />

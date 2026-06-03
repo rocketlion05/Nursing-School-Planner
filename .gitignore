@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local school requests file (DB is the source of truth)
+requested-schools.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
