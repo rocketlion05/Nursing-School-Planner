@@ -5,6 +5,7 @@ import path from 'node:path'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
+import { sendSchoolRequestConfirmation } from '@/lib/email'
 
 export type SchoolRequestInput = {
   schoolName: string
@@ -62,6 +63,15 @@ export async function submitSchoolRequest(input: SchoolRequestInput): Promise<Sc
     console.error('submitSchoolRequest db error:', err)
     return { ok: false, error: 'Could not save your request. Please try again.' }
   }
+
+  // Fire-and-forget confirmation email (never blocks the response).
+  sendSchoolRequestConfirmation({
+    to: user.email,
+    name: user.name ?? user.username,
+    university,
+    city: record.city,
+    state: record.state,
+  })
 
   // Best-effort mirror to a local file. This works in local dev; on serverless
   // hosts the filesystem is read-only so this silently no-ops (the DB row is the

@@ -1,9 +1,15 @@
 import { Resend } from 'resend'
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 const FROM = 'Nursing School Planner <noreply@nursingschoolplanner.com>'
+const SITE = 'https://www.nursingschoolplanner.com'
+
+// Lazy getter so CLI scripts that call loadEnv() before importing still work.
+function getResend() {
+  return process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+}
 
 async function send(opts: { to: string; subject: string; html: string }) {
+  const resend = getResend()
   if (!resend) {
     console.log('[email] RESEND_API_KEY not set — skipping email to', opts.to)
     return
@@ -56,6 +62,121 @@ export async function sendCyclePassConfirmationEmail(email: string) {
           </a>
         </p>
         <p style="color:#6b7280;font-size:13px">Questions? Reply to this email and we'll get back to you.</p>
+      </div>
+    `,
+  })
+}
+
+// ─── School request emails ────────────────────────────────────────────────────
+
+/**
+ * Sent immediately when a premium user submits a school request.
+ * Confirms receipt and sets a realistic research time expectation.
+ */
+export async function sendSchoolRequestConfirmation({
+  to,
+  name,
+  university,
+  city,
+  state,
+}: {
+  to: string
+  name: string
+  university: string
+  city: string
+  state: string
+}) {
+  const displayName = name || 'there'
+  const location = [city, state].filter(Boolean).join(', ')
+  await send({
+    to,
+    subject: `We received your request — ${university}`,
+    html: `
+      <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
+        <h2 style="color:#0d9488">Request received!</h2>
+        <p>Hi ${displayName},</p>
+        <p>Thanks for submitting your request! We've added <strong>${university}${location ? ` (${location})` : ''}</strong> to our research queue.</p>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px 16px;margin:16px 0">
+          <p style="margin:0;font-size:14px;color:#166534;">
+            ⏱&nbsp; <strong>Estimated time:</strong> We typically research new school requests within
+            <strong>7–14 days</strong>. Once we've verified the BSN admission requirements we'll update
+            the app and send you a follow-up email.
+          </p>
+        </div>
+        <p>In the meantime, explore the 85+ programs already in our database:</p>
+        <p style="margin:20px 0">
+          <a href="${SITE}/programs"
+             style="background:#0d9488;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600">
+            Browse Schools →
+          </a>
+        </p>
+        <p>Thanks for helping make the app more useful for everyone.</p>
+        <p style="color:#6b7280;font-size:13px">— The Nursing School Planner Team</p>
+      </div>
+    `,
+  })
+}
+
+/**
+ * Sent by the school-maintenance script when a requested school has no
+ * publicly available BSN admission requirements.
+ * Call via: resolve-request.ts <id> --wont-add --no-public-info
+ */
+export async function sendSchoolNotFoundEmail({
+  to,
+  name,
+  university,
+  city,
+  state,
+}: {
+  to: string
+  name: string
+  university: string
+  city?: string
+  state?: string
+}) {
+  const displayName = name || 'there'
+  const location = [city, state].filter(Boolean).join(', ')
+  await send({
+    to,
+    subject: `Update on your school request: ${university}`,
+    html: `
+      <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
+        <h2 style="color:#0d9488">Update: ${university}</h2>
+        <p>Hi ${displayName},</p>
+        <p>
+          We finished researching your request for
+          <strong>${university}${location ? ` (${location})` : ''}</strong>
+          and wanted to give you an honest update.
+        </p>
+        <p>
+          Unfortunately, after checking official program pages and published resources, we were
+          unable to find publicly available BSN admission requirements for this program — no GPA
+          minimums, entrance exam details, or prerequisites are posted publicly.
+        </p>
+        <p>This happens with some programs that use a private or fully holistic review process.
+        Here are your best next steps:</p>
+        <ol style="padding-left:20px;line-height:1.8">
+          <li>
+            <strong>Contact an admissions advisor directly</strong> — reach out to the nursing
+            department at ${university} and ask for current BSN requirements, GPA cutoffs, and
+            required entrance exams.
+          </li>
+          <li>
+            <strong>Visit the school's nursing program page</strong> — look for an "Admissions"
+            or "How to Apply" section; requirements sometimes appear in PDFs or program guides
+            that aren't easily indexed.
+          </li>
+          <li>
+            <strong>Attend an info session or open house</strong> — many programs share detailed
+            requirements at these events that aren't published online.
+          </li>
+        </ol>
+        <p>
+          We're sorry we couldn't get this into the app for you. If the school publishes requirements
+          publicly in the future, we'll add them automatically.
+        </p>
+        <p style="color:#6b7280;font-size:13px">— The Nursing School Planner Team</p>
       </div>
     `,
   })
