@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/app/lib/dal'
 import LoginForm from '@/components/LoginForm'
@@ -25,6 +26,14 @@ export default async function LoginPage({
   return (
     <div className="max-w-md mx-auto px-4 py-12">
       <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <Image
+          src="/logo.jpg"
+          alt="Nursing School Planner"
+          width={96}
+          height={96}
+          priority
+          className="w-20 h-20 mx-auto mb-4 rounded-xl"
+        />
         <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome back</h1>
         <p className="text-gray-500 text-sm mb-6">Log in to manage your profile and plan.</p>
 

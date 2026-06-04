@@ -5,6 +5,8 @@ import { scorePrograms, computeGapSummary } from '@/lib/gap'
 import { requireUser } from '@/app/lib/dal'
 import Disclaimer from '@/components/Disclaimer'
 import FitBadge from '@/components/FitBadge'
+import AIPlan from '@/components/AIPlan'
+import LockedAIPlan from '@/components/LockedAIPlan'
 import type { ProgramData, FitStatus } from '@/types'
 import { Target, AlertCircle, TrendingUp, BookOpen, FlaskConical } from 'lucide-react'
 
@@ -53,6 +55,13 @@ export default async function PlanPage() {
           Based on your profile — {profile.name || 'your current stats'}.
         </p>
       </div>
+
+      {/* AI-powered plan — Cycle Pass unlocks it; free users see a locked teaser */}
+      {profile.tier === 'cycle' ? (
+        <AIPlan studentName={profile.name} />
+      ) : (
+        <LockedAIPlan />
+      )}
 
       {/* Status Summary */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">

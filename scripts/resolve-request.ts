@@ -66,6 +66,7 @@ async function main() {
       console.warn('No email found for requestedBy user — skipping notification.')
     }
   }
+}
 
 main()
   .catch(e => { console.error(e); process.exit(1) })

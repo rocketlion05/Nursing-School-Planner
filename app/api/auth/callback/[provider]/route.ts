@@ -108,11 +108,18 @@ async function resolveUser(
       await prisma.oAuthAccount.create({
         data: { provider, providerAccountId: info.providerAccountId, userId: existing.id },
       })
+      // The provider vouches for this email, so confirm it if it wasn't already
+      // (e.g. they signed up with a password but never clicked the link).
+      await prisma.user.updateMany({
+        where: { id: existing.id, emailVerified: null },
+        data: { emailVerified: new Date() },
+      })
       return { userId: existing.id, isNew: false, email: info.email }
     }
   }
 
   // Otherwise create a fresh account (no password — social login only).
+  // Email comes pre-verified by the OAuth provider.
   const email = info.email ?? `${provider}_${info.providerAccountId}@users.noreply.local`
   const username = await uniqueUsername(provider, info, email)
 
@@ -121,6 +128,7 @@ async function resolveUser(
       email,
       username,
       name: info.name,
+      emailVerified: new Date(),
       oauthAccounts: {
         create: { provider, providerAccountId: info.providerAccountId },
       },

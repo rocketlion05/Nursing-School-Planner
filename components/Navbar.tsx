@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Compass, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import clsx from 'clsx'
 import { logout } from '@/app/actions/auth'
 
@@ -31,9 +32,19 @@ export default function Navbar({ username, isAdmin = false }: { username: string
   return (
     <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-semibold text-teal-700">
-          <Compass className="w-5 h-5" />
-          <span>Nursing School Planner</span>
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-semibold text-teal-700 shrink-0 whitespace-nowrap"
+        >
+          <Image
+            src="/logo-mark.png"
+            alt="Nursing School Planner"
+            width={32}
+            height={32}
+            priority
+            className="w-8 h-8"
+          />
+          <span className="hidden lg:inline">Nursing School Planner</span>
         </Link>
 
         <nav className="flex items-center gap-1">

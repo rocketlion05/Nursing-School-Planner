@@ -27,6 +27,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
+  // Grant premium on any successful checkout — one-time Cycle Pass or the first
+  // invoice of a monthly/yearly subscription. All paid plans map to tier 'cycle'.
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
 
@@ -45,12 +47,32 @@ export async function POST(req: NextRequest) {
           create: { userId, tier: 'cycle' },
           update: { tier: 'cycle' },
         })
-        console.log(`Upgraded user ${userId} to Cycle Pass (session ${session.id})`)
+        console.log(`Upgraded user ${userId} to premium (session ${session.id})`)
         // Send confirmation email — look up user email from userId
         const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
         if (user?.email) sendCyclePassConfirmationEmail(user.email).catch(() => {})
       } catch (err) {
         console.error('Failed to upgrade user tier:', err)
+        return NextResponse.json({ error: 'DB error' }, { status: 500 })
+      }
+    }
+  }
+
+  // A monthly/yearly subscription ended (cancellation reached period end, or
+  // dunning exhausted) — revoke premium. Fires only for subscription plans;
+  // one-time Cycle Pass has no subscription, so it is unaffected.
+  if (event.type === 'customer.subscription.deleted') {
+    const sub = event.data.object as Stripe.Subscription
+    const userId = sub.metadata?.userId
+    if (userId) {
+      try {
+        await prisma.profile.updateMany({
+          where: { userId },
+          data: { tier: 'free' },
+        })
+        console.log(`Downgraded user ${userId} to free (subscription ${sub.id} ended)`)
+      } catch (err) {
+        console.error('Failed to downgrade user tier:', err)
         return NextResponse.json({ error: 'DB error' }, { status: 500 })
       }
     }

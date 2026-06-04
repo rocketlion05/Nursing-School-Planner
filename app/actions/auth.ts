@@ -5,7 +5,16 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import { createSession, deleteSession } from '@/app/lib/session'
 import { SignupSchema, LoginSchema, type AuthFormState } from '@/app/lib/auth-validation'
-import { sendWelcomeEmail } from '@/lib/email'
+import { sendVerificationEmail } from '@/lib/email'
+import { createVerificationToken } from '@/lib/verification'
+import { getBaseUrl } from '@/lib/base-url'
+
+/** Builds the absolute /verify-email link for a freshly minted token. */
+async function buildVerifyUrl(userId: string): Promise<string> {
+  const token = await createVerificationToken(userId)
+  const base = await getBaseUrl()
+  return `${base}/verify-email?token=${token}`
+}
 
 export async function signup(
   _prevState: AuthFormState,
@@ -51,10 +60,11 @@ export async function signup(
     return { message: 'Could not create your account. Please try again.', values }
   }
 
-  await createSession(userId)
-  // fire-and-forget — don't block redirect on email delivery
-  sendWelcomeEmail(email).catch(() => {})
-  redirect('/dashboard')
+  // No session yet — the account is inactive until the email is verified.
+  const verifyUrl = await buildVerifyUrl(userId)
+  await sendVerificationEmail(email, verifyUrl)
+
+  redirect(`/verify-email/sent?email=${encodeURIComponent(email)}`)
 }
 
 export async function login(
@@ -77,7 +87,7 @@ export async function login(
 
   const user = await prisma.user.findFirst({
     where: { OR: [{ username: identifier }, { email: normalized }] },
-    select: { id: true, passwordHash: true },
+    select: { id: true, email: true, passwordHash: true, emailVerified: true },
   })
 
   // Generic message to avoid leaking which accounts exist.
@@ -97,8 +107,41 @@ export async function login(
   const ok = await bcrypt.compare(password, user.passwordHash)
   if (!ok) return invalid
 
+  // Correct password, but the email hasn't been confirmed yet. Send them to the
+  // "check your email" page where they can re-send the link — don't sign them in.
+  if (!user.emailVerified) {
+    redirect(`/verify-email/sent?email=${encodeURIComponent(user.email)}&status=unverified`)
+  }
+
   await createSession(user.id)
   redirect('/dashboard')
+}
+
+/**
+ * Re-sends the verification link. Always reports success (never reveals whether
+ * an account exists or its verification state) to avoid account enumeration.
+ */
+export async function resendVerification(
+  _prevState: { sent: boolean } | undefined,
+  formData: FormData,
+): Promise<{ sent: boolean }> {
+  const email = String(formData.get('email') ?? '')
+    .trim()
+    .toLowerCase()
+
+  if (email) {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, passwordHash: true, emailVerified: true },
+    })
+    // Only password accounts that still need verifying get a fresh link.
+    if (user && user.passwordHash && !user.emailVerified) {
+      const verifyUrl = await buildVerifyUrl(user.id)
+      await sendVerificationEmail(email, verifyUrl)
+    }
+  }
+
+  return { sent: true }
 }
 
 export async function logout(): Promise<void> {

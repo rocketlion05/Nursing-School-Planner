@@ -2,6 +2,15 @@ import { Resend } from 'resend'
 
 const FROM = 'Nursing School Planner <noreply@nursingschoolplanner.com>'
 const SITE = 'https://www.nursingschoolplanner.com'
+const LOGO_URL = `${SITE}/logo.jpg`
+
+/** Centered logo header reused across every email template. */
+const logoHeader = `
+  <div style="text-align:center;margin:0 0 24px">
+    <img src="${LOGO_URL}" alt="Nursing School Planner" width="120" height="120"
+         style="width:120px;height:auto;border-radius:12px" />
+  </div>
+`
 
 // Lazy getter so CLI scripts that call loadEnv() before importing still work.
 function getResend() {
@@ -21,12 +30,40 @@ async function send(opts: { to: string; subject: string; html: string }) {
   }
 }
 
+/**
+ * Sent on signup with a one-time link the user must click to confirm their
+ * email before their account is activated. `verifyUrl` already contains the token.
+ */
+export async function sendVerificationEmail(email: string, verifyUrl: string) {
+  await send({
+    to: email,
+    subject: 'Verify your email — Nursing School Planner',
+    html: `
+      <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
+        ${logoHeader}
+        <h2 style="color:#0d9488;text-align:center">Confirm your email</h2>
+        <p>Thanks for signing up for Nursing School Planner! Please confirm your email address to activate your account.</p>
+        <p style="margin:24px 0;text-align:center">
+          <a href="${verifyUrl}"
+             style="background:#0d9488;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">
+            Verify my email →
+          </a>
+        </p>
+        <p style="color:#6b7280;font-size:13px">This link expires in 24 hours. If the button doesn't work, copy and paste this URL into your browser:</p>
+        <p style="color:#6b7280;font-size:13px;word-break:break-all">${verifyUrl}</p>
+        <p style="color:#9ca3af;font-size:12px;margin-top:24px">If you didn't create an account, you can safely ignore this email.</p>
+      </div>
+    `,
+  })
+}
+
 export async function sendWelcomeEmail(email: string) {
   await send({
     to: email,
     subject: 'Welcome to Nursing School Planner',
     html: `
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
+        ${logoHeader}
         <h2 style="color:#0d9488">Welcome to Nursing School Planner!</h2>
         <p>We're glad you're here. This tool helps pre-nursing students compare BSN program requirements across Arkansas, Texas, and top national schools — and build a clear plan to close their gaps.</p>
         <p><strong>Your next step:</strong> finish your profile so we can show you your real odds for each program.</p>
@@ -48,6 +85,7 @@ export async function sendCyclePassConfirmationEmail(email: string) {
     subject: 'Your Cycle Pass is active — Nursing School Planner',
     html: `
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
+        ${logoHeader}
         <h2 style="color:#0d9488">Cycle Pass activated!</h2>
         <p>You now have full access for your entire application season. Here's what's unlocked:</p>
         <ul>
@@ -93,6 +131,7 @@ export async function sendSchoolRequestConfirmation({
     subject: `We received your request — ${university}`,
     html: `
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
+        ${logoHeader}
         <h2 style="color:#0d9488">Request received!</h2>
         <p>Hi ${displayName},</p>
         <p>Thanks for submitting your request! We've added <strong>${university}${location ? ` (${location})` : ''}</strong> to our research queue.</p>
@@ -142,6 +181,7 @@ export async function sendSchoolNotFoundEmail({
     subject: `Update on your school request: ${university}`,
     html: `
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
+        ${logoHeader}
         <h2 style="color:#0d9488">Update: ${university}</h2>
         <p>Hi ${displayName},</p>
         <p>

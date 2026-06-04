@@ -8,15 +8,26 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  email         String         @unique
-  username      String         @unique
-  passwordHash  String?
-  name          String         @default("")
-  profile       Profile?
-  oauthAccounts OAuthAccount[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id                 String              @id @default(cuid())
+  email              String              @unique
+  username           String              @unique
+  passwordHash       String?
+  name               String              @default("")
+  emailVerified      DateTime?
+  profile            Profile?
+  oauthAccounts      OAuthAccount[]
+  verificationTokens VerificationToken[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
 
 model OAuthAccount {
