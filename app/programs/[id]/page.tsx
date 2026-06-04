@@ -11,7 +11,7 @@ import type { ProgramData } from '@/types'
 
 const DQ_BADGE: Record<string, { label: string; cls: string }> = {
   verified: { label: 'Requirements verified', cls: 'bg-green-100 text-green-700' },
-  partial: { label: 'Requirements partially verified', cls: 'bg-amber-100 text-amber-700' },
+  partial: { label: 'Requirements partially verified — see note below', cls: 'bg-amber-100 text-amber-700' },
   placeholder: { label: 'Requirements not fully verified', cls: 'bg-gray-100 text-gray-500' },
 }
 
@@ -69,6 +69,17 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
           <span>
             <strong>Exploratory estimate</strong> — requirements for this program are still being verified.
             Always check the school&apos;s official website before applying.
+          </span>
+        </div>
+      )}
+
+      {program.dataQuality === 'partial' && (
+        <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-sm text-blue-800">
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+          <span>
+            <strong>Partially verified</strong> — not all official admission information for this program is publicly available.
+            The requirements shown represent the best reasonable estimate based on available sources.
+            Always confirm details directly with the school before applying.
           </span>
         </div>
       )}
