@@ -61,6 +61,8 @@ model Profile {
   otherExamScore   Float?
   tier             String     @default("free")
   favorites        Favorite[]
+  lists            List[]
+  deadlines        Deadline[]
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 }
@@ -87,6 +89,8 @@ model Program {
   notes           String?
   dataQuality     String     @default("placeholder") // placeholder | partial | verified
   favorites       Favorite[]
+  listItems       ListItem[]
+  deadlineEntries Deadline[]
 }
 
 model Favorite {
@@ -96,6 +100,49 @@ model Favorite {
   profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
   program   Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+
+  @@unique([profileId, programId])
+}
+
+// A named collection of programs owned by a profile. Every profile has one
+// isDefault list ("Saved") that replaces the old flat favorites; premium users
+// can create additional named lists ("Dream Schools", "Safe Schools").
+model List {
+  id        String     @id @default(cuid())
+  profileId String
+  profile   Profile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  name      String
+  isDefault Boolean    @default(false)
+  items     ListItem[]
+  createdAt DateTime   @default(now())
+
+  @@index([profileId])
+}
+
+model ListItem {
+  id        String   @id @default(cuid())
+  listId    String
+  programId String
+  list      List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  program   Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([listId, programId])
+}
+
+// A premium user's application deadline for a program. remindersSent is a JSON
+// array of milestone day-counts already emailed (e.g. [30,14]) so the reminder
+// runner never double-sends.
+model Deadline {
+  id            String   @id @default(cuid())
+  profileId     String
+  programId     String
+  profile       Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  program       Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  deadlineDate  DateTime
+  label         String   @default("")
+  remindersSent String   @default("[]")
+  createdAt     DateTime @default(now())
 
   @@unique([profileId, programId])
 }

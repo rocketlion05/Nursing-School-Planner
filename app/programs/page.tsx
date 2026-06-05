@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import { getProfile } from '@/app/actions/profile'
+import { getLists } from '@/app/actions/lists'
 import { getCurrentUser } from '@/app/lib/dal'
 import { scorePrograms } from '@/lib/gap'
 import ProgramList from '@/components/ProgramList'
@@ -13,14 +14,9 @@ export default async function ProgramsPage() {
   const [profile, user] = await Promise.all([getProfile(), getCurrentUser()])
   const isPremium = profile?.tier === 'cycle'
 
-  const [rawPrograms, rawFavorites] = await Promise.all([
+  const [rawPrograms, lists] = await Promise.all([
     prisma.program.findMany({ orderBy: [{ state: 'asc' }, { university: 'asc' }] }),
-    user
-      ? prisma.favorite.findMany({
-          where: { profile: { userId: user.id } },
-          select: { programId: true },
-        })
-      : Promise.resolve([]),
+    user ? getLists() : Promise.resolve([]),
   ])
 
   const programs: ProgramData[] = rawPrograms.map(p => ({
@@ -28,7 +24,9 @@ export default async function ProgramsPage() {
     requiredCourses: JSON.parse(p.requiredCourses) as string[],
   }))
 
-  const favoriteIds = new Set(rawFavorites.map(f => f.programId))
+  // The heart reflects membership in the default "Saved" list.
+  const defaultList = lists.find(l => l.isDefault)
+  const favoriteIds = new Set(defaultList?.programIds ?? [])
   const scored = scorePrograms(profile, programs, favoriteIds)
 
   return (
@@ -67,7 +65,13 @@ export default async function ProgramsPage() {
         </div>
       </div>
 
-      <ProgramList programs={scored} tier={profile?.tier ?? 'free'} isAuthed={Boolean(user)} />
+      <ProgramList
+        programs={scored}
+        tier={profile?.tier ?? 'free'}
+        isAuthed={Boolean(user)}
+        isPremium={isPremium}
+        lists={lists}
+      />
 
       <div className="mt-8">
         <Disclaimer compact />

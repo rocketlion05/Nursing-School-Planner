@@ -15,6 +15,7 @@ const PUBLIC_LINKS = [
 const AUTH_LINKS = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/programs', label: 'Programs' },
+  { href: '/deadlines', label: 'Deadlines' },
   { href: '/study-tools', label: 'Study Tools' },
   { href: '/plan', label: 'My Plan' },
   { href: '/profile', label: 'My Profile' },

@@ -105,6 +105,61 @@ export async function sendCyclePassConfirmationEmail(email: string) {
   })
 }
 
+/**
+ * Sent by the deadline-reminder runner at 30 / 14 / 7 days before a premium
+ * user's saved application deadline.
+ */
+export async function sendDeadlineReminderEmail({
+  to,
+  name,
+  university,
+  deadlineDate,
+  daysRemaining,
+  label,
+}: {
+  to: string
+  name: string
+  university: string
+  /** Human-readable date, e.g. "March 1, 2026". */
+  deadlineDate: string
+  daysRemaining: number
+  label?: string
+}) {
+  const displayName = name || 'there'
+  const dayWord = daysRemaining === 1 ? 'day' : 'days'
+  const what = label ? `${university} — ${label}` : `${university}`
+  await send({
+    to,
+    subject: `${daysRemaining} ${dayWord} left: ${university} application deadline`,
+    html: `
+      <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
+        ${logoHeader}
+        <h2 style="color:#0d9488">Deadline reminder</h2>
+        <p>Hi ${displayName},</p>
+        <p>
+          Your application deadline for <strong>${what}</strong> is in
+          <strong>${daysRemaining} ${dayWord}</strong> — on <strong>${deadlineDate}</strong>.
+        </p>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px 16px;margin:16px 0">
+          <p style="margin:0;font-size:14px;color:#166534;">
+            ⏱&nbsp; Make sure your transcripts, entrance-exam scores, and prerequisites are submitted
+            before the deadline. Many programs do not accept late applications.
+          </p>
+        </div>
+        <p style="margin:24px 0">
+          <a href="${SITE}/deadlines"
+             style="background:#0d9488;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600">
+            View my deadlines →
+          </a>
+        </p>
+        <p style="color:#6b7280;font-size:13px">
+          You're receiving this because you set this deadline in Nursing School Planner.
+        </p>
+      </div>
+    `,
+  })
+}
+
 // ─── School request emails ────────────────────────────────────────────────────
 
 /**

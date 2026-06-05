@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
+import { getOrCreateDefaultListId } from '@/app/lib/lists'
 
 /** Returns the logged-in user's profile id, creating an empty profile if needed. */
 async function getOrCreateProfileId(userId: string): Promise<string> {
@@ -19,37 +20,46 @@ async function getOrCreateProfileId(userId: string): Promise<string> {
   return created.id
 }
 
+/**
+ * Toggles a program in the profile's default "Saved" list. The heart UI on
+ * /programs maps to default-list membership; named lists are managed separately.
+ * Free tier is capped at 2 saved programs.
+ */
 export async function toggleFavorite(programId: string): Promise<{ isFavorite: boolean; error?: string }> {
   try {
     const user = await getCurrentUser()
     if (!user) return { isFavorite: false, error: 'Please log in to save favorites.' }
 
     const profileId = await getOrCreateProfileId(user.id)
+    const listId = await getOrCreateDefaultListId(profileId)
 
-    const existing = await prisma.favorite.findUnique({
-      where: { profileId_programId: { profileId, programId } },
+    const existing = await prisma.listItem.findUnique({
+      where: { listId_programId: { listId, programId } },
     })
 
     if (existing) {
-      await prisma.favorite.delete({ where: { id: existing.id } })
+      await prisma.listItem.delete({ where: { id: existing.id } })
       revalidatePath('/programs')
+      revalidatePath('/dashboard')
       return { isFavorite: false }
     }
 
     const profile = await prisma.profile.findUnique({
       where: { id: profileId },
-      include: { favorites: true },
+      select: { tier: true },
     })
+    const savedCount = await prisma.listItem.count({ where: { listId } })
 
-    if (!isAdminEmail(user.email) && profile?.tier === 'free' && (profile.favorites?.length ?? 0) >= 2) {
+    if (!isAdminEmail(user.email) && profile?.tier === 'free' && savedCount >= 2) {
       return {
         isFavorite: false,
-        error: 'Free tier is limited to 2 favorites. Upgrade to Cycle Pass for unlimited favorites.',
+        error: 'Free tier is limited to 2 saved programs. Upgrade to Cycle Pass for unlimited favorites and custom lists.',
       }
     }
 
-    await prisma.favorite.create({ data: { profileId, programId } })
+    await prisma.listItem.create({ data: { listId, programId } })
     revalidatePath('/programs')
+    revalidatePath('/dashboard')
     return { isFavorite: true }
   } catch (err) {
     console.error('toggleFavorite error:', err)

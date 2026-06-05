@@ -4,20 +4,25 @@ import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { Heart, ChevronRight, Search } from 'lucide-react'
 import FitBadge from '@/components/FitBadge'
+import AddToListButton from '@/components/AddToListButton'
 import { toggleFavorite } from '@/app/actions/favorites'
+import { addToList, removeFromList, createList } from '@/app/actions/lists'
+import type { ListWithItems } from '@/app/actions/lists'
 import type { ScoredProgram, FitStatus } from '@/types'
 
 type Props = {
   programs: ScoredProgram[]
   tier: 'free' | 'cycle'
   isAuthed: boolean
+  isPremium: boolean
+  lists: ListWithItems[]
 }
 
 const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach', 'Not eligible', 'Unverified']
 const REGION_OPTIONS = ['All', 'Arkansas', 'Texas', 'National'] as const
 const TIER_OPTIONS = ['All', 'Top TX', 'Top US', 'Local'] as const
 
-export default function ProgramList({ programs, tier, isAuthed }: Props) {
+export default function ProgramList({ programs, tier, isAuthed, isPremium, lists: initialLists }: Props) {
   const [query, setQuery] = useState('')
   const [regionFilter, setRegionFilter] = useState<(typeof REGION_OPTIONS)[number]>('All')
   const [tierFilter, setTierFilter] = useState<(typeof TIER_OPTIONS)[number]>('All')
@@ -26,6 +31,11 @@ export default function ProgramList({ programs, tier, isAuthed }: Props) {
   const [isPending, startTransition] = useTransition()
   const [favoriteStates, setFavoriteStates] = useState<Record<string, boolean>>(
     Object.fromEntries(programs.map(p => [p.id, p.isFavorite])),
+  )
+  // Named (non-default) lists with their membership; the default "Saved" list is
+  // driven by the heart and excluded here.
+  const [namedLists, setNamedLists] = useState<ListWithItems[]>(
+    initialLists.filter(l => !l.isDefault),
   )
   const [toastMsg, setToastMsg] = useState<string | null>(null)
 
@@ -56,6 +66,62 @@ export default function ProgramList({ programs, tier, isAuthed }: Props) {
       } else {
         setFavoriteStates(prev => ({ ...prev, [programId]: result.isFavorite }))
       }
+    })
+  }
+
+  function showError(msg: string) {
+    setToastMsg(msg)
+    setTimeout(() => setToastMsg(null), 4000)
+  }
+
+  function handleToggleList(programId: string, listId: string, shouldAdd: boolean) {
+    // Optimistic membership update; revert on error.
+    setNamedLists(prev =>
+      prev.map(l =>
+        l.id !== listId
+          ? l
+          : {
+              ...l,
+              programIds: shouldAdd
+                ? [...l.programIds, programId]
+                : l.programIds.filter(id => id !== programId),
+            },
+      ),
+    )
+    startTransition(async () => {
+      const result = shouldAdd ? await addToList(listId, programId) : await removeFromList(listId, programId)
+      if (result.error) {
+        setNamedLists(prev =>
+          prev.map(l =>
+            l.id !== listId
+              ? l
+              : {
+                  ...l,
+                  programIds: shouldAdd
+                    ? l.programIds.filter(id => id !== programId)
+                    : [...l.programIds, programId],
+                },
+          ),
+        )
+        showError(result.error)
+      }
+    })
+  }
+
+  function handleCreateList(programId: string, name: string) {
+    startTransition(async () => {
+      const created = await createList(name)
+      if (created.error || !created.id) {
+        showError(created.error ?? 'Failed to create list.')
+        return
+      }
+      const listId = created.id
+      const add = await addToList(listId, programId)
+      if (add.error) {
+        showError(add.error)
+        return
+      }
+      setNamedLists(prev => [...prev, { id: listId, name: name.trim(), isDefault: false, programIds: [programId] }])
     })
   }
 
@@ -130,19 +196,33 @@ export default function ProgramList({ programs, tier, isAuthed }: Props) {
               key={program.id}
               className="bg-white border border-gray-200 rounded-xl px-5 py-4 flex items-start gap-4 hover:border-teal-300 transition-colors"
             >
-              {/* Favorite button */}
-              <button
-                onClick={() => handleFavorite(program.id)}
-                disabled={isPending}
-                className="mt-0.5 shrink-0"
-                title={favoriteStates[program.id] ? 'Remove from favorites' : 'Add to favorites'}
-              >
-                <Heart
-                  className={`w-4 h-4 transition-colors ${
-                    favoriteStates[program.id] ? 'fill-rose-500 text-rose-500' : 'text-gray-300 hover:text-rose-400'
-                  }`}
-                />
-              </button>
+              {/* Favorite + list controls */}
+              <div className="flex items-center gap-0.5 shrink-0">
+                <button
+                  onClick={() => handleFavorite(program.id)}
+                  disabled={isPending}
+                  className="mt-0.5 shrink-0"
+                  title={favoriteStates[program.id] ? 'Remove from saved' : 'Save program'}
+                >
+                  <Heart
+                    className={`w-4 h-4 transition-colors ${
+                      favoriteStates[program.id] ? 'fill-rose-500 text-rose-500' : 'text-gray-300 hover:text-rose-400'
+                    }`}
+                  />
+                </button>
+                {isAuthed && isPremium && (
+                  <AddToListButton
+                    lists={namedLists.map(l => ({
+                      id: l.id,
+                      name: l.name,
+                      hasProgram: l.programIds.includes(program.id),
+                    }))}
+                    disabled={isPending}
+                    onToggleList={(listId, shouldAdd) => handleToggleList(program.id, listId, shouldAdd)}
+                    onCreateList={name => handleCreateList(program.id, name)}
+                  />
+                )}
+              </div>
 
               {/* Content */}
               <div className="flex-1 min-w-0">

@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import { requireUser } from '@/app/lib/dal'
 import { getProfile } from '@/app/actions/profile'
+import { getDeadlines } from '@/app/actions/deadlines'
 import { prisma } from '@/lib/prisma'
 import { computeFit } from '@/lib/scoring'
 import FitBadge from '@/components/FitBadge'
-import { CheckCircle, Circle, BookOpen, ClipboardList, Heart, ArrowRight, AlertCircle } from 'lucide-react'
+import { CheckCircle, Circle, BookOpen, ClipboardList, Heart, ArrowRight, AlertCircle, CalendarClock, ListChecks } from 'lucide-react'
 import type { ProgramData, FitStatus } from '@/types'
 
 const DQ_LABELS: Record<string, string> = {
@@ -18,29 +19,45 @@ const DQ_COLORS: Record<string, string> = {
   placeholder: 'bg-gray-100 text-gray-500',
 }
 
+function daysUntil(fromISO: string, toISO: string): number {
+  return Math.round((Date.parse(`${toISO}T00:00:00Z`) - Date.parse(`${fromISO}T00:00:00Z`)) / 86_400_000)
+}
+
 export default async function DashboardPage() {
   const user = await requireUser()
-  const [profile, rawFavorites, schoolRequests] = await Promise.all([
+  const profileRow = await prisma.profile.findUnique({ where: { userId: user.id }, select: { id: true } })
+  const [profile, lists, schoolRequests, deadlines] = await Promise.all([
     getProfile(),
-    prisma.favorite.findMany({
-      where: { profile: { userId: user.id } },
-      include: { program: true },
-      orderBy: { createdAt: 'desc' },
-    }),
+    profileRow
+      ? prisma.list.findMany({
+          where: { profileId: profileRow.id },
+          include: { items: { include: { program: true }, orderBy: { createdAt: 'desc' } } },
+          orderBy: [{ isDefault: 'desc' }, { createdAt: 'asc' }],
+        })
+      : Promise.resolve([]),
     prisma.schoolRequest.findMany({
       where: { requestedBy: user.id },
       orderBy: { createdAt: 'desc' },
     }),
+    getDeadlines(),
   ])
 
-  // Compute fit for each favorited program
-  const favPrograms = rawFavorites.map(f => {
+  const isPremium = profile?.tier === 'cycle'
+  const defaultList = lists.find(l => l.isDefault)
+  const namedLists = lists.filter(l => !l.isDefault)
+
+  // Compute fit for each saved (default-list) program
+  const favPrograms = (defaultList?.items ?? []).map(item => {
     const prog: ProgramData = {
-      ...f.program,
-      requiredCourses: JSON.parse(f.program.requiredCourses) as string[],
+      ...item.program,
+      requiredCourses: JSON.parse(item.program.requiredCourses) as string[],
     }
     return { ...prog, fit: computeFit(profile, prog), isFavorite: true }
   })
+
+  // Upcoming deadlines (today or later), soonest first
+  const todayISO = new Date().toISOString().slice(0, 10)
+  const upcomingDeadlines = deadlines.filter(d => d.deadlineDate >= todayISO).slice(0, 4)
 
   // Fit counts for the summary bar
   const fitCounts: Record<FitStatus, number> = { Safe: 0, Match: 0, Reach: 0, 'Not eligible': 0, 'No profile': 0, Unverified: 0 }
@@ -157,6 +174,63 @@ export default async function DashboardPage() {
           </div>
         )}
       </section>
+
+      {/* Custom lists (premium) */}
+      {isPremium && namedLists.length > 0 && (
+        <section className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <ListChecks className="w-5 h-5 text-teal-600" />
+            <h2 className="font-semibold text-gray-900">My Lists</h2>
+            <Link href="/programs" className="ml-auto text-sm text-teal-600 hover:underline">Manage</Link>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {namedLists.map(l => (
+              <div key={l.id} className="border border-gray-200 rounded-lg p-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-gray-900">{l.name}</span>
+                  <span className="text-xs text-gray-400">
+                    {l.items.length} school{l.items.length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                {l.items.length > 0 && (
+                  <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                    {l.items.map(i => i.program.university).join(', ')}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Upcoming deadlines (premium) */}
+      {isPremium && upcomingDeadlines.length > 0 && (
+        <section className="bg-white rounded-xl border border-gray-200 p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <CalendarClock className="w-5 h-5 text-teal-600" />
+            <h2 className="font-semibold text-gray-900">Upcoming Deadlines</h2>
+            <Link href="/deadlines" className="ml-auto text-sm text-teal-600 hover:underline">View all</Link>
+          </div>
+          <div className="space-y-2">
+            {upcomingDeadlines.map(d => {
+              const days = daysUntil(todayISO, d.deadlineDate)
+              return (
+                <div key={d.id} className="flex items-center justify-between gap-4 text-sm py-2 border-b border-gray-50 last:border-0">
+                  <div>
+                    <p className="font-medium text-gray-900">{d.university}</p>
+                    {d.label && <p className="text-xs text-gray-500">{d.label}</p>}
+                  </div>
+                  <span className={`shrink-0 text-xs px-2 py-0.5 rounded-full ${
+                    days <= 7 ? 'bg-amber-100 text-amber-700' : days <= 30 ? 'bg-sky-100 text-sky-700' : 'bg-green-100 text-green-700'
+                  }`}>
+                    {days === 0 ? 'Due today' : `${days} day${days !== 1 ? 's' : ''} left`}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
       {/* School requests */}
       {schoolRequests.length > 0 && (
