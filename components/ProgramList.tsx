@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { Heart, ChevronRight, Search } from 'lucide-react'
+import { Heart, ChevronRight, Search, Scale, X } from 'lucide-react'
 import FitBadge from '@/components/FitBadge'
 import AddToListButton from '@/components/AddToListButton'
 import { toggleFavorite } from '@/app/actions/favorites'
@@ -22,6 +22,9 @@ const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach
 const REGION_OPTIONS = ['All', 'Arkansas', 'Texas', 'National'] as const
 const TIER_OPTIONS = ['All', 'Top TX', 'Top US', 'Local'] as const
 
+const COMPARE_LIMIT_FREE = 2
+const COMPARE_LIMIT_PREMIUM = 6
+
 export default function ProgramList({ programs, tier, isAuthed, isPremium, lists: initialLists }: Props) {
   const [query, setQuery] = useState('')
   const [regionFilter, setRegionFilter] = useState<(typeof REGION_OPTIONS)[number]>('All')
@@ -38,6 +41,9 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
     initialLists.filter(l => !l.isDefault),
   )
   const [toastMsg, setToastMsg] = useState<string | null>(null)
+  // Compare selection — ordered, client-only (no DB). Capped by tier.
+  const [compareIds, setCompareIds] = useState<string[]>([])
+  const compareLimit = isPremium ? COMPARE_LIMIT_PREMIUM : COMPARE_LIMIT_FREE
 
   const q = query.trim().toLowerCase()
   const filtered = programs.filter(p => {
@@ -72,6 +78,22 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
   function showError(msg: string) {
     setToastMsg(msg)
     setTimeout(() => setToastMsg(null), 4000)
+  }
+
+  function handleCompareToggle(programId: string) {
+    if (compareIds.includes(programId)) {
+      setCompareIds(prev => prev.filter(id => id !== programId))
+      return
+    }
+    if (compareIds.length >= compareLimit) {
+      showError(
+        isPremium
+          ? `You can compare up to ${COMPARE_LIMIT_PREMIUM} schools at once.`
+          : `Upgrade to compare up to ${COMPARE_LIMIT_PREMIUM} schools.`,
+      )
+      return
+    }
+    setCompareIds(prev => [...prev, programId])
   }
 
   function handleToggleList(programId: string, listId: string, shouldAdd: boolean) {
@@ -222,6 +244,20 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
                     onCreateList={name => handleCreateList(program.id, name)}
                   />
                 )}
+                <button
+                  onClick={() => handleCompareToggle(program.id)}
+                  className="mt-0.5 shrink-0"
+                  title={compareIds.includes(program.id) ? 'Remove from comparison' : 'Add to comparison'}
+                  aria-pressed={compareIds.includes(program.id)}
+                >
+                  <Scale
+                    className={`w-4 h-4 transition-colors ${
+                      compareIds.includes(program.id)
+                        ? 'text-teal-600'
+                        : 'text-gray-300 hover:text-teal-500'
+                    }`}
+                  />
+                </button>
               </div>
 
               {/* Content */}
@@ -269,6 +305,39 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
           ))
         )}
       </div>
+
+      {/* Sticky compare bar — appears once at least one school is selected */}
+      {compareIds.length >= 1 && (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-4 pointer-events-none">
+          <div className="pointer-events-auto flex items-center gap-3 bg-gray-900 text-white rounded-2xl shadow-xl px-4 py-3 max-w-2xl w-full sm:w-auto">
+            <Scale className="w-4 h-4 text-teal-300 shrink-0" />
+            <span className="text-sm font-medium">
+              {compareIds.length} selected
+              <span className="text-gray-400 font-normal">
+                {' '}/ up to {compareLimit}
+              </span>
+            </span>
+            <div className="ml-auto flex items-center gap-2">
+              <button
+                onClick={() => setCompareIds([])}
+                className="text-xs text-gray-300 hover:text-white flex items-center gap-1"
+              >
+                <X className="w-3.5 h-3.5" /> Clear
+              </button>
+              {compareIds.length >= 2 ? (
+                <Link
+                  href={`/compare?ids=${compareIds.join(',')}`}
+                  className="bg-teal-500 hover:bg-teal-400 text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors"
+                >
+                  Compare
+                </Link>
+              ) : (
+                <span className="text-xs text-gray-400">Select one more to compare</span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

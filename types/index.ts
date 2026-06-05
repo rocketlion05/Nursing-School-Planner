@@ -68,3 +68,11 @@ export interface GapSummary {
   examsNeeded: string[]
   topRecommendations: string[]
 }
+
+export interface RetakeRecommendation {
+  priority: 'high' | 'medium' | 'low'
+  type: 'exam' | 'gpa' | 'sci_gpa' | 'prereq'
+  message: string
+  /** Number of programs unlocked or moved into Safe/Match by acting on this. */
+  impact: number
+}

@@ -1,4 +1,11 @@
-import type { ProfileData, ProgramData, ScoredProgram, GapSummary, FitStatus } from '@/types'
+import type {
+  ProfileData,
+  ProgramData,
+  ScoredProgram,
+  GapSummary,
+  FitStatus,
+  RetakeRecommendation,
+} from '@/types'
 
 export interface ExamInsight {
   examType: string
@@ -165,4 +172,109 @@ export function computeExamInsights(
   }
 
   return insights
+}
+
+/** How many programs the student is currently competitive for (Safe or Match). */
+function countSafeMatch(profile: ProfileData, programs: ProgramData[]): number {
+  return scorePrograms(profile, programs).filter(
+    p => p.fit.status === 'Safe' || p.fit.status === 'Match',
+  ).length
+}
+
+function plural(n: number): string {
+  return n === 1 ? '' : 's'
+}
+
+/**
+ * Prioritized, rule-based advice on whether retaking an exam or improving GPA /
+ * prerequisites is "worth the student's time." Each recommendation's impact is
+ * the number of programs it would unlock or move into Safe/Match, estimated by
+ * re-running the same scoring logic with a hypothetical improvement — the same
+ * pattern the What-If Simulator uses, but computed server-side.
+ *
+ * No AI: purely computational. Sorted by impact descending.
+ */
+export function computeRetakeRecommendations(
+  profile: ProfileData,
+  scored: ScoredProgram[],
+): RetakeRecommendation[] {
+  // ScoredProgram extends ProgramData, so it's a valid input to scorePrograms.
+  const programs: ProgramData[] = scored
+  const baseline = countSafeMatch(profile, programs)
+  const recs: RetakeRecommendation[] = []
+
+  const GPA_BUMP = 0.3
+
+  // --- Exam retakes: reuse the established threshold/unlock logic ---
+  for (const insight of computeExamInsights(profile, scored)) {
+    if (insight.nextThresholdScore === null || insight.programsUnlockedAtThreshold <= 0) continue
+    const impact = insight.programsUnlockedAtThreshold
+    recs.push({
+      type: 'exam',
+      impact,
+      priority: impact >= 2 ? 'high' : 'medium',
+      message: `Retaking the ${insight.examType} is one of your highest-leverage moves — scoring ${insight.nextThresholdScore}%+ would make you competitive at ${impact} more program${plural(impact)}.`,
+    })
+  }
+
+  // --- Overall GPA bump ---
+  if (profile.overallGPA !== null) {
+    const target = Math.min(4.0, profile.overallGPA + GPA_BUMP)
+    const impact = countSafeMatch({ ...profile, overallGPA: target }, programs) - baseline
+    if (impact > 0) {
+      recs.push({
+        type: 'gpa',
+        impact,
+        priority: impact >= 3 ? 'high' : 'medium',
+        message: `Raising your overall GPA from ${profile.overallGPA.toFixed(2)} to ${target.toFixed(2)} would move ${impact} program${plural(impact)} into Safe or Match.`,
+      })
+    }
+  }
+
+  // --- Science GPA bump (often the real bottleneck) ---
+  if (profile.scienceGPA !== null) {
+    const target = Math.min(4.0, profile.scienceGPA + GPA_BUMP)
+    const impact = countSafeMatch({ ...profile, scienceGPA: target }, programs) - baseline
+    if (impact > 0) {
+      recs.push({
+        type: 'sci_gpa',
+        impact,
+        priority: impact >= 3 ? 'high' : 'medium',
+        message: `Your science GPA is a bottleneck: raising it from ${profile.scienceGPA.toFixed(2)} to ${target.toFixed(2)} would move ${impact} program${plural(impact)} into Safe or Match.`,
+      })
+    }
+  }
+
+  // --- Finishing outstanding prerequisites ---
+  const allRequired = new Set<string>()
+  programs.forEach(p => p.requiredCourses.forEach(c => allRequired.add(c)))
+  const withAllPrereqs = Array.from(new Set([...profile.coursesCompleted, ...allRequired]))
+  if (withAllPrereqs.length > profile.coursesCompleted.length) {
+    const impact = countSafeMatch({ ...profile, coursesCompleted: withAllPrereqs }, programs) - baseline
+    if (impact > 0) {
+      recs.push({
+        type: 'prereq',
+        impact,
+        priority: impact >= 2 ? 'high' : 'medium',
+        message: `Finishing your outstanding prerequisites would move ${impact} program${plural(impact)} into Safe or Match — focus your course planning here.`,
+      })
+    }
+  }
+
+  recs.sort((a, b) => b.impact - a.impact)
+
+  // If nothing moves the needle, the student is either already strong or close.
+  if (recs.length === 0) {
+    const scoreable = programs.length > 0 && baseline > 0
+    recs.push({
+      type: 'prereq',
+      impact: 0,
+      priority: 'low',
+      message: scoreable
+        ? "You're meeting the requirements for your competitive programs — you're in a strong position to apply this cycle. Keep your prerequisites on track."
+        : 'No single change unlocks more programs right now. Focus on steadily improving your GPA and finishing prerequisites, then re-check your fit.',
+    })
+  }
+
+  return recs
 }

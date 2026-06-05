@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { getProfile } from '@/app/actions/profile'
-import { scorePrograms, computeGapSummary, computeExamInsights } from '@/lib/gap'
+import { scorePrograms, computeGapSummary, computeExamInsights, computeRetakeRecommendations } from '@/lib/gap'
 import { requireUser } from '@/app/lib/dal'
 import Disclaimer from '@/components/Disclaimer'
 import FitBadge from '@/components/FitBadge'
@@ -9,6 +9,7 @@ import AIPlan from '@/components/AIPlan'
 import LockedAIPlan from '@/components/LockedAIPlan'
 import GapReportButton, { type ReportProgram } from '@/components/GapReportButton'
 import WhatIfSimulator, { LockedWhatIf, type SimProgram } from '@/components/WhatIfSimulator'
+import RetakeRecommendations from '@/components/RetakeRecommendations'
 import type { ProgramData, FitStatus } from '@/types'
 import { Target, AlertCircle, TrendingUp, BookOpen, FlaskConical } from 'lucide-react'
 
@@ -51,6 +52,9 @@ export default async function PlanPage() {
 
   // Exam breakdown — premium only
   const examInsights = isPremium ? computeExamInsights(profile, scored) : []
+
+  // Retake / GPA recommendations — premium only
+  const retakeRecs = isPremium ? computeRetakeRecommendations(profile, scored) : []
 
   // Trimmed program arrays for client components
   const simPrograms: SimProgram[] = programs.map(p => ({
@@ -205,6 +209,11 @@ export default async function PlanPage() {
           )}
         </section>
       </div>
+
+      {/* What's Worth Your Time — premium only retake/GPA recommendations */}
+      {isPremium && retakeRecs.length > 0 && (
+        <RetakeRecommendations recommendations={retakeRecs} />
+      )}
 
       {/* What-If Simulator — premium unlocks it; free users see locked teaser */}
       {isPremium ? (
