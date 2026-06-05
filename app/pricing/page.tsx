@@ -19,8 +19,10 @@ const FREE_FEATURES = [
 const PREMIUM_FEATURES = [
   'Everything in Free',
   'Unlimited saved favorites',
-  'Full gap analysis across all programs',
-  'AI-powered application plan (semester-by-semester) + PDF export',
+  'AI-powered semester plan + PDF export',
+  'Gap analysis PDF report (profile, fit scores, missing prereqs)',
+  'TEAS/HESI score breakdown + unlock insights',
+  'What-if GPA & score simulator',
   'Request a school to be added',
 ]
 

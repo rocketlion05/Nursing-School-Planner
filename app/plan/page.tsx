@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import { getProfile } from '@/app/actions/profile'
-import { scorePrograms, computeGapSummary } from '@/lib/gap'
+import { scorePrograms, computeGapSummary, computeExamInsights } from '@/lib/gap'
 import { requireUser } from '@/app/lib/dal'
 import Disclaimer from '@/components/Disclaimer'
 import FitBadge from '@/components/FitBadge'
 import AIPlan from '@/components/AIPlan'
 import LockedAIPlan from '@/components/LockedAIPlan'
+import GapReportButton, { type ReportProgram } from '@/components/GapReportButton'
+import WhatIfSimulator, { LockedWhatIf, type SimProgram } from '@/components/WhatIfSimulator'
 import type { ProgramData, FitStatus } from '@/types'
 import { Target, AlertCircle, TrendingUp, BookOpen, FlaskConical } from 'lucide-react'
 
@@ -45,26 +47,56 @@ export default async function PlanPage() {
   const scored = scorePrograms(profile, programs)
   const gap = computeGapSummary(profile, scored)
 
+  const isPremium = profile.tier === 'cycle'
+
+  // Exam breakdown — premium only
+  const examInsights = isPremium ? computeExamInsights(profile, scored) : []
+
+  // Trimmed program arrays for client components
+  const simPrograms: SimProgram[] = programs.map(p => ({
+    id: p.id,
+    minOverallGPA: p.minOverallGPA,
+    minScienceGPA: p.minScienceGPA,
+    examType: p.examType,
+    minExamScore: p.minExamScore,
+    casperRequired: p.casperRequired,
+    requiredCourses: p.requiredCourses,
+  }))
+
+  const reportPrograms: ReportProgram[] = scored.map(p => ({
+    university: p.university,
+    state: p.state,
+    status: p.fit.status,
+    missingCount: p.fit.missingCourses.length,
+    examNote: p.fit.examNote,
+  }))
+
   const statuses: FitStatus[] = ['Safe', 'Match', 'Reach', 'Not eligible']
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">My Application Plan</h1>
-        <p className="text-gray-500 mt-1">
-          Based on your profile — {profile.name || 'your current stats'}.
-        </p>
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">My Application Plan</h1>
+          <p className="text-gray-500 mt-1">
+            Based on your profile — {profile.name || 'your current stats'}.
+          </p>
+        </div>
+        {isPremium && (
+          <GapReportButton profile={profile} gap={gap} programs={reportPrograms} />
+        )}
       </div>
 
       {/* AI-powered plan — Cycle Pass unlocks it; free users see a locked teaser */}
-      {profile.tier === 'cycle' ? (
+      {isPremium ? (
         <AIPlan studentName={profile.name} />
       ) : (
         <LockedAIPlan />
       )}
 
       {/* Status Summary */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {statuses.map(status => (
           <div key={status} className={`rounded-xl p-4 text-center ${STATUS_COLORS[status]}`}>
             <div className="text-3xl font-bold mb-1">{gap.counts[status]}</div>
@@ -72,6 +104,41 @@ export default async function PlanPage() {
           </div>
         ))}
       </div>
+
+      {/* Exam Score Breakdown — premium only, only shown when student has scores */}
+      {examInsights.length > 0 && (
+        <section className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <FlaskConical className="w-5 h-5 text-teal-600" />
+            <h2 className="font-semibold text-gray-900">Exam Score Breakdown</h2>
+          </div>
+          <div className="space-y-3">
+            {examInsights.map(insight => (
+              <div key={insight.examType} className="rounded-lg bg-blue-50 border border-blue-100 p-4">
+                <p className="font-semibold text-blue-900 mb-1 text-sm">
+                  {insight.examType} — your score: {insight.yourScore}%
+                </p>
+                <p className="text-sm text-blue-800">
+                  Meets the minimum for{' '}
+                  <strong>{insight.programsMeetingMin} of {insight.programsRequiring}</strong>{' '}
+                  programs that require {insight.examType}.
+                </p>
+                {insight.nextThresholdScore !== null && insight.programsUnlockedAtThreshold > 0 && (
+                  <p className="text-sm text-blue-700 mt-1">
+                    Scoring{' '}
+                    <strong>{insight.nextThresholdScore}%+</strong>{' '}
+                    would make you competitive at{' '}
+                    <strong>
+                      {insight.programsUnlockedAtThreshold} more program
+                      {insight.programsUnlockedAtThreshold !== 1 ? 's' : ''}
+                    </strong>.
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Priority Recommendations */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
@@ -138,6 +205,13 @@ export default async function PlanPage() {
           )}
         </section>
       </div>
+
+      {/* What-If Simulator — premium unlocks it; free users see locked teaser */}
+      {isPremium ? (
+        <WhatIfSimulator profile={profile} programs={simPrograms} />
+      ) : (
+        <LockedWhatIf />
+      )}
 
       {/* Program table */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 mb-6">

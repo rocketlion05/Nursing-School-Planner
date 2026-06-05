@@ -1,4 +1,13 @@
 import type { ProfileData, ProgramData, ScoredProgram, GapSummary, FitStatus } from '@/types'
+
+export interface ExamInsight {
+  examType: string
+  yourScore: number
+  programsRequiring: number
+  programsMeetingMin: number
+  nextThresholdScore: number | null
+  programsUnlockedAtThreshold: number
+}
 import { computeFit } from '@/lib/scoring'
 import { COURSE_MAP } from '@/lib/constants'
 
@@ -106,4 +115,54 @@ export function computeGapSummary(
   }
 
   return { counts, commonMissingCourses, examsNeeded, topRecommendations: recommendations }
+}
+
+/**
+ * For each exam the student has taken, compute how many programs they meet the
+ * published minimum for, and what score would unlock the next batch.
+ * Only programs with both examType and a published minExamScore are counted.
+ */
+export function computeExamInsights(
+  profile: ProfileData,
+  programs: ScoredProgram[],
+): ExamInsight[] {
+  const insights: ExamInsight[] = []
+
+  const checks = [
+    { type: 'TEAS', score: profile.teasScore },
+    { type: 'HESI A2', score: profile.hesiScore },
+  ] as const
+
+  for (const { type, score } of checks) {
+    if (score === null) continue
+
+    const requiring = programs.filter(
+      p => p.examType === type && p.minExamScore !== null,
+    )
+    if (requiring.length === 0) continue
+
+    const meetingMin = requiring.filter(p => score >= p.minExamScore!)
+
+    // Find the lowest threshold above the student's current score
+    const thresholdsAbove = requiring
+      .filter(p => p.minExamScore! > score)
+      .map(p => p.minExamScore!)
+      .sort((a, b) => a - b)
+
+    const nextThresholdScore = thresholdsAbove[0] ?? null
+    const programsUnlockedAtThreshold = nextThresholdScore
+      ? requiring.filter(p => p.minExamScore! > score && p.minExamScore! <= nextThresholdScore).length
+      : 0
+
+    insights.push({
+      examType: type,
+      yourScore: score,
+      programsRequiring: requiring.length,
+      programsMeetingMin: meetingMin.length,
+      nextThresholdScore,
+      programsUnlockedAtThreshold,
+    })
+  }
+
+  return insights
 }
