@@ -207,7 +207,7 @@ export async function sendDeadlineReminderEmail({
 // ─── Contact form ──────────────────────────────────────────────────────────────
 
 /** Address that receives contact-form submissions. */
-const CONTACT_INBOX = 'nwconnally.work@gmail.com'
+const CONTACT_INBOX = 'hello@nursingschoolplanner.com'
 
 /** Escapes user-supplied text before embedding it in an HTML email. */
 function escapeHtml(str: string): string {

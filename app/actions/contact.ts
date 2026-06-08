@@ -26,7 +26,7 @@ export async function sendContactMessage(
   if (!result.ok) {
     return {
       message: result.skipped
-        ? 'Messaging is not configured on this server yet. Please email us directly at nwconnally.work@gmail.com.'
+        ? 'Messaging is not configured on this server yet. Please email us directly at hello@nursingschoolplanner.com.'
         : 'Something went wrong sending your message. Please try again in a moment.',
       values,
     }

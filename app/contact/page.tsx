@@ -16,6 +16,12 @@ export default function ContactPage() {
         <p className="text-gray-500 mt-1">
           Questions, feedback, or found a bug? Send us a message and we&apos;ll reply by email.
         </p>
+        <p className="text-sm text-gray-500 mt-2">
+          Prefer email? Reach us directly at{' '}
+          <a href="mailto:hello@nursingschoolplanner.com" className="text-teal-600 font-medium hover:underline">
+            hello@nursingschoolplanner.com
+          </a>
+        </p>
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8">
