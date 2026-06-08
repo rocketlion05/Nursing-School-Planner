@@ -25,7 +25,9 @@ async function getOrCreateProfileId(userId: string): Promise<string> {
  * /programs maps to default-list membership; named lists are managed separately.
  * Free tier is capped at 2 saved programs.
  */
-export async function toggleFavorite(programId: string): Promise<{ isFavorite: boolean; error?: string }> {
+export async function toggleFavorite(
+  programId: string,
+): Promise<{ isFavorite: boolean; error?: string; limitReached?: boolean }> {
   try {
     const user = await getCurrentUser()
     if (!user) return { isFavorite: false, error: 'Please log in to save favorites.' }
@@ -53,6 +55,7 @@ export async function toggleFavorite(programId: string): Promise<{ isFavorite: b
     if (!isAdminEmail(user.email) && profile?.tier === 'free' && savedCount >= 2) {
       return {
         isFavorite: false,
+        limitReached: true,
         error: 'Free tier is limited to 2 saved programs. Upgrade to Cycle Pass for unlimited favorites and custom lists.',
       }
     }

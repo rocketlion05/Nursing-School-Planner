@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Heart, ChevronRight, Search, Scale, X } from 'lucide-react'
 import FitBadge from '@/components/FitBadge'
 import AddToListButton from '@/components/AddToListButton'
+import UpgradeModal from '@/components/UpgradeModal'
 import { toggleFavorite } from '@/app/actions/favorites'
 import { addToList, removeFromList, createList } from '@/app/actions/lists'
 import type { ListWithItems } from '@/app/actions/lists'
@@ -41,6 +42,8 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
     initialLists.filter(l => !l.isDefault),
   )
   const [toastMsg, setToastMsg] = useState<string | null>(null)
+  // Upgrade modal shown when a free user hits a paid gate (favorites / compare).
+  const [upgradeModal, setUpgradeModal] = useState<{ title: string; message: string } | null>(null)
   // Compare selection — ordered, client-only (no DB). Capped by tier.
   const [compareIds, setCompareIds] = useState<string[]>([])
   const compareLimit = isPremium ? COMPARE_LIMIT_PREMIUM : COMPARE_LIMIT_FREE
@@ -66,7 +69,14 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
     }
     startTransition(async () => {
       const result = await toggleFavorite(programId)
-      if (result.error) {
+      if (result.limitReached) {
+        // Free user hit the 2-favorite cap — surface the upgrade modal.
+        setUpgradeModal({
+          title: "You've saved 2 schools",
+          message:
+            "You've saved 2 schools. Upgrade to save unlimited programs and unlock your AI application plan.",
+        })
+      } else if (result.error) {
         setToastMsg(result.error)
         setTimeout(() => setToastMsg(null), 4000)
       } else {
@@ -86,11 +96,15 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
       return
     }
     if (compareIds.length >= compareLimit) {
-      showError(
-        isPremium
-          ? `You can compare up to ${COMPARE_LIMIT_PREMIUM} schools at once.`
-          : `Upgrade to compare up to ${COMPARE_LIMIT_PREMIUM} schools.`,
-      )
+      if (isPremium) {
+        showError(`You can compare up to ${COMPARE_LIMIT_PREMIUM} schools at once.`)
+      } else {
+        // Free user trying to select a 3rd school — show the upgrade modal.
+        setUpgradeModal({
+          title: 'Compare more schools',
+          message: `Free accounts can compare ${COMPARE_LIMIT_FREE} schools at a time. Upgrade to compare up to ${COMPARE_LIMIT_PREMIUM} side by side.`,
+        })
+      }
       return
     }
     setCompareIds(prev => [...prev, programId])
@@ -338,6 +352,13 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
           </div>
         </div>
       )}
+
+      <UpgradeModal
+        open={upgradeModal !== null}
+        onClose={() => setUpgradeModal(null)}
+        title={upgradeModal?.title ?? ''}
+        message={upgradeModal?.message ?? ''}
+      />
     </div>
   )
 }
