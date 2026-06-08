@@ -30,6 +30,21 @@ export const LoginSchema = z.object({
   password: z.string().min(1, { error: 'Enter your password.' }),
 })
 
+export const ForgotPasswordSchema = z.object({
+  email: z.email({ error: 'Please enter a valid email.' }).trim().toLowerCase(),
+})
+
+export const ResetPasswordSchema = z
+  .object({
+    token: z.string().min(1, { error: 'Missing reset token.' }),
+    password: passwordSchema,
+    confirmPassword: z.string().min(1, { error: 'Please confirm your password.' }),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    error: 'Passwords do not match.',
+    path: ['confirmPassword'],
+  })
+
 export type SignupFields = 'username' | 'email' | 'password'
 
 export type AuthFormState =

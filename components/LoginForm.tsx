@@ -31,9 +31,14 @@ export default function LoginForm() {
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-          Password
-        </label>
+        <div className="flex items-center justify-between">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            Password
+          </label>
+          <Link href="/forgot-password" className="text-xs text-teal-600 font-medium hover:underline">
+            Forgot password?
+          </Link>
+        </div>
         <input id="password" name="password" type="password" className={input} placeholder="••••••••" autoComplete="current-password" />
         {state?.errors?.password && (
           <p className="text-xs text-red-600">{state.errors.password[0]}</p>

@@ -4,9 +4,19 @@ import { redirect } from 'next/navigation'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import { createSession, deleteSession } from '@/app/lib/session'
-import { SignupSchema, LoginSchema, type AuthFormState } from '@/app/lib/auth-validation'
-import { sendVerificationEmail } from '@/lib/email'
-import { createVerificationToken } from '@/lib/verification'
+import {
+  SignupSchema,
+  LoginSchema,
+  ForgotPasswordSchema,
+  ResetPasswordSchema,
+  type AuthFormState,
+} from '@/app/lib/auth-validation'
+import { sendVerificationEmail, sendPasswordResetEmail } from '@/lib/email'
+import {
+  createVerificationToken,
+  createPasswordResetToken,
+  consumePasswordResetToken,
+} from '@/lib/verification'
 import { getBaseUrl } from '@/lib/base-url'
 
 /** Builds the absolute /verify-email link for a freshly minted token. */
@@ -142,6 +152,96 @@ export async function resendVerification(
   }
 
   return { sent: true }
+}
+
+/**
+ * Starts the password-reset flow. Always reports success (never reveals whether
+ * an account exists) to avoid account enumeration. Only password accounts that
+ * have a usable password get a reset link — OAuth-only accounts are skipped.
+ */
+export async function requestPasswordReset(
+  _prevState: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
+  const raw = { email: String(formData.get('email') ?? '') }
+  const values = { email: raw.email }
+
+  const parsed = ForgotPasswordSchema.safeParse(raw)
+  if (!parsed.success) {
+    return { errors: parsed.error.flatten().fieldErrors, values }
+  }
+
+  const { email } = parsed.data
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, passwordHash: true },
+    })
+    if (user?.passwordHash) {
+      const token = await createPasswordResetToken(user.id)
+      const base = await getBaseUrl()
+      await sendPasswordResetEmail(email, `${base}/reset-password?token=${token}`)
+    }
+  } catch (err) {
+    console.error('requestPasswordReset error:', err)
+    // Still report success below — don't leak failures or account existence.
+  }
+
+  // Generic confirmation regardless of whether the account exists.
+  return { message: 'sent', values }
+}
+
+/**
+ * Completes the password-reset flow: validates the new password, consumes the
+ * one-time token, updates the password hash, signs the user in, and redirects.
+ */
+export async function resetPassword(
+  _prevState: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
+  const raw = {
+    token: String(formData.get('token') ?? ''),
+    password: String(formData.get('password') ?? ''),
+    confirmPassword: String(formData.get('confirmPassword') ?? ''),
+  }
+
+  const parsed = ResetPasswordSchema.safeParse(raw)
+  if (!parsed.success) {
+    return { errors: parsed.error.flatten().fieldErrors }
+  }
+
+  const { token, password } = parsed.data
+
+  const userId = await consumePasswordResetToken(token)
+  if (!userId) {
+    return {
+      message: 'This reset link is invalid or has expired. Please request a new one.',
+    }
+  }
+
+  const passwordHash = await bcrypt.hash(password, 10)
+  try {
+    const existing = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { emailVerified: true },
+    })
+    // Resetting via an emailed link also proves the user controls the inbox,
+    // so confirm their email if it wasn't already verified.
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        passwordHash,
+        emailVerified: existing?.emailVerified ?? new Date(),
+      },
+    })
+  } catch (err) {
+    console.error('resetPassword error:', err)
+    return { message: 'Could not reset your password. Please try again.' }
+  }
+
+  await createSession(userId)
+  redirect('/dashboard')
 }
 
 export async function logout(): Promise<void> {

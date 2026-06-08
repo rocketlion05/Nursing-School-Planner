@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { Geist } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -22,7 +23,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Navbar username={user?.username ?? null} isAdmin={isAdmin} />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-gray-200 py-4 text-center text-xs text-gray-400">
-          Nursing School Planner &mdash; for planning only, not official admissions advice.
+          <p>Nursing School Planner &mdash; for planning only, not official admissions advice.</p>
+          <p className="mt-1">
+            <Link href="/contact" className="text-gray-500 hover:text-teal-600 hover:underline">
+              Contact Us
+            </Link>
+          </p>
         </footer>
         <Analytics />
         <SpeedInsights />
