@@ -21,10 +21,10 @@ export async function POST() {
     return NextResponse.json({ error: 'Complete your profile first.' }, { status: 400 })
   }
 
-  // Cycle Pass only (admins report tier 'cycle' via getProfile()).
+  // Pro only — getProfile() already accounts for admins and lapsed access.
   if (profile.tier !== 'cycle') {
     return NextResponse.json(
-      { error: 'The AI Application Plan is a Cycle Pass feature.' },
+      { error: 'The AI Application Plan is a Pro feature.' },
       { status: 403 },
     )
   }

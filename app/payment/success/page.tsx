@@ -19,8 +19,8 @@ export default async function PaymentSuccessPage({
       if (session.payment_status === 'paid' && session.client_reference_id) {
         await prisma.profile.upsert({
           where:  { userId: session.client_reference_id },
-          create: { userId: session.client_reference_id, tier: 'cycle' },
-          update: { tier: 'cycle' },
+          create: { userId: session.client_reference_id, tier: 'cycle', premiumUntil: null },
+          update: { tier: 'cycle', premiumUntil: null },
         })
       }
     } catch {
@@ -37,7 +37,7 @@ export default async function PaymentSuccessPage({
       </div>
       <h1 className="text-2xl font-bold text-gray-900 mb-2">You&apos;re all set!</h1>
       <p className="text-gray-500 mb-6">
-        {user?.username ? `Hey ${user.username} — y` : 'Y'}our Cycle Pass is now active. Unlimited
+        {user?.username ? `Hey ${user.username} — y` : 'Y'}our Pro access is now active. Unlimited
         favorites, full gap analysis, and school requests are unlocked.
       </p>
       <div className="flex flex-col sm:flex-row gap-3 justify-center">

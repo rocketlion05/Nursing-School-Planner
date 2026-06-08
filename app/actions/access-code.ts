@@ -5,7 +5,10 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
-import { sendCyclePassConfirmationEmail } from '@/lib/email'
+import { sendProConfirmationEmail } from '@/lib/email'
+
+/** Access codes grant this many days of Pro. */
+const CODE_GRANT_DAYS = 30
 
 export async function redeemAccessCode(code: string): Promise<{ success: boolean; error?: string }> {
   try {
@@ -14,7 +17,7 @@ export async function redeemAccessCode(code: string): Promise<{ success: boolean
 
     const profile = await prisma.profile.findUnique({
       where: { userId: user.id },
-      select: { id: true },
+      select: { id: true, premiumUntil: true },
     })
     if (!profile) return { success: false, error: 'Save your profile before redeeming a code.' }
     const profileId = profile.id
@@ -26,7 +29,13 @@ export async function redeemAccessCode(code: string): Promise<{ success: boolean
       return { success: false, error: 'This access code has already been used.' }
     }
 
-    await prisma.profile.update({ where: { id: profileId }, data: { tier: 'cycle' } })
+    // Grant 1 month of Pro. If they already have a future expiry, extend from it
+    // so redeeming a second code stacks rather than shortens their access.
+    const now = Date.now()
+    const base = profile.premiumUntil && profile.premiumUntil.getTime() > now ? profile.premiumUntil.getTime() : now
+    const premiumUntil = new Date(base + CODE_GRANT_DAYS * 24 * 60 * 60 * 1000)
+
+    await prisma.profile.update({ where: { id: profileId }, data: { tier: 'cycle', premiumUntil } })
 
     if (!accessCode.usedBy) {
       await prisma.accessCode.update({
@@ -38,7 +47,7 @@ export async function redeemAccessCode(code: string): Promise<{ success: boolean
     revalidatePath('/programs')
     revalidatePath('/pricing')
     revalidatePath('/dashboard')
-    sendCyclePassConfirmationEmail(user.email).catch(() => {})
+    sendProConfirmationEmail(user.email, { expiresAt: premiumUntil }).catch(() => {})
     return { success: true }
   } catch (err) {
     console.error('redeemAccessCode error:', err)

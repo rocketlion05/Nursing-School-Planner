@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
-import { sendCyclePassConfirmationEmail } from '@/lib/email'
+import { sendProConfirmationEmail } from '@/lib/email'
 
 // Stripe requires the raw body to verify the webhook signature.
 // In Next.js App Router the body is already a ReadableStream.
@@ -27,8 +27,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
-  // Grant premium on any successful checkout — one-time Cycle Pass or the first
-  // invoice of a monthly/yearly subscription. All paid plans map to tier 'cycle'.
+  // Grant Pro on the first successful invoice of a monthly/yearly subscription.
+  // Both paid plans map to tier 'cycle' (legacy internal value for "Pro").
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
 
@@ -40,17 +40,18 @@ export async function POST(req: NextRequest) {
       }
 
       try {
-        // Upsert the profile tier to 'cycle'. Creates an empty profile if none exists
-        // (e.g. user paid before filling in their profile — they'll fill it afterward).
+        // Upsert the profile tier to 'cycle' (Pro). A paid subscription has no
+        // expiry — clear premiumUntil so a prior 1-month code grant can't cut it
+        // short. Creates an empty profile if none exists (paid before profile).
         await prisma.profile.upsert({
           where:  { userId },
-          create: { userId, tier: 'cycle' },
-          update: { tier: 'cycle' },
+          create: { userId, tier: 'cycle', premiumUntil: null },
+          update: { tier: 'cycle', premiumUntil: null },
         })
-        console.log(`Upgraded user ${userId} to premium (session ${session.id})`)
+        console.log(`Upgraded user ${userId} to Pro (session ${session.id})`)
         // Send confirmation email — look up user email from userId
         const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
-        if (user?.email) sendCyclePassConfirmationEmail(user.email).catch(() => {})
+        if (user?.email) sendProConfirmationEmail(user.email).catch(() => {})
       } catch (err) {
         console.error('Failed to upgrade user tier:', err)
         return NextResponse.json({ error: 'DB error' }, { status: 500 })
@@ -59,8 +60,8 @@ export async function POST(req: NextRequest) {
   }
 
   // A monthly/yearly subscription ended (cancellation reached period end, or
-  // dunning exhausted) — revoke premium. Fires only for subscription plans;
-  // one-time Cycle Pass has no subscription, so it is unaffected.
+  // dunning exhausted) — revoke Pro. Access-code grants have no subscription and
+  // expire on their own via premiumUntil, so they're unaffected here.
   if (event.type === 'customer.subscription.deleted') {
     const sub = event.data.object as Stripe.Subscription
     const userId = sub.metadata?.userId

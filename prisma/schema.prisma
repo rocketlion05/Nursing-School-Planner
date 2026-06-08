@@ -70,6 +70,9 @@ model Profile {
   otherExamName    String?
   otherExamScore   Float?
   tier             String     @default("free")
+  // When set, premium (tier 'cycle') is time-boxed and lapses to free after this
+  // date. Used by 1-month admin access codes. null = no expiry (subscriptions).
+  premiumUntil     DateTime?
   favorites        Favorite[]
   lists            List[]
   deadlines        Deadline[]

@@ -29,7 +29,7 @@ export default function ProfileSummary({ profile }: { profile: ProfileData }) {
         <Stat label="Overall GPA" value={profile.overallGPA?.toFixed(2)} />
         <Stat label="Science GPA" value={profile.scienceGPA?.toFixed(2)} />
         <Stat label="Credits" value={profile.totalCredits?.toString()} />
-        <Stat label="Tier" value={profile.tier === 'cycle' ? '✓ Cycle Pass' : 'Free'} highlight={profile.tier === 'cycle'} />
+        <Stat label="Tier" value={profile.tier === 'cycle' ? '✓ Pro' : 'Free'} highlight={profile.tier === 'cycle'} />
       </div>
 
       {/* Prerequisites */}

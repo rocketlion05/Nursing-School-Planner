@@ -25,9 +25,9 @@ export default async function RequestSchoolPage() {
           <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
             <Lock className="w-6 h-6 text-amber-600" />
           </div>
-          <h2 className="font-semibold text-gray-900 mb-1">This is a Cycle Pass feature</h2>
+          <h2 className="font-semibold text-gray-900 mb-1">This is a Pro feature</h2>
           <p className="text-sm text-gray-500 mb-5 max-w-sm mx-auto">
-            Requesting new schools is included with Cycle Pass. Upgrade to submit program
+            Requesting new schools is included with Pro. Upgrade to submit program
             requests and unlock unlimited favorites.
           </p>
           <Link
@@ -35,7 +35,7 @@ export default async function RequestSchoolPage() {
             className="inline-flex items-center gap-2 bg-teal-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
           >
             <Sparkles className="w-4 h-4" />
-            Upgrade to Cycle Pass
+            Upgrade to Pro
           </Link>
         </div>
       )}

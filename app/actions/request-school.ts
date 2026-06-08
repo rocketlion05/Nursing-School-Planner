@@ -5,6 +5,7 @@ import path from 'node:path'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
+import { hasActivePremium } from '@/lib/premium'
 import { sendSchoolRequestConfirmation } from '@/lib/email'
 
 export type SchoolRequestInput = {
@@ -18,13 +19,13 @@ export type SchoolRequestInput = {
 
 export type SchoolRequestResult = { ok: boolean; error?: string; needsUpgrade?: boolean }
 
-/** True when the logged-in user holds a paid (Cycle Pass) profile. */
+/** True when the logged-in user holds active Pro access. */
 async function isPremium(userId: string): Promise<boolean> {
   const profile = await prisma.profile.findUnique({
     where: { userId },
-    select: { tier: true },
+    select: { tier: true, premiumUntil: true },
   })
-  return profile?.tier === 'cycle'
+  return hasActivePremium(profile)
 }
 
 export async function submitSchoolRequest(input: SchoolRequestInput): Promise<SchoolRequestResult> {
@@ -35,7 +36,7 @@ export async function submitSchoolRequest(input: SchoolRequestInput): Promise<Sc
   if (!isAdminEmail(user.email) && !(await isPremium(user.id))) {
     return {
       ok: false,
-      error: 'Requesting a school is a Cycle Pass feature. Upgrade to unlock it.',
+      error: 'Requesting a school is a Pro feature. Upgrade to unlock it.',
       needsUpgrade: true,
     }
   }

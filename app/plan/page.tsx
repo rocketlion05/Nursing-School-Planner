@@ -92,7 +92,7 @@ export default async function PlanPage() {
         )}
       </div>
 
-      {/* AI-powered plan — Cycle Pass unlocks it; free users see a locked teaser */}
+      {/* AI-powered plan — Pro unlocks it; free users see a locked teaser */}
       {isPremium ? (
         <AIPlan studentName={profile.name} />
       ) : (

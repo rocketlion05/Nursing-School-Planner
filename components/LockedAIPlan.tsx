@@ -46,7 +46,7 @@ export default function LockedAIPlan() {
             href="/pricing"
             className="inline-block w-full bg-teal-600 text-white px-4 py-2.5 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
           >
-            Upgrade to Cycle Pass to unlock your personalized plan — $19 one time
+            Upgrade to Pro to unlock your personalized plan
           </Link>
         </div>
       </div>

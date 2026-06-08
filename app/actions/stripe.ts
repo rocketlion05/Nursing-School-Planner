@@ -12,7 +12,7 @@ export async function createCheckoutSession(planIdInput: PlanId): Promise<void> 
   const user = await requireUser() // redirects to /login if not authed
 
   // planIdInput comes from the client — validate before trusting it.
-  const planId = isPlanId(planIdInput) ? planIdInput : 'cycle'
+  const planId = isPlanId(planIdInput) ? planIdInput : 'monthly'
   const plan = PLANS[planId]
   const isSubscription = plan.mode === 'subscription'
   const base = baseUrl()

@@ -15,7 +15,7 @@ const FREE_FEATURES = [
   'Up to 2 saved favorites',
 ]
 
-// All paid plans unlock the same premium features — only the billing cadence differs.
+// Both paid plans unlock the same Pro features — only the billing cadence differs.
 const PREMIUM_FEATURES = [
   'Everything in Free',
   'Unlimited saved favorites',
@@ -23,6 +23,7 @@ const PREMIUM_FEATURES = [
   'Gap analysis PDF report (profile, fit scores, missing prereqs)',
   'TEAS/HESI score breakdown + unlock insights',
   'What-if GPA & score simulator',
+  'Deadline tracker, custom lists & school comparison',
   'Request a school to be added',
 ]
 
@@ -38,7 +39,6 @@ type PaidCard = {
 const PAID_CARDS: PaidCard[] = [
   { id: 'monthly', title: 'Monthly', cadence: '/ month' },
   { id: 'yearly', title: 'Yearly', cadence: '/ year', badge: 'Best value', highlight: true },
-  { id: 'cycle', title: 'Cycle Pass', cadence: 'one-time', badge: 'Single season' },
 ]
 
 export default async function PricingPage({
@@ -49,7 +49,7 @@ export default async function PricingPage({
   const { canceled, nobilling } = await searchParams
   const [profile, user, isAdmin] = await Promise.all([getProfile(), getCurrentUser(), getIsAdmin()])
   const tier = profile?.tier ?? 'free'
-  const hasCycle = tier === 'cycle'
+  const isPro = tier === 'cycle'
   const accessCodes = isAdmin ? await listAccessCodes() : []
 
   return (
@@ -57,9 +57,8 @@ export default async function PricingPage({
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-gray-900 mb-3">Simple, Student-Friendly Pricing</h1>
         <p className="text-gray-500 max-w-xl mx-auto">
-          Start free, upgrade when you need more. Pay monthly or yearly if you&apos;re planning
-          ahead, or grab a one-time Cycle Pass for a single application season — every paid plan
-          unlocks the same premium features.
+          Start free, upgrade to Pro when you need more. Pay monthly or save with yearly — both
+          unlock the same Pro features. Have a promo code? Redeem it below for a free month.
         </p>
       </div>
 
@@ -70,15 +69,20 @@ export default async function PricingPage({
       )}
       {nobilling && (
         <div className="max-w-md mx-auto mb-6 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-center">
-          We couldn&apos;t find a billing account for you. If you unlocked premium with an access
-          code or a one-time Cycle Pass, there&apos;s no subscription to manage.
+          We couldn&apos;t find a billing account for you. If you unlocked Pro with an access
+          code, there&apos;s no subscription to manage.
         </div>
       )}
 
-      {hasCycle && (
+      {isPro && (
         <div className="max-w-md mx-auto mb-8 text-center">
           <div className="text-sm text-teal-700 font-semibold bg-teal-100 rounded-lg py-2 px-4 flex items-center justify-center gap-2">
-            <Zap className="w-4 h-4" /> Premium is active on your account
+            <Zap className="w-4 h-4" /> Pro is active on your account
+            {profile?.premiumUntil && (
+              <span className="font-normal text-teal-600">
+                · until {new Date(profile.premiumUntil).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              </span>
+            )}
           </div>
           <div className="mt-3">
             <ManageBillingButton />
@@ -87,7 +91,7 @@ export default async function PricingPage({
       )}
 
       {/* Paid plans */}
-      <div className="grid sm:grid-cols-3 gap-6 mb-6">
+      <div className="grid sm:grid-cols-2 gap-6 mb-6 max-w-2xl mx-auto">
         {PAID_CARDS.map(card => {
           const plan = PLANS[card.id]
           const dollars = plan.amount / 100
@@ -122,9 +126,9 @@ export default async function PricingPage({
                 ))}
               </ul>
 
-              {hasCycle ? (
+              {isPro ? (
                 <div className="text-sm text-center text-teal-700 font-semibold bg-teal-100 rounded-lg py-2.5 flex items-center justify-center gap-2">
-                  <Check className="w-4 h-4" /> Premium active
+                  <Check className="w-4 h-4" /> Pro active
                 </div>
               ) : (
                 <CheckoutButton
@@ -158,7 +162,7 @@ export default async function PricingPage({
             ))}
           </ul>
         </div>
-        {!hasCycle && (
+        {!isPro && (
           <div className="mt-4 text-sm text-center text-teal-700 font-semibold bg-teal-50 rounded-lg py-2">
             Your current plan
           </div>
@@ -166,11 +170,11 @@ export default async function PricingPage({
       </div>
 
       {/* Access Code */}
-      {(!hasCycle || isAdmin) && (
+      {(!isPro || isAdmin) && (
         <div className="bg-white border border-gray-200 rounded-xl p-6 max-w-md mx-auto">
           <h3 className="font-semibold text-gray-900 mb-1">Have an Access Code?</h3>
           <p className="text-sm text-gray-500 mb-4">
-            Enter your beta or promotional code below to unlock premium features.
+            Enter your beta or promotional code to unlock <strong>1 month of Pro free</strong>.
           </p>
           {profile ? (
             <AccessCodeForm />

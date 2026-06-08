@@ -28,7 +28,7 @@ export default async function DeadlinesPage() {
           <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center mx-auto mb-3">
             <Lock className="w-5 h-5" />
           </div>
-          <h2 className="font-bold text-gray-900 mb-1">Deadline tracking is a Cycle Pass feature</h2>
+          <h2 className="font-bold text-gray-900 mb-1">Deadline tracking is a Pro feature</h2>
           <p className="text-sm text-gray-500 mb-4 max-w-md mx-auto">
             Never miss an application deadline. Set a date for each school and we&apos;ll email you reminders
             at 30, 14, and 7 days out.
@@ -37,7 +37,7 @@ export default async function DeadlinesPage() {
             href="/pricing"
             className="inline-block bg-teal-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
           >
-            Upgrade to Cycle Pass — $19 one time
+            Upgrade to Pro
           </Link>
         </div>
       )}

@@ -37,10 +37,10 @@ export default function RequestSchoolButton({ isPremium }: { isPremium: boolean 
           </button>
           <div className="flex items-center gap-2 mb-1.5">
             <Sparkles className="w-4 h-4 text-amber-500" />
-            <span className="font-semibold text-gray-900 text-sm">Cycle Pass feature</span>
+            <span className="font-semibold text-gray-900 text-sm">Pro feature</span>
           </div>
           <p className="text-sm text-gray-500 mb-3">
-            Requesting new schools is included with Cycle Pass. Upgrade to submit program requests.
+            Requesting new schools is included with Pro. Upgrade to submit program requests.
           </p>
           <Link
             href="/pricing"

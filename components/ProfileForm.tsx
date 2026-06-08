@@ -88,6 +88,7 @@ export default function ProfileForm({ initialProfile, userEmail }: Props) {
     otherExamName: otherExamName || null,
     otherExamScore: otherExamScore ? parseFloat(otherExamScore) : null,
     tier: p?.tier ?? 'free',
+    premiumUntil: p?.premiumUntil ?? null,
   }
 
   return (

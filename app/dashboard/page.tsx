@@ -269,7 +269,7 @@ export default async function DashboardPage() {
             <span className="text-teal-800">up to 2 saved programs.</span>
             {' '}
             <Link href="/pricing" className="font-semibold text-teal-700 hover:underline">
-              Upgrade to Cycle Pass
+              Upgrade to Pro
             </Link>
             {' '}for unlimited favorites, full gap analysis, and more.
           </div>

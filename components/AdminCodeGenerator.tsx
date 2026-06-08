@@ -46,7 +46,7 @@ export default function AdminCodeGenerator({ initialCodes }: { initialCodes: Acc
         <h4 className="font-semibold text-gray-900 text-sm">Admin — generate promo codes</h4>
       </div>
       <p className="text-xs text-gray-500 mb-3">
-        Each code unlocks Cycle Pass for one person, one time. Generate as many as you need.
+        Each code unlocks 1 month of Pro for one person, one time. Generate as many as you need.
       </p>
 
       <button

@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
+import { hasActivePremium } from '@/lib/premium'
 
 export type DeadlineWithProgram = {
   id: string
@@ -24,13 +25,13 @@ async function getCtx(): Promise<Ctx | null> {
   if (!user) return null
   const profile = await prisma.profile.findUnique({
     where: { userId: user.id },
-    select: { id: true, tier: true },
+    select: { id: true, tier: true, premiumUntil: true },
   })
   if (!profile) return null
-  return { profileId: profile.id, isPremium: isAdminEmail(user.email) || profile.tier === 'cycle' }
+  return { profileId: profile.id, isPremium: isAdminEmail(user.email) || hasActivePremium(profile) }
 }
 
-const PREMIUM_REQUIRED = 'The deadline tracker is a Cycle Pass feature. Upgrade to set application deadlines.'
+const PREMIUM_REQUIRED = 'The deadline tracker is a Pro feature. Upgrade to set application deadlines.'
 
 /** Parses a yyyy-mm-dd string to a UTC Date, or null if invalid. */
 function parseDateOnly(iso: string): Date | null {

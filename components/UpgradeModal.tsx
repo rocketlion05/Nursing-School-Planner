@@ -10,7 +10,7 @@ interface Props {
   title: string
   /** One-sentence explanation of what the free user is missing. */
   message: string
-  /** CTA label; defaults to a Cycle Pass upgrade. */
+  /** CTA label; defaults to a Pro upgrade. */
   ctaLabel?: string
 }
 
@@ -19,7 +19,7 @@ interface Props {
  * 2-favorite limit or the 2-school comparison cap). Always offers a clear
  * Upgrade button that links to /pricing.
  */
-export default function UpgradeModal({ open, onClose, title, message, ctaLabel = 'Upgrade to Cycle Pass' }: Props) {
+export default function UpgradeModal({ open, onClose, title, message, ctaLabel = 'Upgrade to Pro' }: Props) {
   useEffect(() => {
     if (!open) return
     function onKey(e: KeyboardEvent) {

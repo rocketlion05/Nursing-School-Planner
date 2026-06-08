@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
+import { hasActivePremium } from '@/lib/premium'
 import type { ProfileData } from '@/types'
 
 export type ProfileFormInput = {
@@ -86,7 +87,10 @@ export async function getProfile(): Promise<ProfileData | null> {
     casperPercentile: raw.casperPercentile,
     otherExamName: raw.otherExamName,
     otherExamScore: raw.otherExamScore,
-    // Admins implicitly hold Cycle Pass everywhere, without changing the stored tier.
-    tier: (isAdminEmail(user.email) ? 'cycle' : raw.tier) as 'free' | 'cycle',
+    // Effective tier: admins always have Pro; otherwise honor the stored tier but
+    // treat lapsed time-boxed (1-month code) access as free. Stored tier is left
+    // untouched in the DB — this is computed per request.
+    tier: (isAdminEmail(user.email) || hasActivePremium(raw) ? 'cycle' : 'free') as 'free' | 'cycle',
+    premiumUntil: raw.premiumUntil ? raw.premiumUntil.toISOString() : null,
   }
 }

@@ -109,18 +109,32 @@ export async function sendWelcomeEmail(email: string) {
   })
 }
 
-export async function sendCyclePassConfirmationEmail(email: string) {
+/**
+ * Confirms Pro access. When `expiresAt` is provided (a 1-month free access code),
+ * the email states the access window; otherwise it reads as ongoing (paid plan).
+ */
+export async function sendProConfirmationEmail(email: string, opts?: { expiresAt?: Date }) {
+  const expiresAt = opts?.expiresAt
+  const windowLine = expiresAt
+    ? `<p>You've unlocked <strong>1 month of Pro for free</strong> — your access runs until <strong>${expiresAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</strong>. Here's what's unlocked:</p>`
+    : `<p>Your Pro access is active. Here's what's unlocked:</p>`
+  const footerLine = expiresAt
+    ? `<p style="color:#6b7280;font-size:13px">When your free month ends you'll move back to the free plan — you can subscribe anytime to keep Pro. Questions? Just reply to this email.</p>`
+    : `<p style="color:#6b7280;font-size:13px">Questions? Reply to this email and we'll get back to you.</p>`
   await send({
     to: email,
-    subject: 'Your Cycle Pass is active — Nursing School Planner',
+    subject: expiresAt
+      ? 'Your free month of Pro is active — Nursing School Planner'
+      : 'Your Pro access is active — Nursing School Planner',
     html: `
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
         ${logoHeader}
-        <h2 style="color:#0d9488">Cycle Pass activated!</h2>
-        <p>You now have full access for your entire application season. Here's what's unlocked:</p>
+        <h2 style="color:#0d9488">${expiresAt ? 'Pro unlocked — free for a month!' : 'Pro activated!'}</h2>
+        ${windowLine}
         <ul>
           <li><strong>Unlimited favorites</strong> — save as many programs as you want</li>
-          <li><strong>Full gap analysis</strong> on <a href="https://www.nursingschoolplanner.com/plan">My Plan</a> — see exactly what's missing for every program</li>
+          <li><strong>AI application plan + full gap analysis</strong> on <a href="https://www.nursingschoolplanner.com/plan">My Plan</a></li>
+          <li><strong>Deadline tracker, custom lists, and school comparison</strong></li>
           <li><strong>Request a school</strong> — don't see your program? Ask us to add it</li>
         </ul>
         <p style="margin:24px 0">
@@ -129,7 +143,7 @@ export async function sendCyclePassConfirmationEmail(email: string) {
             Go to my dashboard →
           </a>
         </p>
-        <p style="color:#6b7280;font-size:13px">Questions? Reply to this email and we'll get back to you.</p>
+        ${footerLine}
       </div>
     `,
   })

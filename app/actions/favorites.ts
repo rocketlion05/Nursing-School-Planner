@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
+import { hasActivePremium } from '@/lib/premium'
 import { getOrCreateDefaultListId } from '@/app/lib/lists'
 
 /** Returns the logged-in user's profile id, creating an empty profile if needed. */
@@ -48,15 +49,16 @@ export async function toggleFavorite(
 
     const profile = await prisma.profile.findUnique({
       where: { id: profileId },
-      select: { tier: true },
+      select: { tier: true, premiumUntil: true },
     })
     const savedCount = await prisma.listItem.count({ where: { listId } })
 
-    if (!isAdminEmail(user.email) && profile?.tier === 'free' && savedCount >= 2) {
+    const isPremium = isAdminEmail(user.email) || hasActivePremium(profile)
+    if (!isPremium && savedCount >= 2) {
       return {
         isFavorite: false,
         limitReached: true,
-        error: 'Free tier is limited to 2 saved programs. Upgrade to Cycle Pass for unlimited favorites and custom lists.',
+        error: 'Free tier is limited to 2 saved programs. Upgrade to Pro for unlimited favorites and custom lists.',
       }
     }
 

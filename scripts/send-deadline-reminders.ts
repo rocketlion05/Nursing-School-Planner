@@ -16,6 +16,7 @@ import { PrismaLibSql } from '@prisma/adapter-libsql'
 import { PrismaClient } from '../app/generated/prisma/client'
 import { libsqlConfig } from '../lib/libsql-config'
 import { isAdminEmail } from '../lib/admin'
+import { hasActivePremium } from '../lib/premium'
 import { sendDeadlineReminderEmail } from '../lib/email'
 
 loadEnv()
@@ -43,7 +44,7 @@ async function main() {
   const deadlines = await prisma.deadline.findMany({
     include: {
       program: { select: { university: true, name: true } },
-      profile: { select: { name: true, email: true, tier: true, user: { select: { email: true, name: true } } } },
+      profile: { select: { name: true, email: true, tier: true, premiumUntil: true, user: { select: { email: true, name: true } } } },
     },
   })
 
@@ -51,7 +52,7 @@ async function main() {
   let skipped = 0
 
   for (const dl of deadlines) {
-    const isPremium = dl.profile.tier === 'cycle' || isAdminEmail(dl.profile.user?.email)
+    const isPremium = hasActivePremium(dl.profile) || isAdminEmail(dl.profile.user?.email)
     if (!isPremium) {
       skipped++
       continue

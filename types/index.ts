@@ -23,6 +23,8 @@ export interface ProfileData {
   otherExamName: string | null
   otherExamScore: number | null
   tier: 'free' | 'cycle'
+  /** ISO date when time-boxed (1-month code) access lapses; null = no expiry. */
+  premiumUntil: string | null
 }
 
 export interface ProgramData {

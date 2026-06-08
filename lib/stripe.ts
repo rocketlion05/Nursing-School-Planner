@@ -8,7 +8,7 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2026-05-27.dahlia',
 })
 
-export type PlanId = 'monthly' | 'yearly' | 'cycle'
+export type PlanId = 'monthly' | 'yearly'
 
 type Plan = {
   id: PlanId
@@ -24,9 +24,8 @@ type Plan = {
 }
 
 /**
- * All paid plans grant the same premium access (Profile.tier === 'cycle').
- * The only difference is billing cadence — students starting a year or two
- * out can pay monthly/yearly instead of buying a single application cycle.
+ * Paid plans. Both grant the same Pro access (Profile.tier === 'cycle' — a legacy
+ * internal value). The only difference is billing cadence.
  */
 export const PLANS: Record<PlanId, Plan> = {
   monthly: {
@@ -37,7 +36,7 @@ export const PLANS: Record<PlanId, Plan> = {
     interval: 'month',
     label: '$9 / month',
     description:
-      'Full premium access billed monthly — cancel anytime. Great if you are still early in your prerequisites.',
+      'Full Pro access billed monthly — cancel anytime. Great if you are still early in your prerequisites.',
   },
   yearly: {
     id: 'yearly',
@@ -47,19 +46,10 @@ export const PLANS: Record<PlanId, Plan> = {
     interval: 'year',
     label: '$49 / year',
     description:
-      'Full premium access billed yearly — best value if you are planning more than one application season.',
-  },
-  cycle: {
-    id: 'cycle',
-    name: 'Cycle Pass — Nursing School Planner',
-    amount: 1900,
-    mode: 'payment',
-    label: '$19 one-time',
-    description:
-      'Full premium access for a single application season. One-time payment, nothing recurring.',
+      'Full Pro access billed yearly — best value if you are planning more than one application season.',
   },
 }
 
 export function isPlanId(value: string): value is PlanId {
-  return value === 'monthly' || value === 'yearly' || value === 'cycle'
+  return value === 'monthly' || value === 'yearly'
 }

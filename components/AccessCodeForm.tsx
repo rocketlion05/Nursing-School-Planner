@@ -16,7 +16,7 @@ export default function AccessCodeForm() {
     startTransition(async () => {
       const res = await redeemAccessCode(code)
       if (res.success) {
-        setResult({ success: true, message: 'Code accepted! Cycle Pass is now active. Refresh the page to see your new features.' })
+        setResult({ success: true, message: "Code accepted! You've got 1 month of Pro free. Refresh the page to see your new features." })
       } else {
         setResult({ success: false, message: res.error ?? 'Failed to redeem code.' })
       }

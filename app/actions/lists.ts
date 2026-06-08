@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
+import { hasActivePremium } from '@/lib/premium'
 
 export type ListWithItems = {
   id: string
@@ -20,10 +21,10 @@ async function getCtx(): Promise<Ctx | null> {
   if (!user) return null
   const profile = await prisma.profile.findUnique({
     where: { userId: user.id },
-    select: { id: true, tier: true },
+    select: { id: true, tier: true, premiumUntil: true },
   })
   if (!profile) return null
-  return { profileId: profile.id, isPremium: isAdminEmail(user.email) || profile.tier === 'cycle' }
+  return { profileId: profile.id, isPremium: isAdminEmail(user.email) || hasActivePremium(profile) }
 }
 
 /** All of the current profile's lists with their program ids (default list first). */
@@ -43,7 +44,7 @@ export async function getLists(): Promise<ListWithItems[]> {
   }))
 }
 
-const PREMIUM_REQUIRED = 'Custom lists are a Cycle Pass feature. Upgrade to create named lists.'
+const PREMIUM_REQUIRED = 'Custom lists are a Pro feature. Upgrade to create named lists.'
 
 export async function createList(name: string): Promise<{ id?: string; error?: string }> {
   try {
