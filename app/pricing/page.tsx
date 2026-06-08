@@ -90,8 +90,39 @@ export default async function PricingPage({
         </div>
       )}
 
-      {/* Paid plans */}
-      <div className="grid sm:grid-cols-2 gap-6 mb-6 max-w-2xl mx-auto">
+      {/* Plans — Free, Monthly, Yearly side by side for easy comparison */}
+      <div className="grid md:grid-cols-3 gap-6 mb-10 max-w-4xl mx-auto items-stretch">
+        {/* Free */}
+        <div className="relative rounded-2xl border-2 border-gray-200 bg-white p-6 flex flex-col">
+          <h2 className="text-lg font-bold text-gray-900">Free</h2>
+          <div className="text-3xl font-bold mt-1 text-gray-900">
+            $0 <span className="text-base font-normal text-gray-400">always</span>
+          </div>
+          <p className="text-sm text-gray-500 mt-2 mb-4">
+            No credit card needed — everything you need to start planning.
+          </p>
+
+          <ul className="space-y-2 mb-6 flex-1">
+            {FREE_FEATURES.map(f => (
+              <li key={f} className="flex items-start gap-2 text-sm text-gray-700">
+                <Check className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+                {f}
+              </li>
+            ))}
+          </ul>
+
+          {isPro ? (
+            <div className="text-sm text-center text-gray-500 font-medium bg-gray-50 rounded-lg py-2.5">
+              Free plan
+            </div>
+          ) : (
+            <div className="text-sm text-center text-teal-700 font-semibold bg-teal-50 rounded-lg py-2.5">
+              Your current plan
+            </div>
+          )}
+        </div>
+
+        {/* Paid plans */}
         {PAID_CARDS.map(card => {
           const plan = PLANS[card.id]
           const dollars = plan.amount / 100
@@ -141,32 +172,6 @@ export default async function PricingPage({
             </div>
           )
         })}
-      </div>
-
-      {/* Free tier */}
-      <div className="max-w-2xl mx-auto bg-white rounded-2xl border border-gray-200 p-6 mb-10">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h2 className="text-lg font-bold text-gray-900">Free</h2>
-            <div className="text-2xl font-bold mt-1 text-gray-900">
-              $0 <span className="text-sm font-normal text-gray-400">always</span>
-            </div>
-            <p className="text-sm text-gray-500 mt-1">No credit card needed.</p>
-          </div>
-          <ul className="space-y-1.5 sm:max-w-xs">
-            {FREE_FEATURES.map(f => (
-              <li key={f} className="flex items-start gap-2 text-sm text-gray-700">
-                <Check className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
-                {f}
-              </li>
-            ))}
-          </ul>
-        </div>
-        {!isPro && (
-          <div className="mt-4 text-sm text-center text-teal-700 font-semibold bg-teal-50 rounded-lg py-2">
-            Your current plan
-          </div>
-        )}
       </div>
 
       {/* Access Code */}
