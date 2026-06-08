@@ -230,14 +230,14 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
           filtered.map(program => (
             <div
               key={program.id}
-              className="bg-white border border-gray-200 rounded-xl px-5 py-4 flex items-start gap-4 hover:border-teal-300 transition-colors"
+              className="bg-white border border-gray-200 rounded-xl px-4 sm:px-5 py-4 flex items-start gap-2 sm:gap-4 hover:border-teal-300 transition-colors"
             >
               {/* Favorite + list controls */}
-              <div className="flex items-center gap-0.5 shrink-0">
+              <div className="flex items-center gap-0.5 shrink-0 -ml-1">
                 <button
                   onClick={() => handleFavorite(program.id)}
                   disabled={isPending}
-                  className="mt-0.5 shrink-0"
+                  className="shrink-0 p-2 rounded-md"
                   title={favoriteStates[program.id] ? 'Remove from saved' : 'Save program'}
                 >
                   <Heart
@@ -260,7 +260,7 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
                 )}
                 <button
                   onClick={() => handleCompareToggle(program.id)}
-                  className="mt-0.5 shrink-0"
+                  className="shrink-0 p-2 rounded-md"
                   title={compareIds.includes(program.id) ? 'Remove from comparison' : 'Add to comparison'}
                   aria-pressed={compareIds.includes(program.id)}
                 >
@@ -323,30 +323,30 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
       {/* Sticky compare bar — appears once at least one school is selected */}
       {compareIds.length >= 1 && (
         <div className="fixed inset-x-0 bottom-0 z-40 flex justify-center px-4 pb-4 pointer-events-none">
-          <div className="pointer-events-auto flex items-center gap-3 bg-gray-900 text-white rounded-2xl shadow-xl px-4 py-3 max-w-2xl w-full sm:w-auto">
+          <div className="pointer-events-auto flex items-center gap-2 sm:gap-3 bg-gray-900 text-white rounded-2xl shadow-xl px-4 py-3 max-w-2xl w-full sm:w-auto">
             <Scale className="w-4 h-4 text-teal-300 shrink-0" />
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium whitespace-nowrap">
               {compareIds.length} selected
-              <span className="text-gray-400 font-normal">
+              <span className="text-gray-400 font-normal hidden sm:inline">
                 {' '}/ up to {compareLimit}
               </span>
             </span>
-            <div className="ml-auto flex items-center gap-2">
+            <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
               <button
                 onClick={() => setCompareIds([])}
-                className="text-xs text-gray-300 hover:text-white flex items-center gap-1"
+                className="text-xs text-gray-300 hover:text-white flex items-center gap-1 px-2 py-1.5 rounded-md"
               >
                 <X className="w-3.5 h-3.5" /> Clear
               </button>
               {compareIds.length >= 2 ? (
                 <Link
                   href={`/compare?ids=${compareIds.join(',')}`}
-                  className="bg-teal-500 hover:bg-teal-400 text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition-colors"
+                  className="bg-teal-500 hover:bg-teal-400 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
                 >
                   Compare
                 </Link>
               ) : (
-                <span className="text-xs text-gray-400">Select one more to compare</span>
+                <span className="text-xs text-gray-400 whitespace-nowrap">Pick 1 more</span>
               )}
             </div>
           </div>

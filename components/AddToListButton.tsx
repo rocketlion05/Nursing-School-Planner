@@ -47,7 +47,7 @@ export default function AddToListButton({ lists, disabled, onToggleList, onCreat
         onClick={() => setOpen(o => !o)}
         disabled={disabled}
         title="Add to a list"
-        className={`mt-0.5 shrink-0 flex items-center gap-1 text-xs rounded-md px-1.5 py-0.5 transition-colors disabled:opacity-50 ${
+        className={`shrink-0 flex items-center gap-1 text-xs rounded-md p-2 transition-colors disabled:opacity-50 ${
           inCount > 0 ? 'text-teal-600 hover:text-teal-800' : 'text-gray-300 hover:text-teal-500'
         }`}
       >

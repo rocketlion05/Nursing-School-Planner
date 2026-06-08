@@ -80,7 +80,7 @@ export default async function PlanPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">My Application Plan</h1>
           <p className="text-gray-500 mt-1">
