@@ -40,6 +40,7 @@ async function main() {
       deadlines: p.deadlines,
       notes: p.notes,
       dataQuality: p.dataQuality,
+      estimatedFields: JSON.stringify(p.estimatedFields ?? []),
     }
 
     const existing = await prisma.program.findUnique({ where: { slug: p.slug }, select: { id: true } })

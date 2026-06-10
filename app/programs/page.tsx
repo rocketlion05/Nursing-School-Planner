@@ -37,6 +37,7 @@ export default async function ProgramsPage() {
   const programs: ProgramData[] = rawPrograms.map(p => ({
     ...p,
     requiredCourses: JSON.parse(p.requiredCourses) as string[],
+    estimatedFields: JSON.parse(p.estimatedFields) as string[],
   }))
 
   // The heart reflects membership in the default "Saved" list.

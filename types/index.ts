@@ -47,6 +47,8 @@ export interface ProgramData {
   deadlines: string | null
   notes: string | null
   dataQuality: string
+  /** Requirement field names whose values are AI estimates, not published data. */
+  estimatedFields: string[]
 }
 
 export interface FitResult {

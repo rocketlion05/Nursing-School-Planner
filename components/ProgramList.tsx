@@ -298,11 +298,16 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
                     ? 'Log in to see your fit for this program.'
                     : program.fit.explanation}
                 </p>
-                {program.dataQuality === 'placeholder' && (
-                  <p className="text-xs text-gray-400 mt-1 italic">
-                    Requirements not fully verified — check the school&apos;s website before applying.
-                  </p>
-                )}
+                {program.dataQuality === 'placeholder' &&
+                  (program.estimatedFields.length > 0 ? (
+                    <p className="text-xs text-amber-600 mt-1 italic">
+                      Based on estimated requirements — open Details for the full breakdown.
+                    </p>
+                  ) : (
+                    <p className="text-xs text-gray-400 mt-1 italic">
+                      Requirements not fully verified — check the school&apos;s website before applying.
+                    </p>
+                  ))}
               </div>
 
               {/* Right side */}

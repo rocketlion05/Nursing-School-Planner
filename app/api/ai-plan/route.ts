@@ -48,6 +48,7 @@ export async function POST() {
   const toProgramData = (p: (typeof rawPrograms)[number]): ProgramData => ({
     ...p,
     requiredCourses: JSON.parse(p.requiredCourses) as string[],
+    estimatedFields: JSON.parse(p.estimatedFields) as string[],
   })
 
   const programs = rawPrograms.map(toProgramData)

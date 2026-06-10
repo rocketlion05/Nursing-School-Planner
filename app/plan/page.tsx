@@ -49,6 +49,7 @@ export default async function PlanPage() {
   const programs: ProgramData[] = rawPrograms.map(p => ({
     ...p,
     requiredCourses: JSON.parse(p.requiredCourses) as string[],
+    estimatedFields: JSON.parse(p.estimatedFields) as string[],
   }))
 
   const scored = scorePrograms(profile, programs)

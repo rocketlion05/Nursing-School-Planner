@@ -63,7 +63,11 @@ export default async function ComparePage({
     .map(id => byId.get(id))
     .filter((p): p is NonNullable<typeof p> => Boolean(p))
     .map(p => {
-      const program: ProgramData = { ...p, requiredCourses: JSON.parse(p.requiredCourses) as string[] }
+      const program: ProgramData = {
+        ...p,
+        requiredCourses: JSON.parse(p.requiredCourses) as string[],
+        estimatedFields: JSON.parse(p.estimatedFields) as string[],
+      }
       return { program, fit: computeFit(profile, program) }
     })
 

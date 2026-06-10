@@ -57,6 +57,7 @@ export default async function DashboardPage() {
     const prog: ProgramData = {
       ...item.program,
       requiredCourses: JSON.parse(item.program.requiredCourses) as string[],
+      estimatedFields: JSON.parse(item.program.estimatedFields) as string[],
     }
     return { ...prog, fit: computeFit(profile, prog), isFavorite: true }
   })

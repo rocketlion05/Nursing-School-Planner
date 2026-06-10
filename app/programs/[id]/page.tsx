@@ -52,9 +52,12 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
   const program: ProgramData = {
     ...raw,
     requiredCourses: JSON.parse(raw.requiredCourses) as string[],
+    estimatedFields: JSON.parse(raw.estimatedFields) as string[],
   }
 
   const fit = computeFit(profile, program)
+  const est = program.estimatedFields
+  const hasEstimates = est.length > 0
 
   const allCourses = Object.entries(COURSE_MAP)
 
@@ -90,7 +93,10 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
           <div className="flex flex-col items-end gap-2">
             <FitBadge status={fit.status} />
             {(() => {
-              const dq = DQ_BADGE[program.dataQuality] ?? DQ_BADGE.placeholder
+              const dq =
+                program.dataQuality === 'placeholder' && hasEstimates
+                  ? { label: 'Includes estimated requirements', cls: 'bg-amber-100 text-amber-700' }
+                  : (DQ_BADGE[program.dataQuality] ?? DQ_BADGE.placeholder)
               return (
                 <span className={`text-xs px-2 py-0.5 rounded-full ${dq.cls}`}>{dq.label}</span>
               )
@@ -99,7 +105,21 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
         </div>
       </div>
 
-      {program.dataQuality === 'placeholder' && (
+      {program.dataQuality === 'placeholder' && hasEstimates && (
+        <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
+          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+          <span>
+            <strong>About these numbers</strong> — {program.university} doesn&apos;t publish complete
+            admission requirements publicly. Values marked <em>(reasonable estimate)</em> are
+            approximated from comparable BSN programs (school type, selectivity, and region) so you
+            can gauge your odds — it&apos;s the best picture possible short of contacting their
+            admissions office directly. Treat your fit score as a guide, and confirm the real
+            requirements with the school before applying.
+          </span>
+        </div>
+      )}
+
+      {program.dataQuality === 'placeholder' && !hasEstimates && (
         <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
           <span>
@@ -114,7 +134,9 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
           <span>
             <strong>Partially verified</strong> — not all official admission information for this program is publicly available.
-            The requirements shown represent the best reasonable estimate based on available sources.
+            {hasEstimates
+              ? ' Values marked (reasonable estimate) are approximated from comparable BSN programs — the best estimate possible without contacting the admissions office directly. '
+              : ' The requirements shown represent the best reasonable estimate based on available sources. '}
             Always confirm details directly with the school before applying.
           </span>
         </div>
@@ -125,10 +147,10 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="font-semibold text-gray-900 mb-4">Program Requirements</h2>
           <dl className="space-y-3 text-sm">
-            <Row label="Min. Overall GPA" value={program.minOverallGPA != null ? `${program.minOverallGPA.toFixed(2)}` : 'Not specified'} />
-            <Row label="Min. Science GPA" value={program.minScienceGPA != null ? `${program.minScienceGPA.toFixed(2)}` : 'Not specified'} />
-            <Row label="Entrance Exam" value={program.examType ?? 'None required'} />
-            <Row label="Min. Exam Score" value={program.minExamScore != null ? `${program.minExamScore}%` : '—'} />
+            <Row label="Min. Overall GPA" value={program.minOverallGPA != null ? `${program.minOverallGPA.toFixed(2)}` : 'Not specified'} estimated={est.includes('minOverallGPA')} />
+            <Row label="Min. Science GPA" value={program.minScienceGPA != null ? `${program.minScienceGPA.toFixed(2)}` : 'Not specified'} estimated={est.includes('minScienceGPA')} />
+            <Row label="Entrance Exam" value={program.examType ?? 'None required'} estimated={est.includes('examType')} />
+            <Row label="Min. Exam Score" value={program.minExamScore != null ? `${program.minExamScore}%` : '—'} estimated={est.includes('minExamScore')} />
             <Row label="CASPer Required" value={program.casperRequired ? 'Yes' : 'No'} />
             <Row label="Application Deadline" value={program.deadlines ?? '—'} />
             <Row label="Program Type" value={program.programType} />
@@ -151,6 +173,11 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
           ) : (
             <>
               <p className="text-sm text-gray-600 mb-4">{fit.explanation}</p>
+              {hasEstimates && (
+                <p className="text-xs text-amber-700 mb-4 -mt-2">
+                  Calculated partly from estimated requirements — see the note above.
+                </p>
+              )}
               {fit.gpaNote && (
                 <div className="text-sm bg-gray-50 rounded-lg p-3 mb-3">
                   <span className="font-medium">GPA: </span>{fit.gpaNote}
@@ -168,7 +195,12 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
 
       {/* Prerequisites checklist */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-        <h2 className="font-semibold text-gray-900 mb-4">Prerequisites</h2>
+        <h2 className="font-semibold text-gray-900 mb-4">
+          Prerequisites
+          {est.includes('requiredCourses') && (
+            <span className="ml-2 text-xs font-normal text-amber-600">(reasonable estimate)</span>
+          )}
+        </h2>
         <div className="grid sm:grid-cols-2 gap-2">
           {allCourses.map(([key, label]) => {
             const required = program.requiredCourses.includes(key)
@@ -218,11 +250,16 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
   )
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({ label, value, estimated = false }: { label: string; value: string; estimated?: boolean }) {
   return (
     <div className="flex justify-between gap-2">
       <dt className="text-gray-500">{label}</dt>
-      <dd className="text-gray-900 font-medium text-right">{value}</dd>
+      <dd className="text-gray-900 font-medium text-right">
+        {value}
+        {estimated && (
+          <span className="block text-xs font-normal text-amber-600">(reasonable estimate)</span>
+        )}
+      </dd>
     </div>
   )
 }

@@ -101,6 +101,9 @@ model Program {
   deadlines       String?
   notes           String?
   dataQuality     String     @default("placeholder") // placeholder | partial | verified
+  // JSON array of requirement field names whose values are AI estimates rather
+  // than published data (e.g. ["minOverallGPA","examType"]). Cleared on verify.
+  estimatedFields String     @default("[]")
   favorites       Favorite[]
   listItems       ListItem[]
   deadlineEntries Deadline[]
