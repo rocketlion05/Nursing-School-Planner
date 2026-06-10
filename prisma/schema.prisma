@@ -161,11 +161,25 @@ model Deadline {
 }
 
 model AccessCode {
-  id        String    @id @default(cuid())
-  code      String    @unique
-  usedBy    String?
-  usedAt    DateTime?
-  createdAt DateTime  @default(now())
+  id          String                 @id @default(cuid())
+  code        String                 @unique
+  type        String                 @default("month") // 'month' | 'lifetime'
+  maxUses     Int                    @default(1)
+  usedCount   Int                    @default(0)
+  usedBy      String? // legacy single-use field, superseded by redemptions
+  usedAt      DateTime?
+  createdAt   DateTime               @default(now())
+  redemptions AccessCodeRedemption[]
+}
+
+model AccessCodeRedemption {
+  id         String     @id @default(cuid())
+  codeId     String
+  profileId  String
+  redeemedAt DateTime   @default(now())
+  code       AccessCode @relation(fields: [codeId], references: [id], onDelete: Cascade)
+
+  @@unique([codeId, profileId])
 }
 
 model SchoolRequest {

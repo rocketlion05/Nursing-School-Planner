@@ -9,7 +9,9 @@ export const metadata: Metadata = {
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
 import { getSubscriberStats } from '@/app/actions/admin'
+import { listAccessCodes } from '@/app/actions/access-code'
 import AdminRefreshButton from '@/components/AdminRefreshButton'
+import AdminCodeManager from '@/components/AdminCodeManager'
 import { updateRequestStatus } from './actions'
 import { Users, TrendingUp, Calendar, CalendarDays } from 'lucide-react'
 
@@ -39,9 +41,10 @@ export default async function AdminRequestsPage({
 
   if (!isAdmin(user?.email, secret)) notFound()
 
-  const [requests, stats] = await Promise.all([
+  const [requests, stats, accessCodes] = await Promise.all([
     prisma.schoolRequest.findMany({ orderBy: { createdAt: 'desc' } }),
     getSubscriberStats(),
+    listAccessCodes(),
   ])
 
   // Fetch user emails for display
@@ -104,6 +107,10 @@ export default async function AdminRequestsPage({
             <p className="text-2xl font-bold text-gray-900">{mrr}</p>
           </div>
         </div>
+      </div>
+
+      <div className="mb-8">
+        <AdminCodeManager initialCodes={accessCodes} />
       </div>
 
       <div className="mb-4">
