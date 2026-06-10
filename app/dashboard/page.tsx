@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+  robots: { index: false, follow: false },
+}
 import { requireUser } from '@/app/lib/dal'
 import { getProfile } from '@/app/actions/profile'
 import { getDeadlines } from '@/app/actions/deadlines'

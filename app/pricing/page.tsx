@@ -1,4 +1,19 @@
+import type { Metadata } from 'next'
 import { getProfile } from '@/app/actions/profile'
+
+export const metadata: Metadata = {
+  title: 'Pricing — Free & Premium Plans',
+  description:
+    'Start free and upgrade to Cycle Pass for unlimited program favorites, an AI-generated application plan, and priority school requests. One-time payment or flexible subscription.',
+  alternates: { canonical: 'https://www.nursingschoolplanner.com/pricing' },
+  openGraph: {
+    title: 'Pricing — Nursing School Planner',
+    description:
+      'Free plan available. Upgrade to Cycle Pass for AI planning, unlimited favorites, and more.',
+    url: 'https://www.nursingschoolplanner.com/pricing',
+    type: 'website',
+  },
+}
 import { getCurrentUser, getIsAdmin } from '@/app/lib/dal'
 import { listAccessCodes } from '@/app/actions/access-code'
 import AccessCodeForm from '@/components/AccessCodeForm'

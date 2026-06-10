@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import { getProfile } from '@/app/actions/profile'
+
+export const metadata: Metadata = {
+  title: 'My Profile',
+  robots: { index: false, follow: false },
+}
 import { requireUser } from '@/app/lib/dal'
 import ProfileForm from '@/components/ProfileForm'
 

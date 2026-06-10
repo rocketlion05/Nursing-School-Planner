@@ -1,8 +1,14 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { CheckCircle, ArrowRight } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'Payment Successful',
+  robots: { index: false, follow: false },
+}
 
 export default async function PaymentSuccessPage({
   searchParams,

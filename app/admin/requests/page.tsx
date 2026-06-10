@@ -1,5 +1,11 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
+
+export const metadata: Metadata = {
+  title: 'Admin — School Requests',
+  robots: { index: false, follow: false },
+}
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
 import { getSubscriberStats } from '@/app/actions/admin'

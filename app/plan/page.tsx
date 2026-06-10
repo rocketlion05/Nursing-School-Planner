@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'My Application Plan',
+  robots: { index: false, follow: false },
+}
 import { prisma } from '@/lib/prisma'
 import { getProfile } from '@/app/actions/profile'
 import { scorePrograms, computeGapSummary, computeExamInsights, computeRetakeRecommendations } from '@/lib/gap'

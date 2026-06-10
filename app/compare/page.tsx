@@ -1,4 +1,18 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Compare BSN Programs Side by Side',
+  description:
+    'Compare two BSN nursing programs side by side — GPA requirements, entrance exams, prerequisites, and your personal fit score for each program.',
+  alternates: { canonical: 'https://www.nursingschoolplanner.com/compare' },
+  openGraph: {
+    title: 'Compare BSN Programs Side by Side — Nursing School Planner',
+    description: 'Compare GPA requirements, entrance exams, and fit scores for any two BSN programs.',
+    url: 'https://www.nursingschoolplanner.com/compare',
+    type: 'website',
+  },
+}
 import { prisma } from '@/lib/prisma'
 import { getProfile } from '@/app/actions/profile'
 import { computeFit } from '@/lib/scoring'

@@ -1,6 +1,12 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import ResetPasswordForm from '@/components/ResetPasswordForm'
+
+export const metadata: Metadata = {
+  title: 'Reset Password',
+  robots: { index: false, follow: false },
+}
 
 export default async function ResetPasswordPage({
   searchParams,

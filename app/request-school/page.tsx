@@ -1,8 +1,14 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { requireUser } from '@/app/lib/dal'
 import { getProfile } from '@/app/actions/profile'
 import RequestSchoolForm from '@/components/RequestSchoolForm'
 import { Sparkles, Lock } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'Request a School',
+  robots: { index: false, follow: false },
+}
 
 export default async function RequestSchoolPage() {
   await requireUser()

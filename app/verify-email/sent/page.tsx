@@ -1,8 +1,14 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/app/lib/dal'
 import ResendVerification from '@/components/ResendVerification'
+
+export const metadata: Metadata = {
+  title: 'Verify Your Email',
+  robots: { index: false, follow: false },
+}
 
 type Status = 'invalid' | 'unverified' | undefined
 

@@ -1,5 +1,11 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { requireUser } from '@/app/lib/dal'
+
+export const metadata: Metadata = {
+  title: 'Application Deadlines',
+  robots: { index: false, follow: false },
+}
 import { getProfile } from '@/app/actions/profile'
 import { getDeadlines } from '@/app/actions/deadlines'
 import { prisma } from '@/lib/prisma'

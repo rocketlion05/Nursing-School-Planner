@@ -1,4 +1,18 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'TEAS & HESI Study Tools',
+  description:
+    'Free resources and prep guides for the TEAS and HESI A2 nursing entrance exams. Practice questions, score breakdowns, and study strategies for pre-nursing students.',
+  alternates: { canonical: 'https://www.nursingschoolplanner.com/study-tools' },
+  openGraph: {
+    title: 'TEAS & HESI Study Tools — Nursing School Planner',
+    description: 'Free prep resources for the TEAS and HESI A2 nursing entrance exams.',
+    url: 'https://www.nursingschoolplanner.com/study-tools',
+    type: 'website',
+  },
+}
 import { ExternalLink, PlayCircle, BookOpen } from 'lucide-react'
 
 const SECTIONS = [

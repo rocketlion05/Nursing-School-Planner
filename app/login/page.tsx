@@ -1,4 +1,12 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
+
+export const metadata: Metadata = {
+  title: 'Log In',
+  description: 'Log in to your Nursing School Planner account to access your saved profile, fit scores, and AI application plan.',
+  alternates: { canonical: 'https://www.nursingschoolplanner.com/login' },
+  robots: { index: false, follow: false },
+}
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/app/lib/dal'
 import LoginForm from '@/components/LoginForm'

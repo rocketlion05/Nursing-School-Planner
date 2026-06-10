@@ -1,13 +1,38 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
 import { getProfile } from '@/app/actions/profile'
 import { computeFit } from '@/lib/scoring'
 import { COURSE_MAP } from '@/lib/constants'
 import Disclaimer from '@/components/Disclaimer'
 import FitBadge from '@/components/FitBadge'
+import JsonLd from '@/components/JsonLd'
 import { ChevronLeft, CheckCircle, XCircle, Circle, AlertTriangle } from 'lucide-react'
 import type { ProgramData } from '@/types'
+import { SITE_URL } from '@/lib/seo'
+
+export async function generateMetadata(props: PageProps<'/programs/[id]'>): Promise<Metadata> {
+  const { id } = await props.params
+  const program = await prisma.program.findUnique({ where: { id } })
+  if (!program) return {}
+
+  const title = `${program.university} BSN Program Requirements`
+  const description = `${program.name} at ${program.university} in ${program.city}, ${program.state}. View minimum GPA, entrance exam requirements, and prerequisites for the BSN nursing program.`
+  const url = `${SITE_URL}/programs/${id}`
+
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      url,
+      type: 'website',
+    },
+  }
+}
 
 const DQ_BADGE: Record<string, { label: string; cls: string }> = {
   verified: { label: 'Requirements verified', cls: 'bg-green-100 text-green-700' },
@@ -33,8 +58,19 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
 
   const allCourses = Object.entries(COURSE_MAP)
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Programs', item: `${SITE_URL}/programs` },
+      { '@type': 'ListItem', position: 3, name: program.university, item: `${SITE_URL}/programs/${program.id}` },
+    ],
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
+      <JsonLd data={breadcrumbSchema} />
       <Link href="/programs" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 mb-6">
         <ChevronLeft className="w-4 h-4" /> Back to Programs
       </Link>

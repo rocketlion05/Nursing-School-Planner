@@ -1,7 +1,13 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/app/lib/dal'
 import ForgotPasswordForm from '@/components/ForgotPasswordForm'
+
+export const metadata: Metadata = {
+  title: 'Forgot Password',
+  robots: { index: false, follow: false },
+}
 
 export default async function ForgotPasswordPage() {
   if (await getCurrentUser()) redirect('/dashboard')

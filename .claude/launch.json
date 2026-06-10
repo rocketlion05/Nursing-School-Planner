@@ -5,6 +5,7 @@
       "name": "nursing-planner",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
+      "cwd": "C:\\Nursing School Planner Web App",
       "port": 3000
     }
   ]

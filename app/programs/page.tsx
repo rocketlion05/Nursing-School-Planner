@@ -1,4 +1,19 @@
+import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
+
+export const metadata: Metadata = {
+  title: 'Browse BSN Nursing Programs in Arkansas & Texas',
+  description:
+    'Search and filter 87+ accredited BSN nursing programs in Arkansas, Texas, and top national schools. Compare GPA requirements, entrance exams, and prerequisites side by side.',
+  alternates: { canonical: 'https://www.nursingschoolplanner.com/programs' },
+  openGraph: {
+    title: 'Browse BSN Nursing Programs in Arkansas & Texas',
+    description:
+      'Search and filter 87+ accredited BSN nursing programs. Compare GPA requirements, entrance exams, and prerequisites side by side.',
+    url: 'https://www.nursingschoolplanner.com/programs',
+    type: 'website',
+  },
+}
 import { getProfile } from '@/app/actions/profile'
 import { getLists } from '@/app/actions/lists'
 import { getCurrentUser } from '@/app/lib/dal'
