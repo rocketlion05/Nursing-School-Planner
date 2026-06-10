@@ -2,7 +2,10 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
+import { getSubscriberStats } from '@/app/actions/admin'
+import AdminRefreshButton from '@/components/AdminRefreshButton'
 import { updateRequestStatus } from './actions'
+import { Users, TrendingUp, Calendar, CalendarDays } from 'lucide-react'
 
 function isAdmin(userEmail: string | undefined, secret: string | undefined): boolean {
   const adminSecret = process.env.ADMIN_SECRET
@@ -30,7 +33,10 @@ export default async function AdminRequestsPage({
 
   if (!isAdmin(user?.email, secret)) notFound()
 
-  const requests = await prisma.schoolRequest.findMany({ orderBy: { createdAt: 'desc' } })
+  const [requests, stats] = await Promise.all([
+    prisma.schoolRequest.findMany({ orderBy: { createdAt: 'desc' } }),
+    getSubscriberStats(),
+  ])
 
   // Fetch user emails for display
   const userIds = [...new Set(requests.map(r => r.requestedBy).filter(Boolean))] as string[]
@@ -42,11 +48,61 @@ export default async function AdminRequestsPage({
 
   const passedSecret = secret ?? ''
 
+  const mrr = stats ? `$${(stats.mrrCents / 100).toFixed(2)}` : '—'
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">School Requests</h1>
-        <p className="text-gray-500 mt-1">{requests.length} total requests</p>
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="text-gray-500 mt-1">School requests &amp; subscriber overview</p>
+        </div>
+        <AdminRefreshButton />
+      </div>
+
+      {/* Subscriber stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
+            <Calendar className="w-4 h-4 text-blue-600" />
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-medium">Monthly</p>
+            <p className="text-2xl font-bold text-gray-900">{stats?.monthly ?? '—'}</p>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center shrink-0">
+            <CalendarDays className="w-4 h-4 text-purple-600" />
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-medium">Yearly</p>
+            <p className="text-2xl font-bold text-gray-900">{stats?.yearly ?? '—'}</p>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center shrink-0">
+            <Users className="w-4 h-4 text-teal-600" />
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-medium">Total Pro</p>
+            <p className="text-2xl font-bold text-gray-900">{stats?.total ?? '—'}</p>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+            <TrendingUp className="w-4 h-4 text-green-600" />
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-medium">Est. MRR</p>
+            <p className="text-2xl font-bold text-gray-900">{mrr}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold text-gray-900">School Requests</h2>
+        <p className="text-gray-500 text-sm mt-0.5">{requests.length} total requests</p>
       </div>
 
       {requests.length === 0 ? (
