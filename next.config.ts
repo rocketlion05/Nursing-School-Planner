@@ -10,7 +10,17 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   async headers() {
-    return [{ source: '/(.*)', headers: securityHeaders }]
+    return [
+      { source: '/(.*)', headers: securityHeaders },
+      // The *.vercel.app aliases serve a full duplicate of the site. Keep search
+      // engines off them so only www.nursingschoolplanner.com gets indexed
+      // (GSC was flagging "Duplicate without user-selected canonical").
+      {
+        source: '/(.*)',
+        has: [{ type: 'host', value: '(?<sub>.*)\\.vercel\\.app' }],
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+    ]
   },
 }
 
