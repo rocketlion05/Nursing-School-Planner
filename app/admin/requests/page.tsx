@@ -8,12 +8,12 @@ export const metadata: Metadata = {
 }
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
-import { getSubscriberStats } from '@/app/actions/admin'
+import { getSubscriberStats, getUserActivityStats } from '@/app/actions/admin'
 import { listAccessCodes } from '@/app/actions/access-code'
 import AdminRefreshButton from '@/components/AdminRefreshButton'
 import AdminCodeManager from '@/components/AdminCodeManager'
 import { updateRequestStatus } from './actions'
-import { Users, TrendingUp, Calendar, CalendarDays } from 'lucide-react'
+import { Users, TrendingUp, Calendar, CalendarDays, Activity, Zap } from 'lucide-react'
 
 function isAdmin(userEmail: string | undefined, secret: string | undefined): boolean {
   const adminSecret = process.env.ADMIN_SECRET
@@ -41,10 +41,11 @@ export default async function AdminRequestsPage({
 
   if (!isAdmin(user?.email, secret)) notFound()
 
-  const [requests, stats, accessCodes] = await Promise.all([
+  const [requests, stats, accessCodes, activity] = await Promise.all([
     prisma.schoolRequest.findMany({ orderBy: { createdAt: 'desc' } }),
     getSubscriberStats(),
     listAccessCodes(),
+    getUserActivityStats(),
   ])
 
   // Fetch user emails for display
@@ -108,6 +109,30 @@ export default async function AdminRequestsPage({
           </div>
         </div>
       </div>
+
+      {/* User activity */}
+      {activity && (
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-3">Users</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
+                <Users className="w-4 h-4 text-gray-600" />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 font-medium">Total Users</p>
+                <p className="text-2xl font-bold text-gray-900">{activity.totalUsers}</p>
+                <p className="text-xs text-teal-600 flex items-center gap-1">
+                  <Zap className="w-3 h-3" /> {activity.proUsers} pro
+                </p>
+              </div>
+            </div>
+            <ActivityCard label="Active Today" active={activity.activeToday} signups={activity.newToday} />
+            <ActivityCard label="Active This Week" active={activity.activeWeek} signups={activity.newWeek} />
+            <ActivityCard label="Active This Month" active={activity.activeMonth} signups={activity.newMonth} />
+          </div>
+        </div>
+      )}
 
       <div className="mb-8">
         <AdminCodeManager initialCodes={accessCodes} />
@@ -193,6 +218,21 @@ export default async function AdminRequestsPage({
           </table>
         </div>
       )}
+    </div>
+  )
+}
+
+function ActivityCard({ label, active, signups }: { label: string; active: number; signups: number }) {
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3">
+      <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0">
+        <Activity className="w-4 h-4 text-emerald-600" />
+      </div>
+      <div>
+        <p className="text-xs text-gray-500 font-medium">{label}</p>
+        <p className="text-2xl font-bold text-gray-900">{active}</p>
+        <p className="text-xs text-gray-400">+{signups} new signup{signups === 1 ? '' : 's'}</p>
+      </div>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 'use server'
 
 import { stripe } from '@/lib/stripe'
+import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
 
@@ -35,4 +36,43 @@ export async function getSubscriberStats(): Promise<SubscriberStats | null> {
   } catch {
     return null
   }
+}
+
+export type UserActivityStats = {
+  totalUsers: number
+  /** Users with active Pro access (subscription, lifetime, or unexpired code). */
+  proUsers: number
+  activeToday: number
+  activeWeek: number
+  activeMonth: number
+  newToday: number
+  newWeek: number
+  newMonth: number
+}
+
+export async function getUserActivityStats(): Promise<UserActivityStats | null> {
+  const user = await getCurrentUser()
+  if (!isAdminEmail(user?.email)) return null
+
+  const now = Date.now()
+  const dayAgo = new Date(now - 24 * 60 * 60 * 1000)
+  const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000)
+  const monthAgo = new Date(now - 30 * 24 * 60 * 60 * 1000)
+
+  const [totalUsers, proUsers, activeToday, activeWeek, activeMonth, newToday, newWeek, newMonth] =
+    await Promise.all([
+      prisma.user.count(),
+      // Mirrors hasActivePremium(): tier 'cycle' and not lapsed.
+      prisma.profile.count({
+        where: { tier: 'cycle', OR: [{ premiumUntil: null }, { premiumUntil: { gt: new Date() } }] },
+      }),
+      prisma.user.count({ where: { lastActiveAt: { gte: dayAgo } } }),
+      prisma.user.count({ where: { lastActiveAt: { gte: weekAgo } } }),
+      prisma.user.count({ where: { lastActiveAt: { gte: monthAgo } } }),
+      prisma.user.count({ where: { createdAt: { gte: dayAgo } } }),
+      prisma.user.count({ where: { createdAt: { gte: weekAgo } } }),
+      prisma.user.count({ where: { createdAt: { gte: monthAgo } } }),
+    ])
+
+  return { totalUsers, proUsers, activeToday, activeWeek, activeMonth, newToday, newWeek, newMonth }
 }
