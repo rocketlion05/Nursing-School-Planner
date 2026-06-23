@@ -23,8 +23,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getAllGuides(),
   ])
 
+  const now = new Date()
+
   const programEntries: MetadataRoute.Sitemap = programs.map((p) => ({
     url: `${SITE_URL}/programs/${p.urlSlug ?? p.id}`,
+    lastModified: now,
     changeFrequency: 'weekly',
     priority: 0.7,
   }))
@@ -34,6 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .map(name => slugify(name!))
   const stateEntries: MetadataRoute.Sitemap = stateSlugs.map((s) => ({
     url: `${SITE_URL}/nursing-programs/${s}`,
+    lastModified: now,
     changeFrequency: 'weekly',
     priority: 0.8,
   }))
@@ -44,8 +48,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: 'monthly',
     priority: 0.6,
   }))
-
-  const now = new Date()
 
   return [
     { url: SITE_URL, lastModified: now, changeFrequency: 'weekly', priority: 1.0 },

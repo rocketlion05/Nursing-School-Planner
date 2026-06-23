@@ -5,7 +5,7 @@ const styles: Record<FitStatus, string> = {
   Safe: 'bg-green-100 text-green-800 border-green-200',
   Match: 'bg-blue-100 text-blue-800 border-blue-200',
   Reach: 'bg-amber-100 text-amber-800 border-amber-200',
-  'Additional Steps Needed': 'bg-amber-100 text-amber-800 border-amber-200',
+  'Additional Steps Needed': 'bg-red-100 text-red-700 border-red-200',
   'No profile': 'bg-gray-100 text-gray-600 border-gray-200',
   Unverified: 'bg-slate-100 text-slate-600 border-slate-200',
 }
