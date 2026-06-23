@@ -8,17 +8,24 @@ credentials (`.env.production.local`) and `gh`/git auth are local-only.
 |------|----------|-----|
 | `nursing-arkansas-research` | Weekly, Mon ~9:20am | Research & verify every **Arkansas** BSN program from official sources; fill requirements + `officialUrl`; fulfill AR school requests; seed prod; push. |
 | `nursing-texas-research` | Weekly, Wed ~9:20am | Same for **Texas** (~58 schools) on a rotating batch (~15–20/run) so all cycle over ~3 weeks. |
+| `nursing-oklahoma-research` | Weekly, Tue ~9:20am | **Populate + verify Oklahoma** BSN programs from scratch (~8–12/run) until the state is covered, then maintain. |
+| `nursing-louisiana-research` | Weekly, Thu ~9:20am | Same for **Louisiana**. |
 | `nursing-seo-content` | Weekly, Fri ~9:00am | Publish 1–2 new SEO guide articles (`content/guides/*.md`) + strengthen internal linking; push. |
 
 > The old combined `school-maintenance` task (every 3 days) is **retired/disabled** — its
 > per-state research work is now split across the two state agents, and content/SEO is its
 > own routine. Re-enable it only if you want to roll back.
 
-**Adding another state:** duplicate a state SKILL (e.g. copy `nursing-arkansas-research`),
-change the state name + two-letter code in the prompt and the cron day, and create it via
-`mcp__scheduled-tasks__create_scheduled_task` (or the `/schedule` skill). The state hub page
-(`/nursing-programs/<state>`) and sitemap entry appear automatically once that state has
-programs in the DB — both are generated from `prisma/program.state`.
+**Adding another state:** copy the `nursing-oklahoma-research` SKILL (it has the
+populate-from-scratch phase), change the state name + two-letter code + slug prefix + Board of
+Nursing source + cron day, and create it via `mcp__scheduled-tasks__create_scheduled_task` (or
+`/schedule`). Two things to remember:
+- New-state programs MUST set `region: "National"` — the `region` union in `programs-data.ts`
+  only has `Arkansas | Texas | National`, so any other value fails the TypeScript build. (The
+  public-facing grouping that matters is `state`, not `region`.)
+- The state hub (`/nursing-programs/<state>`), its city pages (`/nursing-programs/<state>/<city>`),
+  the chance calculator, and sitemap entries all appear automatically once that state has
+  programs in the DB — they're generated from `prisma/program.state`. You only add program rows.
 
 ## How the pieces fit
 
