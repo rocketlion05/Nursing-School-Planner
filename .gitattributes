@@ -1,0 +1,6 @@
+# Treat binary assets as binary so CRLF normalization never corrupts them.
+*.pdf binary
+*.png binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
