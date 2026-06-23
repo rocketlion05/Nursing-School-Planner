@@ -94,6 +94,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Link href="/nursing-programs/texas" className="text-gray-500 hover:text-teal-600 hover:underline">Texas Nursing Programs</Link>
             <Link href="/guides" className="text-gray-500 hover:text-teal-600 hover:underline">Guides</Link>
             <Link href="/contact" className="text-gray-500 hover:text-teal-600 hover:underline">Contact Us</Link>
+            <Link href="/privacy-policy" className="text-gray-500 hover:text-teal-600 hover:underline">Privacy Policy</Link>
           </nav>
           <p>Nursing School Planner &mdash; for planning only, not official admissions advice.</p>
         </footer>
