@@ -2,6 +2,7 @@ import { loadEnv } from '../scripts/_env'
 import { PrismaLibSql } from '@prisma/adapter-libsql'
 import { PrismaClient } from '../app/generated/prisma/client'
 import { libsqlConfig } from '../lib/libsql-config'
+import { computeUrlSlugs } from '../lib/slug'
 import { SEED_PROGRAMS } from './programs-data'
 
 loadEnv() // pass --prod to seed the live Turso database
@@ -19,9 +20,14 @@ async function main() {
   let updated = 0
   const canonicalSlugs: string[] = []
 
+  // Collision-safe pretty URL keys derived from the university name.
+  const urlSlugs = computeUrlSlugs(SEED_PROGRAMS)
+
   for (const p of SEED_PROGRAMS) {
     canonicalSlugs.push(p.slug)
     const data = {
+      urlSlug: urlSlugs.get(p.slug)!,
+      officialUrl: p.officialUrl ?? null,
       name: p.name,
       university: p.university,
       city: p.city,

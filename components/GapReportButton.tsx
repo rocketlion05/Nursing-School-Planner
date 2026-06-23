@@ -102,7 +102,7 @@ export default function GapReportButton({ profile, gap, programs }: Props) {
 
       // Fit counts
       section('Fit Summary')
-      const statusOrder: FitStatus[] = ['Safe', 'Match', 'Reach', 'Not eligible', 'Unverified']
+      const statusOrder: FitStatus[] = ['Safe', 'Match', 'Reach', 'Additional Steps Needed', 'Unverified']
       statusOrder.forEach(s => {
         const c = gap.counts[s]
         if (c > 0) line(`${s}: ${c} program${c !== 1 ? 's' : ''}`, 10, false, [17, 24, 39])
@@ -140,12 +140,12 @@ export default function GapReportButton({ profile, gap, programs }: Props) {
         Safe: [4, 120, 87],
         Match: [29, 78, 216],
         Reach: [180, 83, 9],
-        'Not eligible': [185, 28, 28],
+        'Additional Steps Needed': [185, 28, 28],
         'No profile': [75, 85, 99],
         Unverified: [71, 85, 105],
       }
 
-      const renderOrder: FitStatus[] = ['Safe', 'Match', 'Reach', 'Not eligible']
+      const renderOrder: FitStatus[] = ['Safe', 'Match', 'Reach', 'Additional Steps Needed']
       renderOrder.forEach(status => {
         const group = grouped.get(status)
         if (!group || group.length === 0) return

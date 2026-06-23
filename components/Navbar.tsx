@@ -114,6 +114,9 @@ export default function Navbar({ username, isAdmin = false }: { username: string
               <Link href="/study-tools" className={navLinkCls(pathname.startsWith('/study-tools'))}>
                 Study Tools
               </Link>
+              <Link href="/guides" className={navLinkCls(pathname.startsWith('/guides'))}>
+                Guides
+              </Link>
               <Link href="/pricing" className={navLinkCls(pathname.startsWith('/pricing'))}>
                 Pricing
               </Link>
@@ -122,6 +125,7 @@ export default function Navbar({ username, isAdmin = false }: { username: string
             <>
               <Link href="/programs" className={navLinkCls(pathname.startsWith('/programs'))}>Programs</Link>
               <Link href="/study-tools" className={navLinkCls(pathname.startsWith('/study-tools'))}>Study Tools</Link>
+              <Link href="/guides" className={navLinkCls(pathname.startsWith('/guides'))}>Guides</Link>
               <Link href="/pricing" className={navLinkCls(pathname.startsWith('/pricing'))}>Pricing</Link>
             </>
           )}
@@ -227,6 +231,9 @@ export default function Navbar({ username, isAdmin = false }: { username: string
               <Link href="/study-tools" className={clsx('block', navLinkCls(pathname.startsWith('/study-tools')))}>
                 Study Tools
               </Link>
+              <Link href="/guides" className={clsx('block', navLinkCls(pathname.startsWith('/guides')))}>
+                Guides
+              </Link>
               <Link href="/pricing" className={clsx('block', navLinkCls(pathname.startsWith('/pricing')))}>
                 Pricing
               </Link>
@@ -257,6 +264,7 @@ export default function Navbar({ username, isAdmin = false }: { username: string
             <>
               <Link href="/programs" className={clsx('block', navLinkCls(pathname.startsWith('/programs')))}>Programs</Link>
               <Link href="/study-tools" className={clsx('block', navLinkCls(pathname.startsWith('/study-tools')))}>Study Tools</Link>
+              <Link href="/guides" className={clsx('block', navLinkCls(pathname.startsWith('/guides')))}>Guides</Link>
               <Link href="/pricing" className={clsx('block', navLinkCls(pathname.startsWith('/pricing')))}>Pricing</Link>
               <div className="border-t border-gray-100 pt-2 mt-2 space-y-0.5">
                 <Link href="/login" className={clsx('block', navLinkCls(false))}>Log in</Link>

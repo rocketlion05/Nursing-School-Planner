@@ -23,7 +23,7 @@ const STATUS_COLORS: Record<FitStatus, string> = {
   Safe: 'bg-green-100 text-green-800',
   Match: 'bg-blue-100 text-blue-800',
   Reach: 'bg-amber-100 text-amber-800',
-  'Not eligible': 'bg-red-100 text-red-700',
+  'Additional Steps Needed': 'bg-red-100 text-red-700',
   'No profile': 'bg-gray-100 text-gray-600',
   Unverified: 'bg-slate-100 text-slate-600',
 }
@@ -82,7 +82,7 @@ export default async function PlanPage() {
     examNote: p.fit.examNote,
   }))
 
-  const statuses: FitStatus[] = ['Safe', 'Match', 'Reach', 'Not eligible']
+  const statuses: FitStatus[] = ['Safe', 'Match', 'Reach', 'Additional Steps Needed']
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -246,7 +246,7 @@ export default async function PlanPage() {
               {scored.map(p => (
                 <tr key={p.id} className="hover:bg-gray-50">
                   <td className="py-2 pr-4">
-                    <Link href={`/programs/${p.id}`} className="text-teal-600 hover:underline">
+                    <Link href={`/programs/${p.urlSlug ?? p.id}`} className="text-teal-600 hover:underline">
                       {p.university}
                     </Link>
                   </td>

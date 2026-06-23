@@ -150,11 +150,13 @@ const FIELD_ORDER: (keyof SeedProgram)[] = [
   'slug', 'name', 'university', 'city', 'state', 'isPublic', 'programType',
   'isFlagship', 'tier', 'region', 'minOverallGPA', 'minScienceGPA',
   'requiredCourses', 'examType', 'minExamScore', 'casperRequired',
-  'deadlines', 'notes', 'dataQuality', 'estimatedFields',
+  'deadlines', 'notes', 'officialUrl', 'dataQuality', 'estimatedFields',
 ]
 
 function serialize(p: SeedProgram): string {
-  const parts = FIELD_ORDER.filter(k => !(k === 'estimatedFields' && !p.estimatedFields?.length))
+  const parts = FIELD_ORDER
+    .filter(k => !(k === 'estimatedFields' && !p.estimatedFields?.length))
+    .filter(k => !(k === 'officialUrl' && !p.officialUrl))
     .map(k => `${k}: ${JSON.stringify(p[k])}`)
   return `  { ${parts.join(', ')} },`
 }

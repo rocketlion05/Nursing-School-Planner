@@ -174,7 +174,7 @@ export default async function ComparePage({
                 {items.map(({ program }) => (
                   <th key={program.id} className="text-left p-4 align-bottom min-w-[12rem]">
                     <Link
-                      href={`/programs/${program.id}`}
+                      href={`/programs/${program.urlSlug ?? program.id}`}
                       className="font-semibold text-gray-900 hover:text-teal-600 hover:underline"
                     >
                       {program.university}

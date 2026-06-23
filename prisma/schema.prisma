@@ -86,6 +86,13 @@ model Profile {
 model Program {
   id              String     @id @default(cuid())
   slug            String?    @unique
+  // Pretty, SEO-friendly URL key derived from the university name (e.g.
+  // "arkansas-state-university"). Stable upsert key stays `slug`; this is only
+  // for routing. Computed/deduped at seed time — see prisma/seed.ts.
+  urlSlug         String?    @unique
+  // The school's official admissions / program requirements page (real, working
+  // link). Filled by the per-state research agents from official .edu sources.
+  officialUrl     String?
   name            String
   university      String
   city            String

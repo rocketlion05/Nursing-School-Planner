@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { prisma } from '@/lib/prisma'
@@ -8,18 +8,24 @@ import { COURSE_MAP } from '@/lib/constants'
 import Disclaimer from '@/components/Disclaimer'
 import FitBadge from '@/components/FitBadge'
 import JsonLd from '@/components/JsonLd'
-import { ChevronLeft, CheckCircle, XCircle, Circle, AlertTriangle } from 'lucide-react'
+import { ChevronLeft, CheckCircle, XCircle, Circle, AlertTriangle, ExternalLink } from 'lucide-react'
 import type { ProgramData } from '@/types'
 import { SITE_URL } from '@/lib/seo'
 
+// Resolve a program by its pretty urlSlug first, falling back to the raw cuid id
+// (so old /programs/<cuid> links keep working).
+function findProgram(idOrSlug: string) {
+  return prisma.program.findFirst({ where: { OR: [{ urlSlug: idOrSlug }, { id: idOrSlug }] } })
+}
+
 export async function generateMetadata(props: PageProps<'/programs/[id]'>): Promise<Metadata> {
   const { id } = await props.params
-  const program = await prisma.program.findUnique({ where: { id } })
+  const program = await findProgram(id)
   if (!program) return {}
 
   const title = `${program.university} BSN Program Requirements`
   const description = `${program.name} at ${program.university} in ${program.city}, ${program.state}. View minimum GPA, entrance exam requirements, and prerequisites for the BSN nursing program.`
-  const url = `${SITE_URL}/programs/${id}`
+  const url = `${SITE_URL}/programs/${program.urlSlug ?? program.id}`
 
   return {
     title,
@@ -43,11 +49,16 @@ const DQ_BADGE: Record<string, { label: string; cls: string }> = {
 export default async function ProgramDetailPage(props: PageProps<'/programs/[id]'>) {
   const { id } = await props.params
   const [raw, profile] = await Promise.all([
-    prisma.program.findUnique({ where: { id } }),
+    findProgram(id),
     getProfile(),
   ])
 
   if (!raw) notFound()
+
+  // Permanently redirect legacy cuid URLs to the pretty slug for clean, canonical URLs.
+  if (raw.urlSlug && id !== raw.urlSlug) {
+    permanentRedirect(`/programs/${raw.urlSlug}`)
+  }
 
   const program: ProgramData = {
     ...raw,
@@ -67,7 +78,7 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
       { '@type': 'ListItem', position: 2, name: 'Programs', item: `${SITE_URL}/programs` },
-      { '@type': 'ListItem', position: 3, name: program.university, item: `${SITE_URL}/programs/${program.id}` },
+      { '@type': 'ListItem', position: 3, name: program.university, item: `${SITE_URL}/programs/${program.urlSlug ?? program.id}` },
     ],
   }
 
@@ -89,6 +100,17 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
             </div>
             <h1 className="text-2xl font-bold text-gray-900">{program.university}</h1>
             <p className="text-gray-500">{program.name} · {program.city}, {program.state}</p>
+            {program.officialUrl && (
+              <a
+                href={program.officialUrl}
+                target="_blank"
+                rel="noopener nofollow"
+                className="inline-flex items-center gap-1.5 mt-3 text-sm font-semibold text-teal-700 bg-teal-50 border border-teal-200 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors"
+              >
+                Visit official admissions page
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
           </div>
           <div className="flex flex-col items-end gap-2">
             <FitBadge status={fit.status} />

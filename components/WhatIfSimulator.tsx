@@ -17,7 +17,7 @@ export type SimProgram = {
   requiredCourses: string[]
 }
 
-const STATUS_ORDER: FitStatus[] = ['Safe', 'Match', 'Reach', 'Not eligible']
+const STATUS_ORDER: FitStatus[] = ['Safe', 'Match', 'Reach', 'Additional Steps Needed']
 
 function Slider({
   label, value, min, max, step, format, onChange, original,
@@ -53,14 +53,14 @@ const STATUS_COLORS: Record<FitStatus, string> = {
   Safe: 'bg-green-50 text-green-800',
   Match: 'bg-blue-50 text-blue-800',
   Reach: 'bg-amber-50 text-amber-800',
-  'Not eligible': 'bg-red-50 text-red-700',
+  'Additional Steps Needed': 'bg-red-50 text-red-700',
   'No profile': 'bg-gray-50 text-gray-600',
   Unverified: 'bg-slate-50 text-slate-600',
 }
 
 function tally(profile: ProfileData, programs: SimProgram[]) {
   const counts: Record<FitStatus, number> = {
-    Safe: 0, Match: 0, Reach: 0, 'Not eligible': 0, 'No profile': 0, Unverified: 0,
+    Safe: 0, Match: 0, Reach: 0, 'Additional Steps Needed': 0, 'No profile': 0, Unverified: 0,
   }
   programs.forEach(p => {
     counts[computeFit(profile, p as unknown as ProgramData).status]++

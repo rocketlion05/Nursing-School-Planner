@@ -38,7 +38,7 @@ export function computeGapSummary(
     Safe: 0,
     Match: 0,
     Reach: 0,
-    'Not eligible': 0,
+    'Additional Steps Needed': 0,
     'No profile': 0,
     Unverified: 0,
   }
@@ -50,7 +50,7 @@ export function computeGapSummary(
   // Tally missing courses across non-disqualified programs
   const courseCounts: Record<string, number> = {}
   scoredPrograms
-    .filter(p => p.fit.status !== 'Not eligible' && p.fit.status !== 'No profile')
+    .filter(p => p.fit.status !== 'Additional Steps Needed' && p.fit.status !== 'No profile')
     .forEach(p => {
       p.fit.missingCourses.forEach(k => {
         courseCounts[k] = (courseCounts[k] ?? 0) + 1

@@ -1,4 +1,4 @@
-export type FitStatus = 'Safe' | 'Match' | 'Reach' | 'Not eligible' | 'No profile' | 'Unverified'
+export type FitStatus = 'Safe' | 'Match' | 'Reach' | 'Additional Steps Needed' | 'No profile' | 'Unverified'
 
 export interface CourseItem {
   key: string
@@ -29,6 +29,10 @@ export interface ProfileData {
 
 export interface ProgramData {
   id: string
+  /** SEO-friendly URL key (e.g. "arkansas-state-university"); null for legacy rows. */
+  urlSlug: string | null
+  /** Official admissions / requirements page for the school; null if unverified. */
+  officialUrl: string | null
   name: string
   university: string
   city: string

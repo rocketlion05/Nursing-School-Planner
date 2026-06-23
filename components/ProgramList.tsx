@@ -19,7 +19,7 @@ type Props = {
   lists: ListWithItems[]
 }
 
-const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach', 'Not eligible', 'Unverified']
+const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach', 'Additional Steps Needed', 'Unverified']
 const REGION_OPTIONS = ['All', 'Arkansas', 'Texas', 'National'] as const
 const TIER_OPTIONS = ['All', 'Top TX', 'Top US', 'Local'] as const
 
@@ -314,7 +314,7 @@ export default function ProgramList({ programs, tier, isAuthed, isPremium, lists
               <div className="shrink-0 flex flex-col items-end gap-2">
                 <FitBadge status={program.fit.status} />
                 <Link
-                  href={`/programs/${program.id}`}
+                  href={`/programs/${program.urlSlug ?? program.id}`}
                   className="text-xs text-teal-600 hover:text-teal-800 flex items-center gap-0.5"
                 >
                   Details <ChevronRight className="w-3.5 h-3.5" />

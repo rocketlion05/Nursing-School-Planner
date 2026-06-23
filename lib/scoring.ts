@@ -60,7 +60,7 @@ export function computeFit(profile: ProfileData | null, program: ProgramData): F
   if (missingCourses.length >= 3) {
     const labels = missingCourses.map(k => COURSE_MAP[k] ?? k).join(', ')
     return {
-      status: 'Not eligible',
+      status: 'Additional Steps Needed',
       explanation: `Missing ${missingCourses.length} required prerequisites (${labels}). Complete these before applying.`,
       missingCourses,
       completedCourses,
@@ -75,7 +75,7 @@ export function computeFit(profile: ProfileData | null, program: ProgramData): F
     if (gap > 0.5) {
       gpaNote = `Your GPA (${profile.overallGPA.toFixed(2)}) is ${gap.toFixed(2)} below the ${program.minOverallGPA.toFixed(2)} minimum.`
       return {
-        status: 'Not eligible',
+        status: 'Additional Steps Needed',
         explanation: gpaNote,
         missingCourses,
         completedCourses,

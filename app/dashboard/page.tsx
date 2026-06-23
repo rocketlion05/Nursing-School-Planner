@@ -67,7 +67,7 @@ export default async function DashboardPage() {
   const upcomingDeadlines = deadlines.filter(d => d.deadlineDate >= todayISO).slice(0, 4)
 
   // Fit counts for the summary bar
-  const fitCounts: Record<FitStatus, number> = { Safe: 0, Match: 0, Reach: 0, 'Not eligible': 0, 'No profile': 0, Unverified: 0 }
+  const fitCounts: Record<FitStatus, number> = { Safe: 0, Match: 0, Reach: 0, 'Additional Steps Needed': 0, 'No profile': 0, Unverified: 0 }
   favPrograms.forEach(p => { fitCounts[p.fit.status] = (fitCounts[p.fit.status] ?? 0) + 1 })
 
   // Profile completeness checklist
@@ -160,7 +160,7 @@ export default async function DashboardPage() {
                 {favPrograms.map(p => (
                   <tr key={p.id} className="hover:bg-gray-50">
                     <td className="py-2 pr-4">
-                      <Link href={`/programs/${p.id}`} className="text-teal-600 hover:underline font-medium">
+                      <Link href={`/programs/${p.urlSlug ?? p.id}`} className="text-teal-600 hover:underline font-medium">
                         {p.university}
                       </Link>
                     </td>

@@ -105,7 +105,7 @@ export function buildPlanContext(
   lines.push('')
   lines.push('FIT SUMMARY ACROSS ALL PROGRAMS')
   lines.push(
-    `- Safe: ${gap.counts.Safe}, Match: ${gap.counts.Match}, Reach: ${gap.counts.Reach}, Not eligible: ${gap.counts['Not eligible']}`,
+    `- Safe: ${gap.counts.Safe}, Match: ${gap.counts.Match}, Reach: ${gap.counts.Reach}, Additional Steps Needed: ${gap.counts['Additional Steps Needed']}`,
   )
   if (gap.commonMissingCourses.length) {
     lines.push(

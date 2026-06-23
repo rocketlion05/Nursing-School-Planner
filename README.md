@@ -69,7 +69,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ├── components/           # Shared UI components
 │   ├── Navbar.tsx
 │   ├── Disclaimer.tsx    # Reusable disclaimer banner
-│   ├── FitBadge.tsx      # Safe/Match/Reach/Not eligible badge
+│   ├── FitBadge.tsx      # Safe/Match/Reach/Additional Steps Needed badge
 │   ├── ProfileForm.tsx   # Interactive profile form (client)
 │   ├── ProfileSummary.tsx# Live preview card
 │   ├── ProgramList.tsx   # Filterable program list (client)
@@ -92,7 +92,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 All scoring is deterministic and rule-based — no ML.
 
-**Hard disqualifiers → "Not eligible":**
+**Hard disqualifiers → "Additional Steps Needed":**
 - Missing 3+ required prerequisites
 - Overall GPA more than 0.5 below the program minimum
 
