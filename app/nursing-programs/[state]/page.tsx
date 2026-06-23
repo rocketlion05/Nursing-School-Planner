@@ -1,41 +1,20 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ChevronRight, ExternalLink, GraduationCap } from 'lucide-react'
+import { ChevronRight, ExternalLink, GraduationCap, MapPin } from 'lucide-react'
 import { prisma } from '@/lib/prisma'
 import JsonLd from '@/components/JsonLd'
 import Disclaimer from '@/components/Disclaimer'
 import { slugify } from '@/lib/slug'
+import { STATE_NAMES, slugToStateCode, stateSlug } from '@/lib/states'
 import { SITE_URL } from '@/lib/seo'
-
-// US state code -> full name. Used to map a pretty /nursing-programs/<state> slug
-// to the two-letter code stored on each program.
-const STATE_NAMES: Record<string, string> = {
-  AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California',
-  CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia',
-  HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa',
-  KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland',
-  MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri',
-  MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey',
-  NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio',
-  OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
-  SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont',
-  VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming',
-}
-
-function slugToStateCode(slug: string): string | null {
-  for (const [code, name] of Object.entries(STATE_NAMES)) {
-    if (slugify(name) === slug) return code
-  }
-  return null
-}
 
 export async function generateStaticParams() {
   const rows = await prisma.program.findMany({ select: { state: true }, distinct: ['state'] })
   return rows
-    .map(r => STATE_NAMES[r.state])
+    .map(r => stateSlug(r.state))
     .filter(Boolean)
-    .map(name => ({ state: slugify(name!) }))
+    .map(s => ({ state: s! }))
 }
 
 export async function generateMetadata(props: PageProps<'/nursing-programs/[state]'>): Promise<Metadata> {
@@ -144,6 +123,55 @@ export default async function StateHubPage(props: PageProps<'/nursing-programs/[
           </div>
         ))}
       </div>
+
+      {(() => {
+        const noExam = programs.filter(p => !p.examType)
+        const cities = Array.from(new Set(programs.map(p => p.city).filter(Boolean))).sort()
+        return (
+          <>
+            {noExam.length > 0 && (
+              <section className="mt-10">
+                <h2 className="text-xl font-bold text-gray-900 mb-3">
+                  {name} nursing programs with no entrance exam
+                </h2>
+                <p className="text-gray-500 text-sm mb-3">
+                  These BSN programs in {name} do not require the TEAS or HESI A2 entrance exam.
+                </p>
+                <ul className="flex flex-wrap gap-2">
+                  {noExam.map(p => (
+                    <li key={p.id}>
+                      <Link
+                        href={`/programs/${p.urlSlug ?? p.id}`}
+                        className="inline-block text-sm bg-white border border-gray-200 rounded-full px-3 py-1.5 hover:border-teal-300 text-gray-700"
+                      >
+                        {p.university}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {cities.length > 1 && (
+              <section className="mt-10">
+                <h2 className="text-xl font-bold text-gray-900 mb-3">Browse {name} nursing programs by city</h2>
+                <ul className="flex flex-wrap gap-2">
+                  {cities.map(c => (
+                    <li key={c}>
+                      <Link
+                        href={`/nursing-programs/${state}/${slugify(c)}`}
+                        className="inline-flex items-center gap-1 text-sm bg-teal-50 border border-teal-200 text-teal-700 rounded-full px-3 py-1.5 hover:bg-teal-100"
+                      >
+                        <MapPin className="w-3.5 h-3.5" /> {c}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </>
+        )
+      })()}
 
       <div className="mt-10">
         <Disclaimer compact />

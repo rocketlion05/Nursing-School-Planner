@@ -2,24 +2,12 @@ import type { MetadataRoute } from 'next'
 import { prisma } from '@/lib/prisma'
 import { SITE_URL } from '@/lib/seo'
 import { slugify } from '@/lib/slug'
+import { stateSlug } from '@/lib/states'
 import { getAllGuides } from '@/lib/guides'
-
-const STATE_NAMES: Record<string, string> = {
-  AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California',
-  CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia',
-  HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa',
-  KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland',
-  MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri',
-  MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey',
-  NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio',
-  OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
-  SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont',
-  VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming',
-}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [programs, guides] = await Promise.all([
-    prisma.program.findMany({ select: { id: true, urlSlug: true, state: true } }),
+    prisma.program.findMany({ select: { id: true, urlSlug: true, state: true, city: true } }),
     getAllGuides(),
   ])
 
@@ -33,13 +21,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   // One hub page per state that has programs.
-  const stateSlugs = Array.from(new Set(programs.map(p => STATE_NAMES[p.state]).filter(Boolean)))
-    .map(name => slugify(name!))
+  const stateSlugs = Array.from(new Set(programs.map(p => stateSlug(p.state)).filter(Boolean))) as string[]
   const stateEntries: MetadataRoute.Sitemap = stateSlugs.map((s) => ({
     url: `${SITE_URL}/nursing-programs/${s}`,
     lastModified: now,
     changeFrequency: 'weekly',
     priority: 0.8,
+  }))
+
+  // One hub page per (state, city) that has programs.
+  const citySlugs = Array.from(
+    new Set(
+      programs
+        .map(p => { const s = stateSlug(p.state); return s && p.city ? `${s}/${slugify(p.city)}` : null })
+        .filter(Boolean) as string[],
+    ),
+  )
+  const cityEntries: MetadataRoute.Sitemap = citySlugs.map((sc) => ({
+    url: `${SITE_URL}/nursing-programs/${sc}`,
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.6,
   }))
 
   const guideEntries: MetadataRoute.Sitemap = guides.map((g) => ({
@@ -61,6 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/contact`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${SITE_URL}/privacy-policy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
     ...stateEntries,
+    ...cityEntries,
     ...guideEntries,
     ...programEntries,
   ]
