@@ -90,6 +90,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <footer className="border-t border-gray-200 py-6 text-center text-xs text-gray-400">
           <nav className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mb-3" aria-label="Footer">
             <Link href="/programs" className="text-gray-500 hover:text-teal-600 hover:underline">All Programs</Link>
+            <Link href="/chance-calculator" className="text-gray-500 hover:text-teal-600 hover:underline">Chances Calculator</Link>
             <Link href="/nursing-programs/arkansas" className="text-gray-500 hover:text-teal-600 hover:underline">Arkansas Nursing Programs</Link>
             <Link href="/nursing-programs/texas" className="text-gray-500 hover:text-teal-600 hover:underline">Texas Nursing Programs</Link>
             <Link href="/guides" className="text-gray-500 hover:text-teal-600 hover:underline">Guides</Link>

@@ -124,6 +124,7 @@ export default function Navbar({ username, isAdmin = false }: { username: string
           ) : (
             <>
               <Link href="/programs" className={navLinkCls(pathname.startsWith('/programs'))}>Programs</Link>
+              <Link href="/chance-calculator" className={navLinkCls(pathname.startsWith('/chance-calculator'))}>Chances</Link>
               <Link href="/study-tools" className={navLinkCls(pathname.startsWith('/study-tools'))}>Study Tools</Link>
               <Link href="/guides" className={navLinkCls(pathname.startsWith('/guides'))}>Guides</Link>
               <Link href="/pricing" className={navLinkCls(pathname.startsWith('/pricing'))}>Pricing</Link>
@@ -263,6 +264,7 @@ export default function Navbar({ username, isAdmin = false }: { username: string
           ) : (
             <>
               <Link href="/programs" className={clsx('block', navLinkCls(pathname.startsWith('/programs')))}>Programs</Link>
+              <Link href="/chance-calculator" className={clsx('block', navLinkCls(pathname.startsWith('/chance-calculator')))}>Chances</Link>
               <Link href="/study-tools" className={clsx('block', navLinkCls(pathname.startsWith('/study-tools')))}>Study Tools</Link>
               <Link href="/guides" className={clsx('block', navLinkCls(pathname.startsWith('/guides')))}>Guides</Link>
               <Link href="/pricing" className={clsx('block', navLinkCls(pathname.startsWith('/pricing')))}>Pricing</Link>
