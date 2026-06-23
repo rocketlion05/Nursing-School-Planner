@@ -27,10 +27,21 @@ export default async function GuidesIndexPage() {
         <BookOpen className="w-6 h-6 text-teal-600" />
         <h1 className="text-3xl font-bold text-gray-900">Nursing School Guides</h1>
       </div>
-      <p className="text-gray-500 mb-8">
+      <p className="text-gray-500 mb-6">
         Practical, no-nonsense advice on getting into a BSN program — admissions, entrance exams,
         GPA and prerequisites, and what each state expects.
       </p>
+
+      <Link
+        href="/free-checklist"
+        className="flex items-center gap-3 bg-teal-50 border border-teal-200 rounded-xl p-4 mb-8 hover:bg-teal-100 transition-colors"
+      >
+        <span className="text-2xl">📋</span>
+        <span className="text-sm text-teal-900">
+          <strong>Free download:</strong> the BSN Prerequisite &amp; Application Checklist — everything you
+          need to apply, in one printable PDF. <span className="underline">Get it →</span>
+        </span>
+      </Link>
 
       {guides.length === 0 ? (
         <p className="text-gray-400">Guides are coming soon.</p>

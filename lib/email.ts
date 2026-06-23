@@ -110,6 +110,35 @@ export async function sendWelcomeEmail(email: string) {
 }
 
 /**
+ * Sent when someone downloads the free lead-magnet (e.g. the prerequisite
+ * checklist). Delivers the download link and nudges them toward the free tools.
+ */
+export async function sendLeadMagnetEmail(email: string, downloadUrl: string) {
+  await send({
+    to: email,
+    subject: 'Your free BSN Prerequisite & Application Checklist',
+    html: `
+      <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
+        ${logoHeader}
+        <h2 style="color:#0d9488;text-align:center">Here's your free checklist!</h2>
+        <p>Thanks for downloading the <strong>BSN Prerequisite &amp; Application Checklist</strong>. Use it to stay on track for every nursing program you apply to.</p>
+        <p style="margin:24px 0;text-align:center">
+          <a href="${downloadUrl}"
+             style="background:#0d9488;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">
+            Download the checklist (PDF) →
+          </a>
+        </p>
+        <p>Want to know your odds? See which programs you're a Safe, Match, or Reach for with our free calculator:</p>
+        <p style="margin:16px 0;text-align:center">
+          <a href="${SITE}/chance-calculator" style="color:#0d9488;font-weight:600">Try the free Chances Calculator →</a>
+        </p>
+        <p style="color:#9ca3af;font-size:12px;margin-top:24px">You're receiving this because you requested the checklist on nursingschoolplanner.com.</p>
+      </div>
+    `,
+  })
+}
+
+/**
  * Confirms Pro access. When `expiresAt` is provided (a 1-month free access code),
  * the email states the access window; otherwise it reads as ongoing (paid plan).
  */

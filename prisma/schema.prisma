@@ -195,6 +195,18 @@ model AccessCodeRedemption {
   @@unique([codeId, profileId])
 }
 
+// Email captured via a free lead-magnet download (e.g. the prerequisite checklist).
+// Not tied to a user account — top-of-funnel marketing list.
+model Lead {
+  id        String   @id @default(cuid())
+  email     String
+  magnet    String   @default("bsn-prerequisite-checklist")
+  source    String?
+  createdAt DateTime @default(now())
+
+  @@unique([email, magnet])
+}
+
 model SchoolRequest {
   id          String    @id @default(cuid())
   schoolName  String
