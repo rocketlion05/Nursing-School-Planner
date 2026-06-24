@@ -221,7 +221,12 @@ model Lead {
   email     String
   magnet    String   @default("bsn-prerequisite-checklist")
   source    String?
-  createdAt DateTime @default(now())
+  // Nurture-drip progress: how many follow-up emails have been sent, and when the
+  // last one went out. Advanced by scripts/send-lead-drip.ts. Stage 0 = only the
+  // initial magnet email has been sent.
+  dripStage  Int       @default(0)
+  lastDripAt DateTime?
+  createdAt  DateTime  @default(now())
 
   @@unique([email, magnet])
 }

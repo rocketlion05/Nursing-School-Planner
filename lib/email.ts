@@ -139,6 +139,68 @@ export async function sendLeadMagnetEmail(email: string, downloadUrl: string) {
 }
 
 /**
+ * Nurture-drip emails sent after the lead-magnet download (stages 1..N).
+ * Returns whether a stage exists/was sent so the runner can stop at the end.
+ */
+const DRIP: { subject: string; body: string }[] = [
+  {
+    subject: 'Your #1 next step after the checklist',
+    body: `
+      <h2 style="color:#0d9488">Got the checklist? Here's where to start.</h2>
+      <p>The single most useful thing you can do right now is figure out <strong>where you actually stand</strong> — before you waste application fees on schools that are out of reach or miss "safe" ones you'd easily get into.</p>
+      <p>Our free calculator scores your GPA and TEAS/HESI against real BSN program requirements in seconds:</p>
+      <p style="margin:24px 0;text-align:center"><a href="${SITE}/chance-calculator" style="background:#0d9488;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">See my chances (free) →</a></p>`,
+  },
+  {
+    subject: '3 mistakes that get pre-nursing apps rejected',
+    body: `
+      <h2 style="color:#0d9488">3 avoidable mistakes</h2>
+      <p>After looking at dozens of BSN programs, these are the things that quietly sink applications:</p>
+      <ol style="line-height:1.8">
+        <li><strong>Applying only to reach schools.</strong> Balance every reach with a safe and a match.</li>
+        <li><strong>Ignoring the science GPA.</strong> Many programs weight it more heavily than your overall GPA.</li>
+        <li><strong>Underestimating the entrance exam.</strong> Aim well above the minimum — competitive applicants do.</li>
+      </ol>
+      <p style="margin:24px 0;text-align:center"><a href="${SITE}/chance-calculator" style="background:#0d9488;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">Check where you stand →</a></p>`,
+  },
+  {
+    subject: 'Have you checked your nursing school odds yet?',
+    body: `
+      <h2 style="color:#0d9488">Don't apply blind</h2>
+      <p>If you haven't yet, take two minutes to see which BSN programs you're a <strong>Safe</strong>, <strong>Match</strong>, or <strong>Reach</strong> for. It's free and there's no signup.</p>
+      <p style="margin:20px 0;text-align:center"><a href="${SITE}/chance-calculator" style="background:#0d9488;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">Run my chances →</a></p>
+      <p>Want to save schools, track deadlines, and get a personalized application plan? <a href="${SITE}/signup">Create a free account</a>.</p>`,
+  },
+  {
+    subject: 'Application deadlines are closer than you think',
+    body: `
+      <h2 style="color:#0d9488">Beat the deadline</h2>
+      <p>Nursing program deadlines sneak up — and many don't accept late applications. A clear, semester-by-semester plan is the difference between a scramble and a strong application.</p>
+      <p>Our <strong>Cycle Pass</strong> ($19, one-time) unlocks your AI application plan, deadline tracker, unlimited saved schools, and side-by-side comparison — everything you need for one application cycle.</p>
+      <p style="margin:24px 0;text-align:center"><a href="${SITE}/pricing" style="background:#0d9488;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">Get your plan →</a></p>`,
+  },
+]
+
+export const DRIP_STAGES = DRIP.length
+
+export async function sendLeadDripEmail(email: string, stage: number): Promise<boolean> {
+  const item = DRIP[stage - 1]
+  if (!item) return false
+  await send({
+    to: email,
+    subject: item.subject,
+    html: `
+      <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
+        ${logoHeader}
+        ${item.body}
+        <p style="color:#9ca3af;font-size:12px;margin-top:24px">You're receiving these tips because you downloaded our free checklist. Not useful? Just reply and we'll stop.</p>
+      </div>
+    `,
+  })
+  return true
+}
+
+/**
  * Confirms Pro access. When `expiresAt` is provided (a 1-month free access code),
  * the email states the access window; otherwise it reads as ongoing (paid plan).
  */
