@@ -39,19 +39,29 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ received: true })
       }
 
+      // Cycle Pass (one-time) carries a derived expiry + cycle label in metadata;
+      // it grants time-boxed Pro. Subscriptions have no such metadata → unlimited.
+      const cycleUntilRaw = session.metadata?.cyclePremiumUntil
+      const cycleUntil = cycleUntilRaw ? new Date(cycleUntilRaw) : null
+      const isCyclePass = cycleUntil != null && !Number.isNaN(cycleUntil.getTime())
+      const cycleLabel = session.metadata?.cycleLabel
+
       try {
-        // Upsert the profile tier to 'cycle' (Pro). A paid subscription has no
-        // expiry — clear premiumUntil so a prior 1-month code grant can't cut it
-        // short. Creates an empty profile if none exists (paid before profile).
+        // Upsert the profile tier to 'cycle' (Pro). Subscriptions have no expiry
+        // (premiumUntil null). The Cycle Pass expires at the end of the chosen
+        // cycle and records that cycle as the student's target term.
+        const data = isCyclePass
+          ? { tier: 'cycle', premiumUntil: cycleUntil, ...(cycleLabel ? { targetTerm: cycleLabel } : {}) }
+          : { tier: 'cycle', premiumUntil: null }
         await prisma.profile.upsert({
           where:  { userId },
-          create: { userId, tier: 'cycle', premiumUntil: null },
-          update: { tier: 'cycle', premiumUntil: null },
+          create: { userId, ...data },
+          update: data,
         })
-        console.log(`Upgraded user ${userId} to Pro (session ${session.id})`)
+        console.log(`Upgraded user ${userId} to Pro${isCyclePass ? ` (Cycle Pass until ${cycleUntil!.toISOString()})` : ''} (session ${session.id})`)
         // Send confirmation email — look up user email from userId
         const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
-        if (user?.email) sendProConfirmationEmail(user.email).catch(() => {})
+        if (user?.email) sendProConfirmationEmail(user.email, isCyclePass ? { expiresAt: cycleUntil! } : undefined).catch(() => {})
       } catch (err) {
         console.error('Failed to upgrade user tier:', err)
         return NextResponse.json({ error: 'DB error' }, { status: 500 })

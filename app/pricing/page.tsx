@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 import { getCurrentUser } from '@/app/lib/dal'
 import AccessCodeForm from '@/components/AccessCodeForm'
 import CheckoutButton from '@/components/CheckoutButton'
+import CyclePassCard from '@/components/CyclePassCard'
 import ManageBillingButton from '@/components/ManageBillingButton'
 import { PLANS, type PlanId } from '@/lib/stripe'
 import { Check, Zap } from 'lucide-react'
@@ -32,7 +33,7 @@ const FREE_FEATURES = [
 const PREMIUM_FEATURES = [
   'Everything in Free',
   'Unlimited saved favorites',
-  'AI-powered semester plan + PDF export',
+  'AI academic advisor — ask anything, get your plan & best-fit schools',
   'Gap analysis PDF report (profile, fit scores, missing prereqs)',
   'TEAS/HESI score breakdown + unlock insights',
   'What-if GPA & score simulator',
@@ -48,10 +49,11 @@ type PaidCard = {
   highlight?: boolean
 }
 
-// Order shown left→right. Yearly highlighted as the best value for multi-year planners.
+// The one-time Cycle Pass (rendered separately, with a cycle selector) is the hero
+// offer. Monthly/yearly subscriptions follow for students planning across seasons.
 const PAID_CARDS: PaidCard[] = [
   { id: 'monthly', title: 'Monthly', cadence: '/ month' },
-  { id: 'yearly', title: 'Yearly', cadence: '/ year', badge: 'Best value', highlight: true },
+  { id: 'yearly', title: 'Yearly', cadence: '/ year', badge: 'Best value' },
 ]
 
 export default async function PricingPage({
@@ -69,8 +71,9 @@ export default async function PricingPage({
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-gray-900 mb-3">Simple, Student-Friendly Pricing</h1>
         <p className="text-gray-500 max-w-xl mx-auto">
-          Start free, upgrade to Pro when you need more. Pay monthly or save with yearly — both
-          unlock the same Pro features. Have a promo code? Redeem it below for a free month.
+          Start free, then unlock Pro for your application cycle. Most students grab the one-time
+          Cycle Pass — full Pro access through the season you&apos;re applying in, no subscription.
+          Prefer to pay as you go? Monthly and yearly options unlock the same features.
         </p>
       </div>
 
@@ -102,8 +105,8 @@ export default async function PricingPage({
         </div>
       )}
 
-      {/* Plans — Free, Monthly, Yearly side by side for easy comparison */}
-      <div className="grid md:grid-cols-3 gap-6 mb-10 max-w-4xl mx-auto items-stretch">
+      {/* Plans — Free, Cycle Pass (hero), Monthly, Yearly */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 max-w-6xl mx-auto items-stretch">
         {/* Free */}
         <div className="relative rounded-2xl border-2 border-gray-200 bg-white p-6 flex flex-col">
           <h2 className="text-lg font-bold text-gray-900">Free</h2>
@@ -134,7 +137,15 @@ export default async function PricingPage({
           )}
         </div>
 
-        {/* Paid plans */}
+        {/* Cycle Pass — hero one-time offer with a cycle selector */}
+        <CyclePassCard
+          isAuthed={Boolean(user)}
+          isPro={isPro}
+          features={PREMIUM_FEATURES}
+          description={PLANS.cycle.description}
+        />
+
+        {/* Subscription plans */}
         {PAID_CARDS.map(card => {
           const plan = PLANS[card.id]
           const dollars = plan.amount / 100

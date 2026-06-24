@@ -3,12 +3,16 @@
 import { redirect } from 'next/navigation'
 import { requireUser } from '@/app/lib/dal'
 import { stripe, PLANS, isPlanId, type PlanId } from '@/lib/stripe'
+import { cycleEndDate, cycleLabel, isCycleTerm, type CycleTerm } from '@/lib/cycle'
 
 function baseUrl(): string {
   return process.env.OAUTH_REDIRECT_BASE_URL?.replace(/\/$/, '') ?? 'http://localhost:3000'
 }
 
-export async function createCheckoutSession(planIdInput: PlanId): Promise<void> {
+export async function createCheckoutSession(
+  planIdInput: PlanId,
+  cycleInput?: { term: string; year: number },
+): Promise<void> {
   const user = await requireUser() // redirects to /login if not authed
 
   // planIdInput comes from the client — validate before trusting it.
@@ -16,6 +20,22 @@ export async function createCheckoutSession(planIdInput: PlanId): Promise<void> 
   const plan = PLANS[planId]
   const isSubscription = plan.mode === 'subscription'
   const base = baseUrl()
+
+  // For the one-time Cycle Pass, validate the chosen cycle server-side and derive
+  // the access-expiry date here (never trust a date from the client). Access runs
+  // through the end of the selected cycle; clamp to a sane future if somehow past.
+  let cycleMeta: Record<string, string> | undefined
+  if (planId === 'cycle') {
+    const term: CycleTerm = isCycleTerm(cycleInput?.term) ? cycleInput!.term : 'Fall'
+    const now = new Date()
+    let year = Number(cycleInput?.year)
+    if (!Number.isInteger(year) || year < now.getUTCFullYear() || year > now.getUTCFullYear() + 3) {
+      year = now.getUTCFullYear() + 1
+    }
+    let end = cycleEndDate(term, year)
+    if (end.getTime() <= now.getTime()) end = new Date(now.getTime() + 270 * 86_400_000) // ~9mo safety
+    cycleMeta = { plan: 'cycle', cyclePremiumUntil: end.toISOString(), cycleLabel: cycleLabel(term, year) }
+  }
 
   const session = await stripe.checkout.sessions.create({
     mode: plan.mode,
@@ -32,7 +52,7 @@ export async function createCheckoutSession(planIdInput: PlanId): Promise<void> 
             ? { recurring: { interval: plan.interval } }
             : {}),
           product_data: {
-            name: plan.name,
+            name: cycleMeta ? `${plan.name} (${cycleMeta.cycleLabel})` : plan.name,
             description: plan.description,
           },
         },
@@ -42,6 +62,9 @@ export async function createCheckoutSession(planIdInput: PlanId): Promise<void> 
     ...(isSubscription
       ? { subscription_data: { metadata: { userId: user.id, plan: plan.id } } }
       : {}),
+    // The Cycle Pass carries its derived expiry + label so the webhook can set
+    // a time-boxed grant. Subscriptions have no session metadata → unlimited.
+    ...(cycleMeta ? { metadata: cycleMeta } : {}),
     success_url: `${base}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${base}/pricing?canceled=1`,
   })

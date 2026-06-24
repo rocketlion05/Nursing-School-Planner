@@ -24,7 +24,7 @@ export const stripe: Stripe = new Proxy({} as Stripe, {
   },
 })
 
-export type PlanId = 'monthly' | 'yearly'
+export type PlanId = 'cycle' | 'monthly' | 'yearly'
 
 type Plan = {
   id: PlanId
@@ -44,6 +44,15 @@ type Plan = {
  * internal value). The only difference is billing cadence.
  */
 export const PLANS: Record<PlanId, Plan> = {
+  cycle: {
+    id: 'cycle',
+    name: 'Cycle Pass — Nursing School Planner',
+    amount: 2900,
+    mode: 'payment',
+    label: '$29 one-time',
+    description:
+      'Full Pro access for one application cycle — pick the term and year you’re applying for. One-time payment, no subscription, no auto-renew.',
+  },
   monthly: {
     id: 'monthly',
     name: 'Monthly Plan — Nursing School Planner',
@@ -67,5 +76,5 @@ export const PLANS: Record<PlanId, Plan> = {
 }
 
 export function isPlanId(value: string): value is PlanId {
-  return value === 'monthly' || value === 'yearly'
+  return value === 'cycle' || value === 'monthly' || value === 'yearly'
 }
