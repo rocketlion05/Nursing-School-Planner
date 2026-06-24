@@ -55,7 +55,7 @@ async function main() {
       create: { slug: p.slug, ...data },
       update: data,
     })
-    existing ? updated++ : created++
+    if (existing) updated++; else created++
   }
 
   // Remove legacy/stale programs no longer in the canonical list (favorites cascade).

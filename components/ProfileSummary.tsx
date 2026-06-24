@@ -1,6 +1,6 @@
 import type { ProfileData } from '@/types'
 import { COURSE_MAP, US_STATES } from '@/lib/constants'
-import { User, BookOpen, FlaskConical, Star } from 'lucide-react'
+import { User, BookOpen, FlaskConical } from 'lucide-react'
 
 export default function ProfileSummary({ profile }: { profile: ProfileData }) {
   const stateLabels = US_STATES.filter(s => profile.statePrefs.includes(s.code)).map(s => s.label)

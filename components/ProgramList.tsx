@@ -26,7 +26,7 @@ const TIER_OPTIONS = ['All', 'Top TX', 'Top US', 'Local'] as const
 const COMPARE_LIMIT_FREE = 2
 const COMPARE_LIMIT_PREMIUM = 6
 
-export default function ProgramList({ programs, tier, isAuthed, isPremium, lists: initialLists }: Props) {
+export default function ProgramList({ programs, isAuthed, isPremium, lists: initialLists }: Props) {
   const [query, setQuery] = useState('')
   const [regionFilter, setRegionFilter] = useState<(typeof REGION_OPTIONS)[number]>('All')
   const [tierFilter, setTierFilter] = useState<(typeof TIER_OPTIONS)[number]>('All')

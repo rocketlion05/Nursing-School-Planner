@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { saveProfile } from '@/app/actions/profile'
 import type { ProfileData } from '@/types'
-import { COURSES, US_STATES, TARGET_TERMS, EXAM_TYPES } from '@/lib/constants'
+import { COURSES, US_STATES, TARGET_TERMS } from '@/lib/constants'
 import ProfileSummary from '@/components/ProfileSummary'
 import { Save, CheckCircle, AlertCircle } from 'lucide-react'
 

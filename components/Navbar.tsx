@@ -45,11 +45,13 @@ export default function Navbar({ username, isAdmin = false }: { username: string
     return () => { document.removeEventListener('mousedown', onMouse); document.removeEventListener('keydown', onKey) }
   }, [])
 
-  // Collapse everything on route change
+  // Collapse all menus on route change (intentional reset-on-navigation).
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect -- resetting menu state when the route changes is intended */
     setMobileOpen(false)
     setPlannerOpen(false)
     setUserOpen(false)
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [pathname])
 
   const plannerActive = PLANNER_LINKS.some(l => pathname.startsWith(l.href))
