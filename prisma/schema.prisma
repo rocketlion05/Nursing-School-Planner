@@ -117,6 +117,25 @@ model Program {
   favorites       Favorite[]
   listItems       ListItem[]
   deadlineEntries Deadline[]
+  outcomes        Outcome[]
+}
+
+// Crowdsourced, self-reported admission outcomes for a program ("I got in with a
+// 3.6 / 78 TEAS"). Public submissions, no account required. Powers aggregate
+// "real admitted-student stats" on each program page — unique data + SEO moat.
+model Outcome {
+  id         String   @id @default(cuid())
+  programId  String
+  program    Program  @relation(fields: [programId], references: [id], onDelete: Cascade)
+  result     String   // 'admitted' | 'waitlisted' | 'rejected'
+  overallGPA Float?
+  scienceGPA Float?
+  examType   String? // 'TEAS' | 'HESI A2' | 'NLN PAX'
+  examScore  Float?
+  cycleYear  Int?
+  createdAt  DateTime @default(now())
+
+  @@index([programId])
 }
 
 model Favorite {

@@ -8,9 +8,11 @@ import { COURSE_MAP } from '@/lib/constants'
 import Disclaimer from '@/components/Disclaimer'
 import FitBadge from '@/components/FitBadge'
 import JsonLd from '@/components/JsonLd'
-import { ChevronLeft, CheckCircle, XCircle, Circle, AlertTriangle, ExternalLink } from 'lucide-react'
+import { ChevronLeft, CheckCircle, XCircle, Circle, AlertTriangle, ExternalLink, Users } from 'lucide-react'
 import type { ProgramData } from '@/types'
 import { SITE_URL } from '@/lib/seo'
+import { summarizeOutcomes } from '@/lib/outcomes'
+import OutcomeForm from '@/components/OutcomeForm'
 
 // Resolve a program by its pretty urlSlug first, falling back to the raw cuid id
 // (so old /programs/<cuid> links keep working).
@@ -65,6 +67,12 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
     requiredCourses: JSON.parse(raw.requiredCourses) as string[],
     estimatedFields: JSON.parse(raw.estimatedFields) as string[],
   }
+
+  const outcomeRows = await prisma.outcome.findMany({
+    where: { programId: raw.id },
+    select: { result: true, overallGPA: true, examType: true, examScore: true },
+  })
+  const stats = summarizeOutcomes(outcomeRows)
 
   const fit = computeFit(profile, program)
   const est = program.estimatedFields
@@ -267,7 +275,53 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
         </ul>
       </div>
 
+      {/* Crowdsourced admission outcomes */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+        <div className="flex items-center gap-2 mb-1">
+          <Users className="w-5 h-5 text-teal-600" />
+          <h2 className="font-semibold text-gray-900">Real applicant outcomes</h2>
+        </div>
+
+        {stats.total === 0 ? (
+          <p className="text-sm text-gray-500 mb-4">
+            No outcomes reported yet for {program.university}. Be the first to share what it took —
+            it helps other applicants gauge their real odds.
+          </p>
+        ) : (
+          <>
+            <p className="text-sm text-gray-500 mb-4">
+              Based on {stats.total} self-reported outcome{stats.total === 1 ? '' : 's'} from applicants.
+            </p>
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              <Stat label="Admitted" value={stats.admitted} cls="text-green-700" />
+              <Stat label="Waitlisted" value={stats.waitlisted} cls="text-amber-700" />
+              <Stat label="Rejected" value={stats.rejected} cls="text-red-600" />
+            </div>
+            {(stats.admittedAvgGPA != null || stats.admittedAvgExam) && (
+              <div className="text-sm bg-teal-50 border border-teal-200 rounded-lg p-3 mb-4 text-teal-900">
+                <span className="font-medium">Admitted students reported</span>
+                {stats.admittedAvgGPA != null && <> an average GPA of <strong>{stats.admittedAvgGPA.toFixed(2)}</strong>{stats.admittedAvgExam ? '' : ` (n=${stats.admittedGpaN})`}</>}
+                {stats.admittedAvgGPA != null && stats.admittedAvgExam && ' and'}
+                {stats.admittedAvgExam && <> an average {stats.admittedAvgExam.type} of <strong>{stats.admittedAvgExam.avg}%</strong> (n={stats.admittedAvgExam.n})</>}
+                .
+              </div>
+            )}
+          </>
+        )}
+
+        <OutcomeForm programId={raw.id} />
+      </div>
+
       <Disclaimer compact />
+    </div>
+  )
+}
+
+function Stat({ label, value, cls }: { label: string; value: number; cls: string }) {
+  return (
+    <div className="border border-gray-200 rounded-lg p-3 text-center">
+      <div className={`text-2xl font-bold ${cls}`}>{value}</div>
+      <div className="text-xs text-gray-500 mt-0.5">{label}</div>
     </div>
   )
 }
