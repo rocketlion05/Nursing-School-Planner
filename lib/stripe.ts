@@ -24,7 +24,7 @@ export const stripe: Stripe = new Proxy({} as Stripe, {
   },
 })
 
-export type PlanId = 'cycle' | 'monthly' | 'yearly'
+export type PlanId = 'cycle'
 
 type Plan = {
   id: PlanId
@@ -40,8 +40,8 @@ type Plan = {
 }
 
 /**
- * Paid plans. Both grant the same Pro access (Profile.tier === 'cycle' — a legacy
- * internal value). The only difference is billing cadence.
+ * The single paid plan: a one-time Cycle Pass that grants Pro (Profile.tier ===
+ * 'cycle') for one application cycle. No subscriptions.
  */
 export const PLANS: Record<PlanId, Plan> = {
   cycle: {
@@ -53,28 +53,8 @@ export const PLANS: Record<PlanId, Plan> = {
     description:
       'Full Pro access for one application cycle — pick the term and year you’re applying for. One-time payment, no subscription, no auto-renew.',
   },
-  monthly: {
-    id: 'monthly',
-    name: 'Monthly Plan — Nursing School Planner',
-    amount: 900,
-    mode: 'subscription',
-    interval: 'month',
-    label: '$9 / month',
-    description:
-      'Full Pro access billed monthly — cancel anytime. Great if you are still early in your prerequisites.',
-  },
-  yearly: {
-    id: 'yearly',
-    name: 'Yearly Plan — Nursing School Planner',
-    amount: 4900,
-    mode: 'subscription',
-    interval: 'year',
-    label: '$49 / year',
-    description:
-      'Full Pro access billed yearly — best value if you are planning more than one application season.',
-  },
 }
 
 export function isPlanId(value: string): value is PlanId {
-  return value === 'cycle' || value === 'monthly' || value === 'yearly'
+  return value === 'cycle'
 }

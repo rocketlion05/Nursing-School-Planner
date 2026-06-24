@@ -176,7 +176,7 @@ const DRIP: { subject: string; body: string }[] = [
     body: `
       <h2 style="color:#0d9488">Beat the deadline</h2>
       <p>Nursing program deadlines sneak up — and many don't accept late applications. A clear, semester-by-semester plan is the difference between a scramble and a strong application.</p>
-      <p>Our <strong>Cycle Pass</strong> ($19, one-time) unlocks your AI application plan, deadline tracker, unlimited saved schools, and side-by-side comparison — everything you need for one application cycle.</p>
+      <p>Our <strong>Cycle Pass</strong> ($29, one-time) unlocks your AI academic advisor, deadline tracker, unlimited saved schools, and side-by-side comparison — everything you need for one application cycle, with no subscription.</p>
       <p style="margin:24px 0;text-align:center"><a href="${SITE}/pricing" style="background:#0d9488;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">Get your plan →</a></p>`,
   },
 ]

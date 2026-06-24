@@ -4,22 +4,20 @@ import { getProfile } from '@/app/actions/profile'
 export const metadata: Metadata = {
   title: 'Pricing — Free & Premium Plans',
   description:
-    'Start free and upgrade to Cycle Pass for unlimited program favorites, an AI-generated application plan, and priority school requests. One-time payment or flexible subscription.',
+    'Start free and upgrade with the one-time Cycle Pass ($29) for the AI academic advisor, unlimited favorites, gap-analysis PDF, and more. No subscription.',
   alternates: { canonical: 'https://www.nursingschoolplanner.com/pricing' },
   openGraph: {
     title: 'Pricing — Nursing School Planner',
     description:
-      'Free plan available. Upgrade to Cycle Pass for AI planning, unlimited favorites, and more.',
+      'Free plan available. Unlock Pro for your application cycle with the one-time $29 Cycle Pass.',
     url: 'https://www.nursingschoolplanner.com/pricing',
     type: 'website',
   },
 }
 import { getCurrentUser } from '@/app/lib/dal'
 import AccessCodeForm from '@/components/AccessCodeForm'
-import CheckoutButton from '@/components/CheckoutButton'
 import CyclePassCard from '@/components/CyclePassCard'
-import ManageBillingButton from '@/components/ManageBillingButton'
-import { PLANS, type PlanId } from '@/lib/stripe'
+import { PLANS } from '@/lib/stripe'
 import { Check, Zap } from 'lucide-react'
 
 const FREE_FEATURES = [
@@ -41,21 +39,6 @@ const PREMIUM_FEATURES = [
   'Request a school to be added',
 ]
 
-type PaidCard = {
-  id: PlanId
-  title: string
-  cadence: string
-  badge?: string
-  highlight?: boolean
-}
-
-// The one-time Cycle Pass (rendered separately, with a cycle selector) is the hero
-// offer. Monthly/yearly subscriptions follow for students planning across seasons.
-const PAID_CARDS: PaidCard[] = [
-  { id: 'monthly', title: 'Monthly', cadence: '/ month' },
-  { id: 'yearly', title: 'Yearly', cadence: '/ year', badge: 'Best value' },
-]
-
 export default async function PricingPage({
   searchParams,
 }: {
@@ -71,9 +54,9 @@ export default async function PricingPage({
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-gray-900 mb-3">Simple, Student-Friendly Pricing</h1>
         <p className="text-gray-500 max-w-xl mx-auto">
-          Start free, then unlock Pro for your application cycle. Most students grab the one-time
-          Cycle Pass — full Pro access through the season you&apos;re applying in, no subscription.
-          Prefer to pay as you go? Monthly and yearly options unlock the same features.
+          Start free, then unlock Pro with the one-time Cycle Pass — full Pro access through the
+          application season you&apos;re applying in. No subscription, no auto-renew. Have a promo
+          code? Redeem it below for a free month.
         </p>
       </div>
 
@@ -99,14 +82,11 @@ export default async function PricingPage({
               </span>
             )}
           </div>
-          <div className="mt-3">
-            <ManageBillingButton />
-          </div>
         </div>
       )}
 
-      {/* Plans — Free, Cycle Pass (hero), Monthly, Yearly */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 max-w-6xl mx-auto items-stretch">
+      {/* Plans — Free + the one-time Cycle Pass */}
+      <div className="grid sm:grid-cols-2 gap-6 mb-10 max-w-3xl mx-auto items-stretch">
         {/* Free */}
         <div className="relative rounded-2xl border-2 border-gray-200 bg-white p-6 flex flex-col">
           <h2 className="text-lg font-bold text-gray-900">Free</h2>
@@ -145,56 +125,6 @@ export default async function PricingPage({
           description={PLANS.cycle.description}
         />
 
-        {/* Subscription plans */}
-        {PAID_CARDS.map(card => {
-          const plan = PLANS[card.id]
-          const dollars = plan.amount / 100
-          return (
-            <div
-              key={card.id}
-              className={`relative rounded-2xl border-2 p-6 flex flex-col ${
-                card.highlight ? 'border-teal-400 bg-teal-50/40' : 'border-gray-200 bg-white'
-              }`}
-            >
-              {card.badge && (
-                <span
-                  className={`absolute -top-3 left-1/2 -translate-x-1/2 text-xs px-2.5 py-0.5 rounded-full font-medium ${
-                    card.highlight ? 'bg-teal-600 text-white' : 'bg-gray-100 text-gray-600'
-                  }`}
-                >
-                  {card.badge}
-                </span>
-              )}
-              <h2 className="text-lg font-bold text-gray-900">{card.title}</h2>
-              <div className="text-3xl font-bold mt-1 text-gray-900">
-                ${dollars} <span className="text-base font-normal text-gray-400">{card.cadence}</span>
-              </div>
-              <p className="text-sm text-gray-500 mt-2 mb-4">{plan.description}</p>
-
-              <ul className="space-y-2 mb-6 flex-1">
-                {PREMIUM_FEATURES.map(f => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-gray-700">
-                    <Check className="w-4 h-4 text-teal-500 shrink-0 mt-0.5" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              {isPro ? (
-                <div className="text-sm text-center text-teal-700 font-semibold bg-teal-100 rounded-lg py-2.5 flex items-center justify-center gap-2">
-                  <Check className="w-4 h-4" /> Pro active
-                </div>
-              ) : (
-                <CheckoutButton
-                  plan={card.id}
-                  label={`Choose ${plan.label}`}
-                  isAuthed={Boolean(user)}
-                  highlight={card.highlight}
-                />
-              )}
-            </div>
-          )
-        })}
       </div>
 
       {/* Access Code */}
