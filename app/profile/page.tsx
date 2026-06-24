@@ -6,11 +6,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 import { requireUser } from '@/app/lib/dal'
+import { getAllPrograms } from '@/lib/programs'
+import { STATE_NAMES } from '@/lib/states'
 import ProfileForm from '@/components/ProfileForm'
 
 export default async function ProfilePage() {
-  const user = await requireUser()
-  const profile = await getProfile()
+  const [user, profile, programs] = await Promise.all([requireUser(), getProfile(), getAllPrograms()])
+
+  // State-preference options = every state we actually have programs in (auto-grows).
+  const stateOptions = Array.from(new Set(programs.map(p => p.state)))
+    .map(code => ({ code, label: STATE_NAMES[code] ?? code }))
+    .sort((a, b) => a.label.localeCompare(b.label))
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -20,7 +26,7 @@ export default async function ProfilePage() {
           Enter your academic stats to see how you compare to BSN program requirements.
         </p>
       </div>
-      <ProfileForm initialProfile={profile} userEmail={user.email} />
+      <ProfileForm initialProfile={profile} userEmail={user.email} stateOptions={stateOptions} />
     </div>
   )
 }

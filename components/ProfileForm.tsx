@@ -3,17 +3,21 @@
 import { useState, useTransition } from 'react'
 import { saveProfile } from '@/app/actions/profile'
 import type { ProfileData } from '@/types'
-import { COURSES, US_STATES, TARGET_TERMS } from '@/lib/constants'
+import { COURSES, TARGET_TERMS } from '@/lib/constants'
 import ProfileSummary from '@/components/ProfileSummary'
 import { Save, CheckCircle, AlertCircle } from 'lucide-react'
 
-type Props = { initialProfile: ProfileData | null; userEmail: string }
+type Props = {
+  initialProfile: ProfileData | null
+  userEmail: string
+  stateOptions: { code: string; label: string }[]
+}
 
 function toStr(v: number | null | undefined): string {
   return v == null ? '' : String(v)
 }
 
-export default function ProfileForm({ initialProfile, userEmail }: Props) {
+export default function ProfileForm({ initialProfile, userEmail, stateOptions }: Props) {
   const p = initialProfile
 
   const [name, setName] = useState(p?.name ?? '')
@@ -112,8 +116,8 @@ export default function ProfileForm({ initialProfile, userEmail }: Props) {
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <Field label="State preferences">
-              <div className="flex gap-3 pt-1">
-                {US_STATES.map(s => (
+              <div className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
+                {stateOptions.map(s => (
                   <label key={s.code} className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
