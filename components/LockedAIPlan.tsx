@@ -7,7 +7,7 @@ export default function LockedAIPlan() {
     <section className="relative bg-gradient-to-br from-teal-50 to-white rounded-2xl border border-teal-200 p-6 mb-8 overflow-hidden">
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="w-5 h-5 text-teal-600" />
-        <h2 className="text-lg font-bold text-gray-900">Your AI Application Plan</h2>
+        <h2 className="text-lg font-bold text-gray-900">AI Academic Advisor</h2>
       </div>
 
       {/* Blurred faux content */}
@@ -37,16 +37,16 @@ export default function LockedAIPlan() {
           <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center mx-auto mb-3">
             <Lock className="w-5 h-5" />
           </div>
-          <h3 className="font-bold text-gray-900 mb-1">Unlock your personalized plan</h3>
+          <h3 className="font-bold text-gray-900 mb-1">Unlock your AI advisor</h3>
           <p className="text-sm text-gray-500 mb-4">
-            Get an AI-built, semester-by-semester action plan tailored to your stats and
-            target schools — plus PDF export.
+            Chat with an AI academic advisor that knows your stats and our program data — ask it to
+            build your plan, pick your best-fit schools, or answer any application question.
           </p>
           <Link
             href="/pricing"
             className="inline-block w-full bg-teal-600 text-white px-4 py-2.5 rounded-lg font-semibold hover:bg-teal-700 transition-colors"
           >
-            Upgrade to Pro to unlock your personalized plan
+            Upgrade to Pro to unlock your AI advisor
           </Link>
         </div>
       </div>

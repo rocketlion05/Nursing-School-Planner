@@ -11,7 +11,7 @@ import { scorePrograms, computeGapSummary, computeExamInsights, computeRetakeRec
 import { requireUser } from '@/app/lib/dal'
 import Disclaimer from '@/components/Disclaimer'
 import FitBadge from '@/components/FitBadge'
-import AIPlan from '@/components/AIPlan'
+import AIAdvisor from '@/components/AIAdvisor'
 import LockedAIPlan from '@/components/LockedAIPlan'
 import GapReportButton, { type ReportProgram } from '@/components/GapReportButton'
 import WhatIfSimulator, { LockedWhatIf, type SimProgram } from '@/components/WhatIfSimulator'
@@ -99,9 +99,9 @@ export default async function PlanPage() {
         )}
       </div>
 
-      {/* AI-powered plan — Pro unlocks it; free users see a locked teaser */}
+      {/* AI academic advisor (chat) — Pro unlocks it; free users see a locked teaser */}
       {isPremium ? (
-        <AIPlan studentName={profile.name} />
+        <AIAdvisor studentName={profile.name} />
       ) : (
         <LockedAIPlan />
       )}
