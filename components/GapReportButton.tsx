@@ -18,6 +18,24 @@ interface Props {
   programs: ReportProgram[]
 }
 
+// jsPDF's built-in Helvetica uses WinAnsi encoding; characters outside it (e.g. the
+// ✓ in exam notes) render as garbage and mangle the whole text run. Map the common
+// offenders to ASCII and drop anything else WinAnsi can't represent — while keeping
+// the punctuation WinAnsi DOES support (em dash, bullet, smart quotes, …).
+const WINANSI_EXTRA =
+  '€‚ƒ„…†‡ˆ‰Š‹ŒŽ' +
+  '‘’“”•–—˜™š›œžŸ·'
+
+function clean(s: string): string {
+  return s
+    .replace(/\s*[✓✔]\s*/g, ' ')           // ✓ ✔ -> drop (meeting the min is implied)
+    .replace(/[✗✘✕✖❌]/g, 'x') // ✗ ❌ -> x
+    .replace(/≥/g, '>=')
+    .replace(/≤/g, '<=')
+    .replace(/→/g, '->')
+    .replace(/[^\x00-\xFF]/g, ch => (WINANSI_EXTRA.includes(ch) ? ch : '')) // strip other non-Latin1
+}
+
 export default function GapReportButton({ profile, gap, programs }: Props) {
   const [loading, setLoading] = useState(false)
 
@@ -40,7 +58,7 @@ export default function GapReportButton({ profile, gap, programs }: Props) {
         doc.setFontSize(size)
         doc.setFont('helvetica', bold ? 'bold' : 'normal')
         doc.setTextColor(...rgb)
-        const wrapped = doc.splitTextToSize(str, W) as string[]
+        const wrapped = doc.splitTextToSize(clean(str), W) as string[]
         wrapped.forEach(l => { guard(size * 1.5); doc.text(l, M, y); y += size * 1.45 })
       }
 
@@ -66,7 +84,7 @@ export default function GapReportButton({ profile, gap, programs }: Props) {
         doc.text(`${label}:`, M, y)
         doc.setFont('helvetica', 'normal')
         doc.setTextColor(17, 24, 39)
-        doc.text(value, M + 115, y)
+        doc.text(clean(value), M + 115, y)
         y += 14
       }
 
@@ -80,7 +98,7 @@ export default function GapReportButton({ profile, gap, programs }: Props) {
       doc.setFont('helvetica', 'normal')
       doc.setTextColor(107, 114, 128)
       doc.text(
-        `${profile.name || 'Student'}  ·  Nursing School Planner  ·  ${new Date().toLocaleDateString()}`,
+        clean(`${profile.name || 'Student'}  ·  Nursing School Planner  ·  ${new Date().toLocaleDateString()}`),
         M, y,
       )
       y += 8
@@ -154,7 +172,7 @@ export default function GapReportButton({ profile, gap, programs }: Props) {
         doc.setFontSize(10)
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(...statusColors[status])
-        doc.text(`${status} (${group.length})`, M, y)
+        doc.text(clean(`${status} (${group.length})`), M, y)
         y += 13
         group.forEach(p => {
           const detail = p.missingCount > 0
