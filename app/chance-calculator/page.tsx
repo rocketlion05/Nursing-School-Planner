@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import { prisma } from '@/lib/prisma'
-import type { ProgramData } from '@/types'
+import { getAllPrograms } from '@/lib/programs'
 import ChanceCalculator from '@/components/ChanceCalculator'
 import JsonLd from '@/components/JsonLd'
 import Disclaimer from '@/components/Disclaimer'
@@ -48,12 +47,7 @@ export async function generateMetadata(props: PageProps<'/chance-calculator'>): 
 }
 
 export default async function ChanceCalculatorPage() {
-  const raw = await prisma.program.findMany({ orderBy: [{ university: 'asc' }] })
-  const programs: ProgramData[] = raw.map(p => ({
-    ...p,
-    requiredCourses: JSON.parse(p.requiredCourses) as string[],
-    estimatedFields: JSON.parse(p.estimatedFields) as string[],
-  }))
+  const programs = await getAllPrograms()
 
   const faqSchema = {
     '@context': 'https://schema.org',

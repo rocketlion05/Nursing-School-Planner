@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { prisma } from '@/lib/prisma'
 
 export const metadata: Metadata = {
   title: 'Browse BSN Nursing Programs in Arkansas & Texas',
@@ -18,27 +17,21 @@ import { getProfile } from '@/app/actions/profile'
 import { getLists } from '@/app/actions/lists'
 import { getCurrentUser } from '@/app/lib/dal'
 import { scorePrograms } from '@/lib/gap'
+import { getAllPrograms } from '@/lib/programs'
 import ProgramList from '@/components/ProgramList'
 import RequestSchoolButton from '@/components/RequestSchoolButton'
 import Disclaimer from '@/components/Disclaimer'
 import Link from 'next/link'
 import { AlertCircle } from 'lucide-react'
-import type { ProgramData } from '@/types'
 
 export default async function ProgramsPage() {
   const [profile, user] = await Promise.all([getProfile(), getCurrentUser()])
   const isPremium = profile?.tier === 'cycle'
 
-  const [rawPrograms, lists] = await Promise.all([
-    prisma.program.findMany({ orderBy: [{ state: 'asc' }, { university: 'asc' }] }),
+  const [programs, lists] = await Promise.all([
+    getAllPrograms(),
     user ? getLists() : Promise.resolve([]),
   ])
-
-  const programs: ProgramData[] = rawPrograms.map(p => ({
-    ...p,
-    requiredCourses: JSON.parse(p.requiredCourses) as string[],
-    estimatedFields: JSON.parse(p.estimatedFields) as string[],
-  }))
 
   // The heart reflects membership in the default "Saved" list.
   const defaultList = lists.find(l => l.isDefault)
