@@ -21,8 +21,12 @@ export const AI_ADVISOR_SYSTEM_PROMPT =
   "actions to take now.\n" +
   "- If they ask about their best school options, recommend specific programs from their Safe and " +
   "Match lists and say why, then mention any worthwhile Reach schools.\n" +
-  "- NEVER invent a school, GPA cutoff, deadline, exam, or requirement that isn't in the context. " +
-  "If you don't have the data, say so and suggest checking the school's official admissions page.\n" +
+  "- You have the FULL program directory below (every school in our database) with this student's " +
+  "fit and key requirements for each. Use it to answer questions about any specific school by name. " +
+  "If a school they ask about IS in the directory, give its requirements and their fit directly — " +
+  "don't say you lack data. If a school is NOT in the directory, say it isn't in our database yet " +
+  "and suggest its official admissions page.\n" +
+  "- NEVER invent a school, GPA cutoff, deadline, exam, or requirement that isn't in the context.\n" +
   "- Keep replies focused (usually under ~350 words), supportive, and honest about reaches. Use " +
   "markdown: short headings, bullet lists, and **bold** for key numbers. Address the student by " +
   "first name when you know it.";
@@ -177,22 +181,26 @@ export function buildAdvisorContext(
   if (gap.commonMissingCourses.length) lines.push(`- Most-needed prerequisites: ${gap.commonMissingCourses.map(c => `${c.label} (${c.count})`).join(', ')}`)
   if (gap.examsNeeded.length) lines.push(`- Exams to take/retake: ${gap.examsNeeded.join(', ')}`)
 
-  // Best-fit programs (Safe → Match → Reach), capped to keep context tight.
-  const ranked = [...scored]
-    .filter(p => ['Safe', 'Match', 'Reach'].includes(p.fit.status))
-    .sort((a, b) => (FIT_RANK[a.fit.status] ?? 9) - (FIT_RANK[b.fit.status] ?? 9))
-    .slice(0, 25)
-  lines.push('', `BEST-FIT PROGRAMS (showing ${ranked.length}; recommend from these)`)
-  if (ranked.length === 0) {
-    lines.push('- None are Safe/Match/Reach yet — focus on raising GPA, finishing prereqs, and entrance exams first.')
-  } else {
-    for (const p of ranked) {
-      const reqs: string[] = []
-      if (p.minOverallGPA !== null) reqs.push(`GPA ${p.minOverallGPA.toFixed(2)}`)
-      if (p.examType) reqs.push(`${p.examType}${p.minExamScore !== null ? ` ≥ ${p.minExamScore}%` : ''}`)
-      if (p.deadlines) reqs.push(`deadline ${p.deadlines}`)
-      lines.push(`- ${p.university} (${p.city}, ${p.state}) [${p.fit.status}]${reqs.length ? ' — ' + reqs.join(', ') : ''}`)
-    }
+  // FULL program directory with the student's fit — so the advisor can answer about
+  // ANY school by name, not just their top matches. Sorted by fit, then name.
+  const ranked = [...scored].sort(
+    (a, b) => (FIT_RANK[a.fit.status] ?? 9) - (FIT_RANK[b.fit.status] ?? 9) || a.university.localeCompare(b.university),
+  )
+  lines.push(
+    '',
+    `ALL PROGRAMS IN OUR DATABASE (${ranked.length}) — the student's fit + key requirements for each. ` +
+      'Recommend best options from the Safe and Match ones. Answer questions about any school listed here directly.',
+  )
+  for (const p of ranked) {
+    const reqs: string[] = []
+    if (p.minOverallGPA !== null) reqs.push(`GPA ${p.minOverallGPA.toFixed(2)}`)
+    if (p.minScienceGPA !== null) reqs.push(`sci GPA ${p.minScienceGPA.toFixed(2)}`)
+    if (p.examType) reqs.push(`${p.examType}${p.minExamScore !== null ? ` >= ${p.minExamScore}%` : ''}`)
+    if (p.casperRequired) reqs.push('CASPer')
+    if (p.deadlines) reqs.push(`deadline ${p.deadlines}`)
+    lines.push(
+      `- ${p.university} (${p.city}, ${p.state}) [${p.fit.status}]${reqs.length ? ' — ' + reqs.join(', ') : ' — requirements not published'}`,
+    )
   }
   return lines.join('\n')
 }
