@@ -6,18 +6,45 @@ import JsonLd from '@/components/JsonLd'
 import Disclaimer from '@/components/Disclaimer'
 import { SITE_URL } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Nursing School Chances Calculator — Will I Get In?',
-  description:
-    'Free calculator: enter your GPA and TEAS/HESI score to instantly see how many BSN nursing programs you’re a Safe, Match, or Reach for. No signup required.',
-  alternates: { canonical: `${SITE_URL}/chance-calculator` },
-  openGraph: {
-    title: 'Nursing School Chances Calculator — Will I Get In?',
-    description:
-      'Enter your GPA and entrance-exam score to instantly see your odds across real BSN nursing programs. Free, no signup.',
-    url: `${SITE_URL}/chance-calculator`,
-    type: 'website',
-  },
+const BASE_TITLE = 'Nursing School Chances Calculator — Will I Get In?'
+const BASE_DESC =
+  'Free calculator: enter your GPA and TEAS/HESI score to instantly see how many BSN nursing programs you’re a Safe, Match, or Reach for. No signup required.'
+
+export async function generateMetadata(props: PageProps<'/chance-calculator'>): Promise<Metadata> {
+  const sp = await props.searchParams
+  const get = (k: string) => (Array.isArray(sp[k]) ? sp[k]?.[0] : sp[k]) as string | undefined
+  const has = ['safe', 'match', 'reach', 'steps'].some(k => get(k) != null)
+
+  // When a result link is shared, unfurl with a personalized result card.
+  if (has) {
+    const q = new URLSearchParams()
+    for (const k of ['safe', 'match', 'reach', 'steps', 'state']) { const v = get(k); if (v != null) q.set(k, v) }
+    const safe = Number(get('safe') ?? 0), match = Number(get('match') ?? 0)
+    const competitive = safe + match
+    const title = competitive > 0
+      ? `I'm a Safe or Match for ${competitive} BSN program${competitive === 1 ? '' : 's'}!`
+      : 'My nursing school chances'
+    const imageUrl = `${SITE_URL}/chance-calculator/result-image?${q.toString()}`
+    return {
+      title,
+      description: BASE_DESC,
+      alternates: { canonical: `${SITE_URL}/chance-calculator` },
+      openGraph: { title, description: BASE_DESC, url: `${SITE_URL}/chance-calculator`, type: 'website', images: [{ url: imageUrl, width: 1200, height: 630 }] },
+      twitter: { card: 'summary_large_image', title, description: BASE_DESC, images: [imageUrl] },
+    }
+  }
+
+  return {
+    title: BASE_TITLE,
+    description: BASE_DESC,
+    alternates: { canonical: `${SITE_URL}/chance-calculator` },
+    openGraph: {
+      title: BASE_TITLE,
+      description: 'Enter your GPA and entrance-exam score to instantly see your odds across real BSN nursing programs. Free, no signup.',
+      url: `${SITE_URL}/chance-calculator`,
+      type: 'website',
+    },
+  }
 }
 
 export default async function ChanceCalculatorPage() {

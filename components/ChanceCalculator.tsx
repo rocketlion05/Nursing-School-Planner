@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Calculator, Share2, ChevronRight, Sparkles } from 'lucide-react'
+import { Calculator, Share2, ChevronRight, Sparkles, ImageDown } from 'lucide-react'
 import type { ProgramData, FitStatus } from '@/types'
 import { scorePrograms, computeGapSummary } from '@/lib/gap'
 import { COURSE_MAP } from '@/lib/constants'
@@ -60,12 +60,24 @@ export default function ChanceCalculator({ programs }: { programs: ProgramData[]
 
   const canScore = num(overall) !== null
 
+  function resultParams() {
+    const c = result.counts
+    const q = new URLSearchParams({
+      safe: String(c.Safe), match: String(c.Match), reach: String(c.Reach),
+      steps: String(c['Additional Steps Needed']),
+    })
+    if (stateFilter !== 'All') q.set('state', stateFilter)
+    return q.toString()
+  }
+  const imagePath = `/chance-calculator/result-image?${resultParams()}`
+
   async function share() {
-    const url = typeof window !== 'undefined' ? window.location.href : ''
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
+    const url = `${origin}/chance-calculator?${resultParams()}`
     const text = `I checked my nursing school chances — I'm a Safe or Match for ${result.counts.Safe + result.counts.Match} BSN programs!`
     try {
       if (navigator.share) await navigator.share({ title: 'Nursing School Chances', text, url })
-      else { await navigator.clipboard.writeText(url); alert('Link copied!') }
+      else { await navigator.clipboard.writeText(url); alert('Share link copied!') }
     } catch { /* user dismissed */ }
   }
 
@@ -128,9 +140,20 @@ export default function ChanceCalculator({ programs }: { programs: ProgramData[]
               Across <strong>{result.total}</strong> BSN program{result.total === 1 ? '' : 's'}
               {stateFilter !== 'All' ? ` in ${stateFilter}` : ''}:
             </p>
-            <button onClick={share} className="inline-flex items-center gap-1.5 text-sm text-teal-700 hover:text-teal-900 font-medium">
-              <Share2 className="w-4 h-4" /> Share
-            </button>
+            <div className="flex items-center gap-3 shrink-0">
+              <a
+                href={imagePath}
+                target="_blank"
+                rel="noopener"
+                className="inline-flex items-center gap-1.5 text-sm text-teal-700 hover:text-teal-900 font-medium"
+                title="Open a shareable image of your result"
+              >
+                <ImageDown className="w-4 h-4" /> Save image
+              </a>
+              <button onClick={share} className="inline-flex items-center gap-1.5 text-sm text-teal-700 hover:text-teal-900 font-medium">
+                <Share2 className="w-4 h-4" /> Share
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">

@@ -6,23 +6,13 @@ import { prisma } from '@/lib/prisma'
 import JsonLd from '@/components/JsonLd'
 import Disclaimer from '@/components/Disclaimer'
 import { slugify } from '@/lib/slug'
-import { STATE_NAMES, slugToStateCode, stateSlug } from '@/lib/states'
+import { STATE_NAMES, slugToStateCode } from '@/lib/states'
 import { SITE_URL } from '@/lib/seo'
 
-export async function generateStaticParams() {
-  const rows = await prisma.program.findMany({ select: { state: true, city: true } })
-  const seen = new Set<string>()
-  const params: { state: string; city: string }[] = []
-  for (const r of rows) {
-    const s = stateSlug(r.state)
-    if (!s || !r.city) continue
-    const key = `${s}/${slugify(r.city)}`
-    if (seen.has(key)) continue
-    seen.add(key)
-    params.push({ state: s, city: slugify(r.city) })
-  }
-  return params
-}
+// Rendered dynamically on demand (there are many city/state combinations, so
+// pre-rendering them all at build hammers the remote DB). Still fully crawlable
+// and listed in the sitemap.
+export const dynamic = 'force-dynamic'
 
 async function resolve(stateParam: string, cityParam: string) {
   const code = slugToStateCode(stateParam)
