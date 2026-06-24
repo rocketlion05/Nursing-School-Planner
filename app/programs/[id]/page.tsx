@@ -8,7 +8,7 @@ import { COURSE_MAP } from '@/lib/constants'
 import Disclaimer from '@/components/Disclaimer'
 import FitBadge from '@/components/FitBadge'
 import JsonLd from '@/components/JsonLd'
-import { ChevronLeft, CheckCircle, XCircle, Circle, AlertTriangle, ExternalLink, Users } from 'lucide-react'
+import { ChevronLeft, CheckCircle, XCircle, Circle, AlertTriangle, ExternalLink, Users, Mail } from 'lucide-react'
 import type { ProgramData } from '@/types'
 import { SITE_URL } from '@/lib/seo'
 import { summarizeOutcomes } from '@/lib/outcomes'
@@ -108,17 +108,28 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
             </div>
             <h1 className="text-2xl font-bold text-gray-900">{program.university}</h1>
             <p className="text-gray-500">{program.name} · {program.city}, {program.state}</p>
-            {program.officialUrl && (
-              <a
-                href={program.officialUrl}
-                target="_blank"
-                rel="noopener nofollow"
-                className="inline-flex items-center gap-1.5 mt-3 text-sm font-semibold text-teal-700 bg-teal-50 border border-teal-200 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors"
-              >
-                Visit official admissions page
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-            )}
+            <div className="flex flex-wrap items-center gap-2 mt-3">
+              {program.officialUrl && (
+                <a
+                  href={program.officialUrl}
+                  target="_blank"
+                  rel="noopener nofollow"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-teal-700 bg-teal-50 border border-teal-200 hover:bg-teal-100 px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  Visit official admissions page
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
+              {program.admissionEmail && (
+                <a
+                  href={`mailto:${program.admissionEmail}`}
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 hover:border-teal-300 hover:text-teal-700 px-3 py-1.5 rounded-lg transition-colors"
+                >
+                  <Mail className="w-3.5 h-3.5" />
+                  Email admissions
+                </a>
+              )}
+            </div>
           </div>
           <div className="flex flex-col items-end gap-2">
             <FitBadge status={fit.status} />

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
 import { Heart, ChevronRight, Search, Scale, X } from 'lucide-react'
 import FitBadge from '@/components/FitBadge'
@@ -10,6 +10,7 @@ import { toggleFavorite } from '@/app/actions/favorites'
 import { addToList, removeFromList, createList } from '@/app/actions/lists'
 import type { ListWithItems } from '@/app/actions/lists'
 import type { ScoredProgram, FitStatus } from '@/types'
+import { STATE_NAMES } from '@/lib/states'
 
 type Props = {
   programs: ScoredProgram[]
@@ -20,7 +21,6 @@ type Props = {
 }
 
 const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach', 'Additional Steps Needed', 'Unverified']
-const REGION_OPTIONS = ['All', 'Arkansas', 'Texas', 'National'] as const
 const TIER_OPTIONS = ['All', 'Top TX', 'Top US', 'Local'] as const
 
 const COMPARE_LIMIT_FREE = 2
@@ -28,8 +28,15 @@ const COMPARE_LIMIT_PREMIUM = 6
 
 export default function ProgramList({ programs, isAuthed, isPremium, lists: initialLists }: Props) {
   const [query, setQuery] = useState('')
-  const [regionFilter, setRegionFilter] = useState<(typeof REGION_OPTIONS)[number]>('All')
+  const [stateFilter, setStateFilter] = useState('All')
   const [tierFilter, setTierFilter] = useState<(typeof TIER_OPTIONS)[number]>('All')
+
+  // Distinct states present in the data, sorted by full name — scales as we add states.
+  const states = useMemo(
+    () => Array.from(new Set(programs.map(p => p.state)))
+      .sort((a, b) => (STATE_NAMES[a] ?? a).localeCompare(STATE_NAMES[b] ?? b)),
+    [programs],
+  )
   const [statusFilter, setStatusFilter] = useState<FitStatus | 'All'>('All')
   const [favoritesOnly, setFavoritesOnly] = useState(false)
   const [isPending, startTransition] = useTransition()
@@ -50,7 +57,7 @@ export default function ProgramList({ programs, isAuthed, isPremium, lists: init
 
   const q = query.trim().toLowerCase()
   const filtered = programs.filter(p => {
-    if (regionFilter !== 'All' && p.region !== regionFilter) return false
+    if (stateFilter !== 'All' && p.state !== stateFilter) return false
     if (tierFilter !== 'All' && p.tier !== tierFilter) return false
     if (statusFilter !== 'All' && p.fit.status !== statusFilter) return false
     if (favoritesOnly && !favoriteStates[p.id]) return false
@@ -177,10 +184,17 @@ export default function ProgramList({ programs, isAuthed, isPremium, lists: init
 
       {/* Filters */}
       <div className="bg-white border border-gray-200 rounded-xl p-4 mb-4 flex flex-wrap gap-3 items-center">
-        <FilterGroup label="Region">
-          {REGION_OPTIONS.map(r => (
-            <FilterBtn key={r} active={regionFilter === r} onClick={() => setRegionFilter(r)}>{r}</FilterBtn>
-          ))}
+        <FilterGroup label="State">
+          <select
+            value={stateFilter}
+            onChange={e => setStateFilter(e.target.value)}
+            className="border border-gray-300 rounded-full text-xs font-medium px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          >
+            <option value="All">All states</option>
+            {states.map(s => (
+              <option key={s} value={s}>{STATE_NAMES[s] ?? s}</option>
+            ))}
+          </select>
         </FilterGroup>
         <FilterGroup label="Tier">
           {TIER_OPTIONS.map(t => (

@@ -33,6 +33,8 @@ export interface ProgramData {
   urlSlug: string | null
   /** Official admissions / requirements page for the school; null if unverified. */
   officialUrl: string | null
+  /** Admissions contact email for the program; null if unverified. */
+  admissionEmail: string | null
   name: string
   university: string
   city: string

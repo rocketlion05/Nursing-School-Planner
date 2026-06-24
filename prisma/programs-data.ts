@@ -23,6 +23,8 @@ export type SeedProgram = {
   // The school's official admissions / requirements page (real, working link).
   // Filled from official .edu sources by the per-state research agents; null until verified.
   officialUrl?: string | null
+  // The nursing program's admissions contact email; null until verified.
+  admissionEmail?: string | null
   dataQuality: 'verified' | 'partial' | 'placeholder'
   // Requirement fields whose values are AI estimates (scripts/estimate-requirements.ts),
   // not published data. MUST be cleared when a school is verified from official sources.

@@ -93,6 +93,9 @@ model Program {
   // The school's official admissions / program requirements page (real, working
   // link). Filled by the per-state research agents from official .edu sources.
   officialUrl     String?
+  // The nursing program's admissions contact email (e.g. nursing@school.edu), for
+  // students to reach the school directly. Filled from official pages; null if none.
+  admissionEmail  String?
   name            String
   university      String
   city            String

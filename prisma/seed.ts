@@ -28,6 +28,7 @@ async function main() {
     const data = {
       urlSlug: urlSlugs.get(p.slug)!,
       officialUrl: p.officialUrl ?? null,
+      admissionEmail: p.admissionEmail ?? null,
       name: p.name,
       university: p.university,
       city: p.city,
