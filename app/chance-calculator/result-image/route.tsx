@@ -23,6 +23,8 @@ export async function GET(req: Request) {
     ? `I'm a Safe or Match for ${competitive} BSN program${competitive === 1 ? '' : 's'}!`
     : 'I just checked my nursing school chances'
 
+  const eyebrow = state ? `Nursing School Chances · ${state}` : 'Nursing School Chances'
+
   const tiles: [string, number, string][] = [
     ['Safe', safe, '#bbf7d0'],
     ['Match', match, '#bfdbfe'],
@@ -40,10 +42,10 @@ export async function GET(req: Request) {
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ fontSize: 26, color: '#99f6e4', fontWeight: 600, marginBottom: 18 }}>
-            Nursing School Chances{state ? ` · ${state}` : ''}
+          <div style={{ display: 'flex', fontSize: 26, color: '#99f6e4', fontWeight: 600, marginBottom: 18 }}>
+            {eyebrow}
           </div>
-          <div style={{ fontSize: 60, fontWeight: 800, color: 'white', lineHeight: 1.1, maxWidth: 980 }}>
+          <div style={{ display: 'flex', fontSize: 60, fontWeight: 800, color: 'white', lineHeight: 1.1, maxWidth: 980 }}>
             {headline}
           </div>
         </div>
@@ -57,17 +59,14 @@ export async function GET(req: Request) {
                 background: 'rgba(255,255,255,0.12)', borderRadius: 20, padding: '24px 0', flex: 1,
               }}
             >
-              <div style={{ fontSize: 64, fontWeight: 800, color }}>{value}</div>
-              <div style={{ fontSize: 24, color: 'white', marginTop: 6 }}>{label}</div>
+              <div style={{ display: 'flex', fontSize: 64, fontWeight: 800, color }}>{String(value)}</div>
+              <div style={{ display: 'flex', fontSize: 24, color: 'white', marginTop: 6 }}>{label}</div>
             </div>
           ))}
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: 26, color: 'white', fontWeight: 600 }}>
-            Check yours free → nursingschoolplanner.com
-          </div>
-          <div style={{ fontSize: 22, color: '#99f6e4' }}>/chance-calculator</div>
+        <div style={{ display: 'flex', fontSize: 26, color: 'white', fontWeight: 600 }}>
+          Check yours free at nursingschoolplanner.com/chance-calculator
         </div>
       </div>
     ),
