@@ -50,3 +50,7 @@ next-env.d.ts
 *.db-journal
 *.db-wal
 *.db-shm
+
+# Throwaway analysis/temp scripts (left by research agents or local debugging)
+_*tmp*.ts
+_tmp_*
