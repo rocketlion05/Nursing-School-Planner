@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { track } from '@vercel/analytics'
 import { Download, Mail, CheckCircle, Loader2 } from 'lucide-react'
 import { subscribeToLeadMagnet } from '@/app/actions/leads'
 
@@ -15,6 +16,7 @@ export default function LeadMagnetForm({ source = 'free-checklist' }: { source?:
     setStatus('loading'); setError(null)
     const res = await subscribeToLeadMagnet(email, source)
     if (!res.ok) { setError(res.error ?? 'Something went wrong. Please try again.'); setStatus('error'); return }
+    track('lead_captured', { source })
     setDownloadPath(res.downloadPath ?? null)
     setStatus('done')
   }

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
+import { track } from '@vercel/analytics'
 import { Calculator, Share2, ChevronRight, Sparkles, ImageDown } from 'lucide-react'
 import type { ProgramData, FitStatus } from '@/types'
 import { scorePrograms, computeGapSummary } from '@/lib/gap'
@@ -123,7 +124,13 @@ export default function ChanceCalculator({ programs }: { programs: ProgramData[]
         </div>
 
         <button
-          onClick={() => setSubmitted(true)}
+          onClick={() => {
+            setSubmitted(true)
+            track('calculator_completed', {
+              safe: result.counts.Safe, match: result.counts.Match,
+              reach: result.counts.Reach, state: stateFilter,
+            })
+          }}
           disabled={!canScore}
           className="mt-5 w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 disabled:opacity-40 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors"
         >

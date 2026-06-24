@@ -2,6 +2,7 @@
 
 import { useTransition } from 'react'
 import Link from 'next/link'
+import { track } from '@vercel/analytics'
 import { createCheckoutSession } from '@/app/actions/stripe'
 import type { PlanId } from '@/lib/stripe'
 import { CreditCard, LogIn } from 'lucide-react'
@@ -38,7 +39,7 @@ export default function CheckoutButton({
   return (
     <button
       disabled={isPending}
-      onClick={() => startTransition(() => createCheckoutSession(plan))}
+      onClick={() => { track('checkout_started', { plan }); startTransition(() => createCheckoutSession(plan)) }}
       className={`w-full py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-60 transition-colors ${
         highlight
           ? 'bg-teal-600 text-white hover:bg-teal-700'
