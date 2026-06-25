@@ -1,14 +1,14 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Browse BSN Nursing Programs in Arkansas & Texas',
+  title: 'Browse Accredited BSN Nursing Programs Nationwide',
   description:
-    'Search and filter 87+ accredited BSN nursing programs in Arkansas, Texas, and top national schools. Compare GPA requirements, entrance exams, and prerequisites side by side.',
+    'Search and filter 100+ accredited BSN nursing programs across the U.S. Compare GPA requirements, entrance exams, and prerequisites side by side.',
   alternates: { canonical: 'https://www.nursingschoolplanner.com/programs' },
   openGraph: {
-    title: 'Browse BSN Nursing Programs in Arkansas & Texas',
+    title: 'Browse Accredited BSN Nursing Programs Nationwide',
     description:
-      'Search and filter 87+ accredited BSN nursing programs. Compare GPA requirements, entrance exams, and prerequisites side by side.',
+      'Search and filter 100+ accredited BSN nursing programs across the U.S. Compare GPA requirements, entrance exams, and prerequisites side by side.',
     url: 'https://www.nursingschoolplanner.com/programs',
     type: 'website',
   },
@@ -38,13 +38,17 @@ export default async function ProgramsPage() {
   const favoriteIds = new Set(defaultList?.programIds ?? [])
   const scored = scorePrograms(profile, programs, favoriteIds)
 
+  // Self-updating coverage line — counts distinct states so it stays accurate as
+  // more states are added (no hardcoded "Arkansas, Texas, …").
+  const stateCount = new Set(programs.map(p => p.state)).size
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">BSN Programs</h1>
           <p className="text-gray-500 mt-1">
-            {scored.length} BSN programs across Arkansas, Texas, and top national schools
+            {scored.length} accredited BSN programs across {stateCount} states
           </p>
         </div>
         <div className="flex flex-col items-start sm:items-end gap-2">

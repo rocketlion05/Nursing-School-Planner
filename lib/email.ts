@@ -95,7 +95,7 @@ export async function sendWelcomeEmail(email: string) {
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
         ${logoHeader}
         <h2 style="color:#0d9488">Welcome to Nursing School Planner!</h2>
-        <p>We're glad you're here. This tool helps pre-nursing students compare BSN program requirements across Arkansas, Texas, and top national schools — and build a clear plan to close their gaps.</p>
+        <p>We're glad you're here. This tool helps pre-nursing students compare BSN program requirements at nursing schools across the U.S. — and build a clear plan to close their gaps.</p>
         <p><strong>Your next step:</strong> finish your profile so we can show you your real odds for each program.</p>
         <p style="margin:24px 0">
           <a href="https://www.nursingschoolplanner.com/dashboard"

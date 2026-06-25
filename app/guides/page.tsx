@@ -7,7 +7,7 @@ import { SITE_URL } from '@/lib/seo'
 export const metadata: Metadata = {
   title: 'Nursing School Guides & Admissions Advice',
   description:
-    'Free guides to getting into nursing school — BSN admissions, TEAS and HESI A2 exam prep, GPA and prerequisite planning, and state-by-state requirements for Arkansas and Texas.',
+    'Free guides to getting into nursing school — BSN admissions, TEAS and HESI A2 exam prep, GPA and prerequisite planning, and state-by-state requirements across the U.S.',
   alternates: { canonical: `${SITE_URL}/guides` },
   openGraph: {
     title: 'Nursing School Guides & Admissions Advice',

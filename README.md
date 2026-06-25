@@ -1,6 +1,6 @@
 # Nursing School Planner
 
-A micro-SaaS tool for pre-nursing students to compare their stats against BSN program requirements in Arkansas and Texas, identify prerequisite gaps, and build an application strategy.
+A micro-SaaS tool for pre-nursing students to compare their stats against BSN program requirements at nursing schools across the U.S., identify prerequisite gaps, and build an application strategy.
 
 > **Disclaimer:** This tool is for planning purposes only and does NOT guarantee admission. Always verify official requirements with each program.
 
@@ -82,7 +82,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ├── types/index.ts        # TypeScript types
 ├── prisma/
 │   ├── schema.prisma     # DB schema
-│   └── seed.ts           # 20 AR/TX programs + access codes
+│   └── seed.ts           # BSN programs (nationwide) + access codes
 └── prisma.config.ts      # Prisma 7 config (datasource URL)
 ```
 

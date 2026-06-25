@@ -41,7 +41,7 @@ export default function Image() {
             lineHeight: 1.5,
           }}
         >
-          Compare your GPA and prerequisites against BSN program requirements in Arkansas and Texas.
+          Compare your GPA and prerequisites against BSN program requirements across the U.S.
         </div>
         <div
           style={{

@@ -4,12 +4,12 @@ import Image from 'next/image'
 export const metadata: Metadata = {
   title: 'Create Your Free Account',
   description:
-    'Sign up free to save your nursing school profile, track prerequisites, and see your fit scores for BSN programs across Arkansas and Texas.',
+    'Sign up free to save your nursing school profile, track prerequisites, and see your fit scores for BSN programs across the U.S.',
   alternates: { canonical: 'https://www.nursingschoolplanner.com/signup' },
   openGraph: {
     title: 'Create Your Free Account — Nursing School Planner',
     description:
-      'Sign up free. Save your profile, track prerequisites, and compare your stats against 87+ BSN programs.',
+      'Sign up free. Save your profile, track prerequisites, and compare your stats against 100+ BSN programs nationwide.',
     url: 'https://www.nursingschoolplanner.com/signup',
     type: 'website',
   },
