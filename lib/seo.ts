@@ -1,7 +1,7 @@
 export const SITE_URL = 'https://www.nursingschoolplanner.com'
 export const SITE_NAME = 'Nursing School Planner'
 export const SITE_DESCRIPTION =
-  'Compare your GPA and prerequisites against BSN nursing program requirements in Arkansas and Texas. Know your odds before you apply.'
+  'Compare your GPA and prerequisites against BSN nursing program requirements at nursing schools across the U.S. Know your odds before you apply.'
 export const SITE_KEYWORDS = [
   'nursing school planner',
   'BSN program requirements',

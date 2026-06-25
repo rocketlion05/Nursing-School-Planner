@@ -8,12 +8,12 @@ export const metadata: Metadata = {
 }
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
-import { getSubscriberStats, getUserActivityStats } from '@/app/actions/admin'
+import { getUserActivityStats } from '@/app/actions/admin'
 import { listAccessCodes } from '@/app/actions/access-code'
 import AdminRefreshButton from '@/components/AdminRefreshButton'
 import AdminCodeManager from '@/components/AdminCodeManager'
 import { updateRequestStatus } from './actions'
-import { Users, TrendingUp, Calendar, CalendarDays, Activity, Zap } from 'lucide-react'
+import { Users, Activity, Zap } from 'lucide-react'
 
 function isAdmin(userEmail: string | undefined, secret: string | undefined): boolean {
   const adminSecret = process.env.ADMIN_SECRET
@@ -41,9 +41,8 @@ export default async function AdminRequestsPage({
 
   if (!isAdmin(user?.email, secret)) notFound()
 
-  const [requests, stats, accessCodes, activity] = await Promise.all([
+  const [requests, accessCodes, activity] = await Promise.all([
     prisma.schoolRequest.findMany({ orderBy: { createdAt: 'desc' } }),
-    getSubscriberStats(),
     listAccessCodes(),
     getUserActivityStats(),
   ])
@@ -58,56 +57,14 @@ export default async function AdminRequestsPage({
 
   const passedSecret = secret ?? ''
 
-  const mrr = stats ? `$${(stats.mrrCents / 100).toFixed(2)}` : '—'
-
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-500 mt-1">School requests &amp; subscriber overview</p>
+          <p className="text-gray-500 mt-1">School requests &amp; user overview</p>
         </div>
         <AdminRefreshButton />
-      </div>
-
-      {/* Subscriber stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center shrink-0">
-            <Calendar className="w-4 h-4 text-blue-600" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 font-medium">Monthly</p>
-            <p className="text-2xl font-bold text-gray-900">{stats?.monthly ?? '—'}</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-purple-100 flex items-center justify-center shrink-0">
-            <CalendarDays className="w-4 h-4 text-purple-600" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 font-medium">Yearly</p>
-            <p className="text-2xl font-bold text-gray-900">{stats?.yearly ?? '—'}</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-teal-100 flex items-center justify-center shrink-0">
-            <Users className="w-4 h-4 text-teal-600" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 font-medium">Total Pro</p>
-            <p className="text-2xl font-bold text-gray-900">{stats?.total ?? '—'}</p>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
-            <TrendingUp className="w-4 h-4 text-green-600" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 font-medium">Est. MRR</p>
-            <p className="text-2xl font-bold text-gray-900">{mrr}</p>
-          </div>
-        </div>
       </div>
 
       {/* User activity */}
@@ -127,9 +84,9 @@ export default async function AdminRequestsPage({
                 </p>
               </div>
             </div>
-            <ActivityCard label="Active Today" active={activity.activeToday} signups={activity.newToday} />
-            <ActivityCard label="Active This Week" active={activity.activeWeek} signups={activity.newWeek} />
-            <ActivityCard label="Active This Month" active={activity.activeMonth} signups={activity.newMonth} />
+            <ActivityCard label="Active · 24h" active={activity.activeToday} signups={activity.newToday} />
+            <ActivityCard label="Active · 7 days" active={activity.activeWeek} signups={activity.newWeek} />
+            <ActivityCard label="Active · 30 days" active={activity.activeMonth} signups={activity.newMonth} />
           </div>
         </div>
       )}

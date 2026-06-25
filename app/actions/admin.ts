@@ -1,46 +1,16 @@
 'use server'
 
-import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
 
-export type SubscriberStats = {
-  monthly: number
-  yearly: number
-  total: number
-  /** Monthly recurring revenue in cents. yearly subs prorated to monthly. */
-  mrrCents: number
-}
-
-export async function getSubscriberStats(): Promise<SubscriberStats | null> {
-  const user = await getCurrentUser()
-  if (!isAdminEmail(user?.email)) return null
-
-  try {
-    const subs = await stripe.subscriptions.list({ status: 'active', limit: 100 })
-    let monthly = 0
-    let yearly = 0
-
-    for (const sub of subs.data) {
-      for (const item of sub.items.data) {
-        const interval = item.price.recurring?.interval
-        if (interval === 'month') monthly++
-        else if (interval === 'year') yearly++
-      }
-    }
-
-    // MRR: monthly * $9 + yearly * ($49 / 12)
-    const mrrCents = monthly * 900 + Math.round((yearly * 4900) / 12)
-    return { monthly, yearly, total: monthly + yearly, mrrCents }
-  } catch {
-    return null
-  }
-}
-
 export type UserActivityStats = {
   totalUsers: number
-  /** Users with active Pro access (subscription, lifetime, or unexpired code). */
+  /**
+   * Users with active Pro access — stored tier 'cycle' that hasn't lapsed:
+   * a Cycle Pass / month code (premiumUntil in the future) or a lifetime grant
+   * (premiumUntil null). Mirrors hasActivePremium(). (Revenue itself lives in Stripe.)
+   */
   proUsers: number
   activeToday: number
   activeWeek: number
@@ -62,9 +32,13 @@ export async function getUserActivityStats(): Promise<UserActivityStats | null> 
   const [totalUsers, proUsers, activeToday, activeWeek, activeMonth, newToday, newWeek, newMonth] =
     await Promise.all([
       prisma.user.count(),
-      // Mirrors hasActivePremium(): tier 'cycle' and not lapsed.
-      prisma.profile.count({
-        where: { tier: 'cycle', OR: [{ premiumUntil: null }, { premiumUntil: { gt: new Date() } }] },
+      // Count pros through the User relation, NOT prisma.profile.count — Profile.userId
+      // is nullable, so legacy anonymous/orphan profiles (no account) would otherwise
+      // inflate this. Mirrors hasActivePremium(): tier 'cycle' and not lapsed.
+      prisma.user.count({
+        where: {
+          profile: { tier: 'cycle', OR: [{ premiumUntil: null }, { premiumUntil: { gt: new Date() } }] },
+        },
       }),
       prisma.user.count({ where: { lastActiveAt: { gte: dayAgo } } }),
       prisma.user.count({ where: { lastActiveAt: { gte: weekAgo } } }),

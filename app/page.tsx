@@ -16,8 +16,8 @@ export default async function Home() {
           Navigate Your Path to Nursing School
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Enter your stats, compare yourself against BSN program requirements in Arkansas and Texas,
-          and get a clear plan to close your gaps.
+          Enter your stats, compare yourself against BSN program requirements at nursing schools
+          across the U.S., and get a clear plan to close your gaps.
         </p>
 
         {user ? (
