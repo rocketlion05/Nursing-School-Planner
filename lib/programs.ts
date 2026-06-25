@@ -1,6 +1,10 @@
 import { unstable_cache } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import type { ProgramData } from '@/types'
+import verificationLog from '@/prisma/verification-log.json'
+
+// slug -> ISO timestamp of the last recorded re-verification against official sources.
+const VLOG = verificationLog as Record<string, string>
 
 /**
  * All programs, cached in the Vercel Data Cache so the heavy ~100-row Turso query
@@ -15,6 +19,7 @@ export const getAllPrograms = unstable_cache(
       ...p,
       requiredCourses: JSON.parse(p.requiredCourses) as string[],
       estimatedFields: JSON.parse(p.estimatedFields) as string[],
+      lastVerifiedAt: (p.slug && VLOG[p.slug]) || null,
     }))
   },
   ['all-programs'],

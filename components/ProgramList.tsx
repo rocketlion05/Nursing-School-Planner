@@ -2,8 +2,9 @@
 
 import { useMemo, useState, useTransition } from 'react'
 import Link from 'next/link'
-import { Heart, ChevronRight, Search, Scale, X } from 'lucide-react'
+import { Heart, ChevronRight, Search, Scale, X, ShieldCheck } from 'lucide-react'
 import FitBadge from '@/components/FitBadge'
+import { formatVerified } from '@/lib/verified'
 import AddToListButton from '@/components/AddToListButton'
 import UpgradeModal from '@/components/UpgradeModal'
 import { toggleFavorite } from '@/app/actions/favorites'
@@ -18,18 +19,20 @@ type Props = {
   isAuthed: boolean
   isPremium: boolean
   lists: ListWithItems[]
+  /** State codes from the user's profile preferences — powers the "Preferred States" view. */
+  preferredStates: string[]
 }
 
 const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach', 'Additional Steps Needed', 'Unverified']
-const TIER_OPTIONS = ['All', 'Top TX', 'Top US', 'Local'] as const
+const VIEW_OPTIONS = ['All', 'Top US', 'Preferred States'] as const
 
 const COMPARE_LIMIT_FREE = 2
 const COMPARE_LIMIT_PREMIUM = 6
 
-export default function ProgramList({ programs, isAuthed, isPremium, lists: initialLists }: Props) {
+export default function ProgramList({ programs, isAuthed, isPremium, lists: initialLists, preferredStates }: Props) {
   const [query, setQuery] = useState('')
   const [stateFilter, setStateFilter] = useState('All')
-  const [tierFilter, setTierFilter] = useState<(typeof TIER_OPTIONS)[number]>('All')
+  const [viewFilter, setViewFilter] = useState<(typeof VIEW_OPTIONS)[number]>('All')
 
   // Distinct states present in the data, sorted by full name — scales as we add states.
   const states = useMemo(
@@ -58,7 +61,8 @@ export default function ProgramList({ programs, isAuthed, isPremium, lists: init
   const q = query.trim().toLowerCase()
   const filtered = programs.filter(p => {
     if (stateFilter !== 'All' && p.state !== stateFilter) return false
-    if (tierFilter !== 'All' && p.tier !== tierFilter) return false
+    if (viewFilter === 'Top US' && p.tier !== 'Top US') return false
+    if (viewFilter === 'Preferred States' && !preferredStates.includes(p.state)) return false
     if (statusFilter !== 'All' && p.fit.status !== statusFilter) return false
     if (favoritesOnly && !favoriteStates[p.id]) return false
     if (q) {
@@ -196,9 +200,9 @@ export default function ProgramList({ programs, isAuthed, isPremium, lists: init
             ))}
           </select>
         </FilterGroup>
-        <FilterGroup label="Tier">
-          {TIER_OPTIONS.map(t => (
-            <FilterBtn key={t} active={tierFilter === t} onClick={() => setTierFilter(t)}>{t}</FilterBtn>
+        <FilterGroup label="Show">
+          {VIEW_OPTIONS.map(t => (
+            <FilterBtn key={t} active={viewFilter === t} onClick={() => setViewFilter(t)}>{t}</FilterBtn>
           ))}
         </FilterGroup>
         <FilterGroup label="Status">
@@ -238,7 +242,14 @@ export default function ProgramList({ programs, isAuthed, isPremium, lists: init
       <div className="space-y-2">
         {filtered.length === 0 ? (
           <div className="text-center py-12 text-gray-400">
-            No programs match the current filters.
+            {viewFilter === 'Preferred States' && preferredStates.length === 0 ? (
+              <>
+                You haven&apos;t chosen any preferred states yet.{' '}
+                <Link href="/profile" className="text-teal-600 underline">Set them in your profile</Link> to use this filter.
+              </>
+            ) : (
+              'No programs match the current filters.'
+            )}
           </div>
         ) : (
           filtered.map(program => (
@@ -306,7 +317,14 @@ export default function ProgramList({ programs, isAuthed, isPremium, lists: init
                     <span className="text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded-full">Private</span>
                   )}
                 </div>
-                <p className="text-sm text-gray-500 mb-2">{program.name} · {program.city}</p>
+                <p className="text-sm text-gray-500 mb-2">
+                  {program.name} · {program.city}
+                  {program.lastVerifiedAt && (
+                    <span className="ml-2 inline-flex items-center gap-1 text-xs text-green-700">
+                      <ShieldCheck className="w-3 h-3" /> Verified {formatVerified(program.lastVerifiedAt)}
+                    </span>
+                  )}
+                </p>
                 <p className="text-sm text-gray-600 line-clamp-1">
                   {program.fit.status === 'No profile' && !isAuthed
                     ? 'Log in to see your fit for this program.'

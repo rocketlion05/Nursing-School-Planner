@@ -12,7 +12,11 @@ import { ChevronLeft, CheckCircle, XCircle, Circle, AlertTriangle, ExternalLink,
 import type { ProgramData } from '@/types'
 import { SITE_URL } from '@/lib/seo'
 import { summarizeOutcomes } from '@/lib/outcomes'
+import { formatVerified } from '@/lib/verified'
+import verificationLog from '@/prisma/verification-log.json'
 import OutcomeForm from '@/components/OutcomeForm'
+
+const VLOG = verificationLog as Record<string, string>
 
 // Resolve a program by its pretty urlSlug first, falling back to the raw cuid id
 // (so old /programs/<cuid> links keep working).
@@ -66,6 +70,7 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
     ...raw,
     requiredCourses: JSON.parse(raw.requiredCourses) as string[],
     estimatedFields: JSON.parse(raw.estimatedFields) as string[],
+    lastVerifiedAt: (raw.slug && VLOG[raw.slug]) || null,
   }
 
   const outcomeRows = await prisma.outcome.findMany({
@@ -142,6 +147,12 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
                 <span className={`text-xs px-2 py-0.5 rounded-full ${dq.cls}`}>{dq.label}</span>
               )
             })()}
+            {program.lastVerifiedAt && (
+              <span className="text-[11px] text-gray-500 inline-flex items-center gap-1">
+                <CheckCircle className="w-3 h-3 text-green-600" />
+                Verified {formatVerified(program.lastVerifiedAt, true)}
+              </span>
+            )}
           </div>
         </div>
       </div>

@@ -22,7 +22,7 @@ import ProgramList from '@/components/ProgramList'
 import RequestSchoolButton from '@/components/RequestSchoolButton'
 import Disclaimer from '@/components/Disclaimer'
 import Link from 'next/link'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, ShieldCheck } from 'lucide-react'
 
 export default async function ProgramsPage() {
   const [profile, user] = await Promise.all([getProfile(), getCurrentUser()])
@@ -49,6 +49,10 @@ export default async function ProgramsPage() {
           <h1 className="text-2xl font-bold text-gray-900">BSN Programs</h1>
           <p className="text-gray-500 mt-1">
             {scored.length} accredited BSN programs across {stateCount} states
+          </p>
+          <p className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-teal-700 bg-teal-50 border border-teal-100 rounded-full px-2.5 py-1">
+            <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+            <span>Requirements reviewed regularly against official school sources</span>
           </p>
         </div>
         <div className="flex flex-col items-start sm:items-end gap-2">
@@ -84,6 +88,7 @@ export default async function ProgramsPage() {
         isAuthed={Boolean(user)}
         isPremium={isPremium}
         lists={lists}
+        preferredStates={profile?.statePrefs ?? []}
       />
 
       <div className="mt-8">

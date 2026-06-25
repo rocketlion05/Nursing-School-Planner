@@ -55,6 +55,12 @@ export interface ProgramData {
   dataQuality: string
   /** Requirement field names whose values are AI estimates, not published data. */
   estimatedFields: string[]
+  /**
+   * ISO date the data was last re-checked against official sources; null/undefined
+   * if none recorded. Optional so the lighter ProgramData builders (compare,
+   * dashboard, plan, ai-plan) — which don't surface it — don't have to set it.
+   */
+  lastVerifiedAt?: string | null
 }
 
 export interface FitResult {

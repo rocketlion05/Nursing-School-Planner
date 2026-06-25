@@ -5,6 +5,7 @@ import { saveProfile } from '@/app/actions/profile'
 import type { ProfileData } from '@/types'
 import { COURSES } from '@/lib/constants'
 import ProfileSummary from '@/components/ProfileSummary'
+import MultiSelectDropdown from '@/components/MultiSelectDropdown'
 import { Save, CheckCircle, AlertCircle } from 'lucide-react'
 
 type Props = {
@@ -46,12 +47,6 @@ export default function ProfileForm({ initialProfile, userEmail, stateOptions, t
   const [status, setStatus] = useState<'idle' | 'saved' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [isPending, startTransition] = useTransition()
-
-  function toggleState(code: string) {
-    setStatePrefs(prev =>
-      prev.includes(code) ? prev.filter(s => s !== code) : [...prev, code],
-    )
-  }
 
   function toggleCourse(key: string) {
     setCoursesCompleted(prev =>
@@ -125,19 +120,13 @@ export default function ProfileForm({ initialProfile, userEmail, stateOptions, t
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
             <Field label="State preferences">
-              <div className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
-                {stateOptions.map(s => (
-                  <label key={s.code} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={statePrefs.includes(s.code)}
-                      onChange={() => toggleState(s.code)}
-                      className="accent-teal-600"
-                    />
-                    <span className="text-sm">{s.label}</span>
-                  </label>
-                ))}
-              </div>
+              <MultiSelectDropdown
+                options={stateOptions.map(s => ({ value: s.code, label: s.label }))}
+                selected={statePrefs}
+                onChange={setStatePrefs}
+                placeholder="Select states"
+                noun="states selected"
+              />
             </Field>
             <Field label="Target start term">
               <select className={input} value={targetTerm} onChange={e => setTargetTerm(e.target.value)}>
