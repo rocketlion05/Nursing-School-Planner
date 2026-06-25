@@ -80,6 +80,19 @@ npx tsx scripts/make-favicon.ts                          # regenerate the white-
   `estimatedFields` (delete the property when empty). Don't invent new estimates.
 - Cite source + date in `notes`.
 
+## Verification dates ("Verified <date>" on each program)
+
+Each program page shows when its data was last reviewed against official sources. This is NOT a
+column in `programs-data.ts` / the DB — it lives in `prisma/verification-log.json` (`slug` -> ISO
+timestamp), read at build time by `lib/programs.ts` + the program detail page.
+
+Every state research run must stamp it: after applying verified edits, run
+`npx tsx scripts/mark-verified.ts <slug> [<slug> ...]` for **every school checked against official
+sources this run** (changed or not). That bumps each slug's timestamp to today; `git add -A` + push
+commits the log, and the next deploy surfaces the new "Verified <date>". Only stamp schools you
+actually re-checked — the date must mean "last reviewed against official sources," never a guess.
+(`scripts/verify-queue.ts` reads the same log to rank least-recently-verified schools first.)
+
 ## The routine prompts
 
 The live prompts are stored in each task's `SKILL.md` under
