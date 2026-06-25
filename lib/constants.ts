@@ -20,18 +20,6 @@ export const US_STATES = [
 
 export const EXAM_TYPES = ['TEAS', 'HESI A2', 'NLN PAX'] as const
 
-export const TARGET_TERMS = [
-  'Fall 2025',
-  'Spring 2026',
-  'Summer 2026',
-  'Fall 2026',
-  'Spring 2027',
-  'Summer 2027',
-  'Fall 2027',
-  'Spring 2028',
-  'Fall 2028',
-]
-
 export const FREE_TIER_FAVORITE_LIMIT = 2
 
 export const DISCLAIMER =

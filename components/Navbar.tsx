@@ -23,7 +23,7 @@ function navLinkCls(active: boolean) {
   )
 }
 
-export default function Navbar({ username, isAdmin = false }: { username: string | null; isAdmin?: boolean }) {
+export default function Navbar({ displayName, isAdmin = false }: { displayName: string | null; isAdmin?: boolean }) {
   const pathname = usePathname()
   const [plannerOpen, setPlannerOpen] = useState(false)
   const [userOpen, setUserOpen] = useState(false)
@@ -71,7 +71,7 @@ export default function Navbar({ username, isAdmin = false }: { username: string
 
         {/* ── Desktop centre nav ── */}
         <nav className="hidden md:flex items-center gap-1 ml-4" aria-label="Main navigation">
-          {username ? (
+          {displayName ? (
             <>
               <Link href="/dashboard" className={navLinkCls(pathname.startsWith('/dashboard'))}>
                 Dashboard
@@ -139,7 +139,7 @@ export default function Navbar({ username, isAdmin = false }: { username: string
 
         {/* ── Desktop right side ── */}
         <div className="hidden md:flex items-center gap-2">
-          {username ? (
+          {displayName ? (
             <div className="relative" ref={userRef}>
               <button
                 onClick={() => setUserOpen(o => !o)}
@@ -148,7 +148,7 @@ export default function Navbar({ username, isAdmin = false }: { username: string
                 aria-label="User menu"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors max-w-[160px]"
               >
-                <span className="truncate">{username}</span>
+                <span className="truncate">{displayName}</span>
                 <ChevronDown className={clsx('w-3.5 h-3.5 shrink-0 transition-transform duration-150', userOpen && 'rotate-180')} />
               </button>
               {userOpen && (
@@ -215,7 +215,7 @@ export default function Navbar({ username, isAdmin = false }: { username: string
       {/* ── Mobile menu ── */}
       {mobileOpen && (
         <div id="mobile-menu" className="md:hidden border-t border-gray-100 bg-white px-3 py-3 space-y-0.5">
-          {username ? (
+          {displayName ? (
             <>
               <Link href="/dashboard" className={clsx('block', navLinkCls(pathname.startsWith('/dashboard')))}>
                 Dashboard
@@ -243,7 +243,7 @@ export default function Navbar({ username, isAdmin = false }: { username: string
 
               {/* User section */}
               <div className="border-t border-gray-100 pt-2 mt-2 space-y-0.5">
-                <p className="px-3 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">{username}</p>
+                <p className="px-3 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">{displayName}</p>
                 <Link href="/profile" className={clsx('block', navLinkCls(pathname === '/profile'))}>
                   My Profile
                 </Link>

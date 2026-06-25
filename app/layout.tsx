@@ -7,6 +7,7 @@ import './globals.css'
 import Navbar from '@/components/Navbar'
 import JsonLd from '@/components/JsonLd'
 import { getCurrentUser, getIsAdmin } from '@/app/lib/dal'
+import { getProfile } from '@/app/actions/profile'
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_KEYWORDS } from '@/lib/seo'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist' })
@@ -78,14 +79,18 @@ const websiteSchema = {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const [user, isAdmin] = await Promise.all([getCurrentUser(), getIsAdmin()])
+  const [user, isAdmin, profile] = await Promise.all([getCurrentUser(), getIsAdmin(), getProfile()])
+
+  // The top-right name reflects the editable profile name when set, falling back
+  // to the account username. null only when logged out (drives the nav's auth UI).
+  const displayName = user ? (profile?.name?.trim() || user.username) : null
 
   return (
     <html lang="en" className={`${geist.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-gray-50 text-gray-900">
         <JsonLd data={organizationSchema} />
         <JsonLd data={websiteSchema} />
-        <Navbar username={user?.username ?? null} isAdmin={isAdmin} />
+        <Navbar displayName={displayName} isAdmin={isAdmin} />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-gray-200 py-6 text-center text-xs text-gray-400">
           <nav className="flex flex-wrap justify-center gap-x-4 gap-y-1.5 mb-3" aria-label="Footer">

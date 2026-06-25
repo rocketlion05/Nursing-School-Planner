@@ -57,6 +57,8 @@ export async function saveProfile(input: ProfileFormInput): Promise<{ id: string
 
     revalidatePath('/programs')
     revalidatePath('/plan')
+    // Refresh the root layout so the navbar's top-right name updates immediately.
+    revalidatePath('/', 'layout')
     return { id: profile.id }
   } catch (err) {
     console.error('saveProfile error:', err)

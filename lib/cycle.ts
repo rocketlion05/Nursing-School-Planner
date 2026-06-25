@@ -5,9 +5,11 @@
 export type CycleTerm = 'Fall' | 'Spring'
 
 /**
- * When a Cycle Pass for a given cycle stops granting Pro — roughly the start of
- * that academic term, which covers the full application + decision season leading
- * up to it. Fall → Sept 1; Spring → Feb 1 (UTC, to avoid timezone drift).
+ * When a Cycle Pass for a given cycle stops granting Pro — the END of that
+ * application round. The pass window runs from purchase (when the student starts
+ * applying) through the close of the round: the application + decision/waitlist
+ * season resolves right as the target term begins. Fall round → Sept 1; Spring
+ * round → Feb 1 (UTC, to avoid timezone drift).
  */
 export function cycleEndDate(term: CycleTerm, year: number): Date {
   return term === 'Fall'
@@ -21,6 +23,34 @@ export function cycleLabel(term: CycleTerm, year: number): string {
 
 export function isCycleTerm(v: unknown): v is CycleTerm {
   return v === 'Fall' || v === 'Spring'
+}
+
+// The three start terms a nursing applicant can target, with the (approximate)
+// month each one begins. Used to generate the profile's "Target start term"
+// options live, so the list never contains a term that has already started.
+const TARGET_TERM_START_MONTH: Record<string, number> = {
+  Spring: 0, // January
+  Summer: 4, // May
+  Fall: 7, // August
+}
+
+/**
+ * The upcoming "target start term" options for the profile dropdown, soonest
+ * first — every Spring/Summer/Fall whose start is still in the future. Computed
+ * from the current time so past terms drop off automatically (no maintenance
+ * needed). Caller passes the current time; never call new Date() at module scope.
+ */
+export function availableTargetTerms(now: Date, count = 8): string[] {
+  const y0 = now.getUTCFullYear()
+  const out: { label: string; ms: number }[] = []
+  for (let y = y0; y <= y0 + 3; y++) {
+    for (const term of ['Spring', 'Summer', 'Fall'] as const) {
+      const ms = Date.UTC(y, TARGET_TERM_START_MONTH[term], 1)
+      if (ms > now.getTime()) out.push({ label: `${term} ${y}`, ms })
+    }
+  }
+  out.sort((a, b) => a.ms - b.ms)
+  return out.slice(0, count).map(o => o.label)
 }
 
 export type CycleOption = { term: CycleTerm; year: number; label: string }

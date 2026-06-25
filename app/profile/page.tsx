@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 import { requireUser } from '@/app/lib/dal'
 import { getAllPrograms } from '@/lib/programs'
 import { STATE_NAMES } from '@/lib/states'
+import { availableTargetTerms } from '@/lib/cycle'
 import ProfileForm from '@/components/ProfileForm'
 
 export default async function ProfilePage() {
@@ -18,6 +19,9 @@ export default async function ProfilePage() {
     .map(code => ({ code, label: STATE_NAMES[code] ?? code }))
     .sort((a, b) => a.label.localeCompare(b.label))
 
+  // Target-term options are computed live so past terms drop off automatically.
+  const termOptions = availableTargetTerms(new Date())
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="mb-6">
@@ -26,7 +30,7 @@ export default async function ProfilePage() {
           Enter your academic stats to see how you compare to BSN program requirements.
         </p>
       </div>
-      <ProfileForm initialProfile={profile} userEmail={user.email} stateOptions={stateOptions} />
+      <ProfileForm initialProfile={profile} userEmail={user.email} stateOptions={stateOptions} termOptions={termOptions} />
     </div>
   )
 }

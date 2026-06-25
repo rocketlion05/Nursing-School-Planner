@@ -23,10 +23,20 @@ export default async function PaymentSuccessPage({
     try {
       const session = await stripe.checkout.sessions.retrieve(session_id)
       if (session.payment_status === 'paid' && session.client_reference_id) {
+        // Mirror the webhook's grant logic so this late-arrival fallback can't
+        // overwrite the time-boxed Cycle Pass expiry with unlimited access. The
+        // Cycle Pass carries its derived expiry + label in the session metadata.
+        const cycleUntilRaw = session.metadata?.cyclePremiumUntil
+        const cycleUntil = cycleUntilRaw ? new Date(cycleUntilRaw) : null
+        const isCyclePass = cycleUntil != null && !Number.isNaN(cycleUntil.getTime())
+        const cycleLabel = session.metadata?.cycleLabel
+        const data = isCyclePass
+          ? { tier: 'cycle', premiumUntil: cycleUntil, ...(cycleLabel ? { targetTerm: cycleLabel } : {}) }
+          : { tier: 'cycle', premiumUntil: null }
         await prisma.profile.upsert({
           where:  { userId: session.client_reference_id },
-          create: { userId: session.client_reference_id, tier: 'cycle', premiumUntil: null },
-          update: { tier: 'cycle', premiumUntil: null },
+          create: { userId: session.client_reference_id, ...data },
+          update: data,
         })
       }
     } catch {

@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { saveProfile } from '@/app/actions/profile'
 import type { ProfileData } from '@/types'
-import { COURSES, TARGET_TERMS } from '@/lib/constants'
+import { COURSES } from '@/lib/constants'
 import ProfileSummary from '@/components/ProfileSummary'
 import { Save, CheckCircle, AlertCircle } from 'lucide-react'
 
@@ -11,14 +11,23 @@ type Props = {
   initialProfile: ProfileData | null
   userEmail: string
   stateOptions: { code: string; label: string }[]
+  termOptions: string[]
 }
 
 function toStr(v: number | null | undefined): string {
   return v == null ? '' : String(v)
 }
 
-export default function ProfileForm({ initialProfile, userEmail, stateOptions }: Props) {
+export default function ProfileForm({ initialProfile, userEmail, stateOptions, termOptions }: Props) {
   const p = initialProfile
+
+  // Show the live (future-only) term list, but keep the student's already-saved
+  // term visible even if it's now in the past, so saving other fields can't
+  // silently wipe their selection.
+  const termChoices =
+    p?.targetTerm && !termOptions.includes(p.targetTerm)
+      ? [p.targetTerm, ...termOptions]
+      : termOptions
 
   const [name, setName] = useState(p?.name ?? '')
   const email = p?.email || userEmail
@@ -133,7 +142,7 @@ export default function ProfileForm({ initialProfile, userEmail, stateOptions }:
             <Field label="Target start term">
               <select className={input} value={targetTerm} onChange={e => setTargetTerm(e.target.value)}>
                 <option value="">-- Select --</option>
-                {TARGET_TERMS.map(t => <option key={t} value={t}>{t}</option>)}
+                {termChoices.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </Field>
           </div>
