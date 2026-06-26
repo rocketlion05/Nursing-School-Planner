@@ -92,7 +92,7 @@ export default async function PlanPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">My Application Plan</h1>
           <p className="text-gray-500 mt-1">
-            Based on your profile — {profile.name || 'your current stats'}.
+            Based on your profile: {profile.name || 'your current stats'}.
           </p>
         </div>
         {isPremium && (
@@ -135,7 +135,7 @@ export default async function PlanPage() {
             {examInsights.map(insight => (
               <div key={insight.examType} className="rounded-lg bg-blue-50 border border-blue-100 p-4">
                 <p className="font-semibold text-blue-900 mb-1 text-sm">
-                  {insight.examType} — your score: {insight.yourScore}%
+                  {insight.examType}, your score: {insight.yourScore}%
                 </p>
                 <p className="text-sm text-blue-800">
                   Meets the minimum for{' '}
@@ -166,7 +166,7 @@ export default async function PlanPage() {
           <h2 className="font-semibold text-gray-900">Priority Recommendations</h2>
         </div>
         {gap.topRecommendations.length === 0 ? (
-          <p className="text-gray-500 text-sm">No recommendations yet — add more profile data.</p>
+          <p className="text-gray-500 text-sm">No recommendations yet. Add more profile data.</p>
         ) : (
           <ul className="space-y-3">
             {gap.topRecommendations.map((rec, i) => (
@@ -239,7 +239,7 @@ export default async function PlanPage() {
 
       {/* Program table */}
       <section className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-        <h2 className="font-semibold text-gray-900 mb-4">All Programs — Fit Overview</h2>
+        <h2 className="font-semibold text-gray-900 mb-4">All Programs: Fit Overview</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -265,7 +265,7 @@ export default async function PlanPage() {
                   <td className="py-2 text-gray-500">
                     {p.fit.missingCourses.length > 0
                       ? `${p.fit.missingCourses.length} course(s)`
-                      : '—'}
+                      : 'None'}
                   </td>
                 </tr>
               ))}

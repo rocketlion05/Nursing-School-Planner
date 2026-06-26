@@ -31,7 +31,7 @@ export async function generateMetadata(props: PageProps<'/nursing-programs/[stat
   const r = await resolve(state, city)
   if (!r) return {}
   const name = STATE_NAMES[r.code]
-  const title = `Nursing Programs in ${r.cityName}, ${r.code} — BSN Schools & Requirements`
+  const title = `Nursing Programs in ${r.cityName}, ${r.code}: BSN Schools & Requirements`
   const description = `BSN nursing programs in ${r.cityName}, ${name}. Compare GPA requirements, entrance exams, prerequisites, and official admissions links for each school.`
   const url = `${SITE_URL}/nursing-programs/${state}/${city}`
   return { title, description, alternates: { canonical: url }, openGraph: { title, description, url, type: 'website' } }

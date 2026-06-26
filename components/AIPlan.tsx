@@ -63,7 +63,7 @@ export default function AIPlan({ studentName }: { studentName: string }) {
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(10)
     doc.setTextColor(107, 114, 128) // gray-500
-    const subtitle = `${studentName ? studentName + ' — ' : ''}Nursing School Planner · ${new Date().toLocaleDateString()}`
+    const subtitle = `${studentName ? studentName + ' · ' : ''}Nursing School Planner · ${new Date().toLocaleDateString()}`
     doc.text(subtitle, margin, y)
     y += 24
 

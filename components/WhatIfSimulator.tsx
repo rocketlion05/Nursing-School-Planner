@@ -106,7 +106,7 @@ export default function WhatIfSimulator({ profile, programs }: Props) {
         <SlidersHorizontal className="w-5 h-5 text-teal-600" />
         <h2 className="font-semibold text-gray-900">What-If Simulator</h2>
         <span className="text-xs text-gray-400 hidden sm:inline">
-          — drag to see how your fit changes
+          drag to see how your fit changes
         </span>
       </div>
 

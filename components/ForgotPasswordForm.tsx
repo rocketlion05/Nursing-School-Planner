@@ -22,7 +22,7 @@ export default function ForgotPasswordForm() {
         <p className="text-sm text-gray-600 mb-6">
           If an account exists for{' '}
           <span className="font-medium">{state.values?.email}</span>, we&apos;ve sent a password reset
-          link. It expires in 1 hour — check your inbox and spam folder.
+          link. It expires in 1 hour, so check your inbox and spam folder.
         </p>
         <Link href="/login" className="text-teal-600 font-medium hover:underline text-sm">
           Back to log in

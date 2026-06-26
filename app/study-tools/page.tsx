@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     'Free resources and prep guides for the TEAS and HESI A2 nursing entrance exams. Practice questions, score breakdowns, and study strategies for pre-nursing students.',
   alternates: { canonical: 'https://www.nursingschoolplanner.com/study-tools' },
   openGraph: {
-    title: 'TEAS & HESI Study Tools — Nursing School Planner',
+    title: 'TEAS & HESI Study Tools: Nursing School Planner',
     description: 'Free prep resources for the TEAS and HESI A2 nursing entrance exams.',
     url: 'https://www.nursingschoolplanner.com/study-tools',
     type: 'website',
@@ -48,7 +48,7 @@ const SECTIONS = [
     ],
     videos: [
       {
-        title: 'Nurse Shai — HESI A2 Tips, Study Strategies & More',
+        title: 'Nurse Shai: HESI A2 Tips, Study Strategies & More',
         channel: 'Nurse Shai',
         href: 'https://www.youtube.com/results?search_query=Nurse+Shai+HESI+A2',
       },
@@ -66,7 +66,7 @@ const SECTIONS = [
     ],
     videos: [
       {
-        title: 'How to Ace the CASPer Test — Sample Questions and Answers Included',
+        title: 'How to Ace the CASPer Test: Sample Questions and Answers Included',
         channel: 'YouTube',
         href: 'https://www.youtube.com/results?search_query=How+to+Ace+the+CASPer+Test+Sample+Questions+Answers',
       },

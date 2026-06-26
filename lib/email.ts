@@ -40,7 +40,7 @@ async function send(opts: { to: string; subject: string; html: string; replyTo?:
 export async function sendVerificationEmail(email: string, verifyUrl: string) {
   await send({
     to: email,
-    subject: 'Verify your email — Nursing School Planner',
+    subject: 'Verify your email: Nursing School Planner',
     html: `
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
         ${logoHeader}
@@ -67,7 +67,7 @@ export async function sendVerificationEmail(email: string, verifyUrl: string) {
 export async function sendPasswordResetEmail(email: string, resetUrl: string) {
   await send({
     to: email,
-    subject: 'Reset your password — Nursing School Planner',
+    subject: 'Reset your password: Nursing School Planner',
     html: `
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
         ${logoHeader}
@@ -81,7 +81,7 @@ export async function sendPasswordResetEmail(email: string, resetUrl: string) {
         </p>
         <p style="color:#6b7280;font-size:13px">This link expires in 1 hour. If the button doesn't work, copy and paste this URL into your browser:</p>
         <p style="color:#6b7280;font-size:13px;word-break:break-all">${resetUrl}</p>
-        <p style="color:#9ca3af;font-size:12px;margin-top:24px">If you didn't request a password reset, you can safely ignore this email — your password won't change.</p>
+        <p style="color:#9ca3af;font-size:12px;margin-top:24px">If you didn't request a password reset, you can safely ignore this email. Your password won't change.</p>
       </div>
     `,
   })
@@ -95,7 +95,7 @@ export async function sendWelcomeEmail(email: string) {
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
         ${logoHeader}
         <h2 style="color:#0d9488">Welcome to Nursing School Planner!</h2>
-        <p>We're glad you're here. This tool helps pre-nursing students compare BSN program requirements at nursing schools across the U.S. — and build a clear plan to close their gaps.</p>
+        <p>We're glad you're here. This tool helps pre-nursing students compare BSN program requirements at nursing schools across the U.S. and build a clear plan to close their gaps.</p>
         <p><strong>Your next step:</strong> finish your profile so we can show you your real odds for each program.</p>
         <p style="margin:24px 0">
           <a href="https://www.nursingschoolplanner.com/dashboard"
@@ -147,7 +147,7 @@ const DRIP: { subject: string; body: string }[] = [
     subject: 'Your #1 next step after the checklist',
     body: `
       <h2 style="color:#0d9488">Got the checklist? Here's where to start.</h2>
-      <p>The single most useful thing you can do right now is figure out <strong>where you actually stand</strong> — before you waste application fees on schools that are out of reach or miss "safe" ones you'd easily get into.</p>
+      <p>The single most useful thing you can do right now is figure out <strong>where you actually stand</strong>, before you waste application fees on schools that are out of reach or miss "safe" ones you'd easily get into.</p>
       <p>Our free calculator scores your GPA and TEAS/HESI against real BSN program requirements in seconds:</p>
       <p style="margin:24px 0;text-align:center"><a href="${SITE}/chance-calculator" style="background:#0d9488;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">See my chances (free) →</a></p>`,
   },
@@ -159,7 +159,7 @@ const DRIP: { subject: string; body: string }[] = [
       <ol style="line-height:1.8">
         <li><strong>Applying only to reach schools.</strong> Balance every reach with a safe and a match.</li>
         <li><strong>Ignoring the science GPA.</strong> Many programs weight it more heavily than your overall GPA.</li>
-        <li><strong>Underestimating the entrance exam.</strong> Aim well above the minimum — competitive applicants do.</li>
+        <li><strong>Underestimating the entrance exam.</strong> Aim well above the minimum, because competitive applicants do.</li>
       </ol>
       <p style="margin:24px 0;text-align:center"><a href="${SITE}/chance-calculator" style="background:#0d9488;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">Check where you stand →</a></p>`,
   },
@@ -175,8 +175,8 @@ const DRIP: { subject: string; body: string }[] = [
     subject: 'Application deadlines are closer than you think',
     body: `
       <h2 style="color:#0d9488">Beat the deadline</h2>
-      <p>Nursing program deadlines sneak up — and many don't accept late applications. A clear, semester-by-semester plan is the difference between a scramble and a strong application.</p>
-      <p>Our <strong>Cycle Pass</strong> ($29, one-time) unlocks your AI academic advisor, deadline tracker, unlimited saved schools, and side-by-side comparison — everything you need for one application cycle, with no subscription.</p>
+      <p>Nursing program deadlines sneak up, and many don't accept late applications. A clear, semester-by-semester plan is the difference between a scramble and a strong application.</p>
+      <p>Our <strong>Cycle Pass</strong> ($29, one-time) unlocks your AI academic advisor, deadline tracker, unlimited saved schools, and side-by-side comparison: everything you need for one application cycle, with no subscription.</p>
       <p style="margin:24px 0;text-align:center"><a href="${SITE}/pricing" style="background:#0d9488;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block">Get your plan →</a></p>`,
   },
 ]
@@ -215,32 +215,32 @@ export async function sendProConfirmationEmail(
   const isCode = kind === 'code' && expiresAt
 
   const windowLine = isCyclePass
-    ? `<p>Your <strong>Cycle Pass</strong> is active — full Pro access runs through <strong>${dateStr}</strong>. Here's what's unlocked:</p>`
+    ? `<p>Your <strong>Cycle Pass</strong> is active: full Pro access runs through <strong>${dateStr}</strong>. Here's what's unlocked:</p>`
     : isCode
-    ? `<p>You've unlocked <strong>1 month of Pro for free</strong> — your access runs until <strong>${dateStr}</strong>. Here's what's unlocked:</p>`
+    ? `<p>You've unlocked <strong>1 month of Pro for free</strong>: your access runs until <strong>${dateStr}</strong>. Here's what's unlocked:</p>`
     : `<p>Your Pro access is active. Here's what's unlocked:</p>`
   const footerLine = isCyclePass
-    ? `<p style="color:#6b7280;font-size:13px">Your pass window is fixed and won't change — when it ends on ${dateStr} you'll move back to the free plan and can repurchase for your next cycle. Questions? Just reply to this email.</p>`
+    ? `<p style="color:#6b7280;font-size:13px">Your pass window is fixed and won't change. When it ends on ${dateStr} you'll move back to the free plan and can repurchase for your next cycle. Questions? Just reply to this email.</p>`
     : isCode
-    ? `<p style="color:#6b7280;font-size:13px">When your free month ends you'll move back to the free plan — you can subscribe anytime to keep Pro. Questions? Just reply to this email.</p>`
+    ? `<p style="color:#6b7280;font-size:13px">When your free month ends you'll move back to the free plan, but you can subscribe anytime to keep Pro. Questions? Just reply to this email.</p>`
     : `<p style="color:#6b7280;font-size:13px">Questions? Reply to this email and we'll get back to you.</p>`
   await send({
     to: email,
     subject: isCyclePass
-      ? 'Your Cycle Pass is active — Nursing School Planner'
+      ? 'Your Cycle Pass is active: Nursing School Planner'
       : isCode
-      ? 'Your free month of Pro is active — Nursing School Planner'
-      : 'Your Pro access is active — Nursing School Planner',
+      ? 'Your free month of Pro is active: Nursing School Planner'
+      : 'Your Pro access is active: Nursing School Planner',
     html: `
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
         ${logoHeader}
-        <h2 style="color:#0d9488">${isCyclePass ? 'Cycle Pass activated!' : isCode ? 'Pro unlocked — free for a month!' : 'Pro activated!'}</h2>
+        <h2 style="color:#0d9488">${isCyclePass ? 'Cycle Pass activated!' : isCode ? 'Pro unlocked, free for a month!' : 'Pro activated!'}</h2>
         ${windowLine}
         <ul>
-          <li><strong>Unlimited favorites</strong> — save as many programs as you want</li>
+          <li><strong>Unlimited favorites</strong>: save as many programs as you want</li>
           <li><strong>AI application plan + full gap analysis</strong> on <a href="https://www.nursingschoolplanner.com/plan">My Plan</a></li>
           <li><strong>Deadline tracker, custom lists, and school comparison</strong></li>
-          <li><strong>Request a school</strong> — don't see your program? Ask us to add it</li>
+          <li><strong>Request a school</strong>: don't see your program? Ask us to add it</li>
         </ul>
         <p style="margin:24px 0">
           <a href="https://www.nursingschoolplanner.com/dashboard"
@@ -276,7 +276,7 @@ export async function sendDeadlineReminderEmail({
 }) {
   const displayName = name || 'there'
   const dayWord = daysRemaining === 1 ? 'day' : 'days'
-  const what = label ? `${university} — ${label}` : `${university}`
+  const what = label ? `${university}: ${label}` : `${university}`
   await send({
     to,
     subject: `${daysRemaining} ${dayWord} left: ${university} application deadline`,
@@ -287,7 +287,7 @@ export async function sendDeadlineReminderEmail({
         <p>Hi ${displayName},</p>
         <p>
           Your application deadline for <strong>${what}</strong> is in
-          <strong>${daysRemaining} ${dayWord}</strong> — on <strong>${deadlineDate}</strong>.
+          <strong>${daysRemaining} ${dayWord}</strong>, on <strong>${deadlineDate}</strong>.
         </p>
         <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:14px 16px;margin:16px 0">
           <p style="margin:0;font-size:14px;color:#166534;">
@@ -387,7 +387,7 @@ export async function sendSchoolRequestConfirmation({
   const location = [city, state].filter(Boolean).join(', ')
   await send({
     to,
-    subject: `We received your request — ${university}`,
+    subject: `We received your request: ${university}`,
     html: `
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
         ${logoHeader}
@@ -409,7 +409,7 @@ export async function sendSchoolRequestConfirmation({
           </a>
         </p>
         <p>Thanks for helping make the app more useful for everyone.</p>
-        <p style="color:#6b7280;font-size:13px">— The Nursing School Planner Team</p>
+        <p style="color:#6b7280;font-size:13px">The Nursing School Planner Team</p>
       </div>
     `,
   })
@@ -450,24 +450,24 @@ export async function sendSchoolNotFoundEmail({
         </p>
         <p>
           Unfortunately, after checking official program pages and published resources, we were
-          unable to find publicly available BSN admission requirements for this program — no GPA
+          unable to find publicly available BSN admission requirements for this program. No GPA
           minimums, entrance exam details, or prerequisites are posted publicly.
         </p>
         <p>This happens with some programs that use a private or fully holistic review process.
         Here are your best next steps:</p>
         <ol style="padding-left:20px;line-height:1.8">
           <li>
-            <strong>Contact an admissions advisor directly</strong> — reach out to the nursing
+            <strong>Contact an admissions advisor directly.</strong> Reach out to the nursing
             department at ${university} and ask for current BSN requirements, GPA cutoffs, and
             required entrance exams.
           </li>
           <li>
-            <strong>Visit the school's nursing program page</strong> — look for an "Admissions"
+            <strong>Visit the school's nursing program page.</strong> Look for an "Admissions"
             or "How to Apply" section; requirements sometimes appear in PDFs or program guides
             that aren't easily indexed.
           </li>
           <li>
-            <strong>Attend an info session or open house</strong> — many programs share detailed
+            <strong>Attend an info session or open house.</strong> Many programs share detailed
             requirements at these events that aren't published online.
           </li>
         </ol>
@@ -475,7 +475,7 @@ export async function sendSchoolNotFoundEmail({
           We're sorry we couldn't get this into the app for you. If the school publishes requirements
           publicly in the future, we'll add them automatically.
         </p>
-        <p style="color:#6b7280;font-size:13px">— The Nursing School Planner Team</p>
+        <p style="color:#6b7280;font-size:13px">The Nursing School Planner Team</p>
       </div>
     `,
   })

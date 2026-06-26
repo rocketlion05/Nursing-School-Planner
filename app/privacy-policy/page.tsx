@@ -40,7 +40,7 @@ export default function PrivacyPolicyPage() {
         </li>
         <li>
           <strong>Student profile information.</strong> Information you choose to enter to get fit
-          scores and recommendations — for example your overall and science GPA, total credit
+          scores and recommendations, for example your overall and science GPA, total credit
           hours, completed prerequisite courses, entrance-exam scores (such as TEAS, HESI A2, or
           CASPer), target term, and state preferences.
         </li>
@@ -52,7 +52,7 @@ export default function PrivacyPolicyPage() {
         <li>
           <strong>Payment information.</strong> If you purchase a paid plan, payment is processed
           by our payment provider, Stripe. We do <strong>not</strong> collect or store your full
-          card number — Stripe handles card data directly. We store related identifiers (such as a
+          card number. Stripe handles card data directly. We store related identifiers (such as a
           Stripe customer or subscription ID) and your current plan/subscription status.
         </li>
         <li>
@@ -67,7 +67,7 @@ export default function PrivacyPolicyPage() {
         <li>To provide and operate the Service, including calculating your fit for nursing programs and generating your personalized application plan.</li>
         <li>To create and authenticate your account and keep you securely signed in.</li>
         <li>To process payments and manage subscriptions and access.</li>
-        <li>To send you transactional emails — email verification, password resets, deadline reminders, welcome messages, and replies to your inquiries.</li>
+        <li>To send you transactional emails: email verification, password resets, deadline reminders, welcome messages, and replies to your inquiries.</li>
         <li>To maintain, secure, debug, and improve the Service and understand how it is used.</li>
         <li>To comply with legal obligations and enforce our terms.</li>
       </ul>
@@ -82,26 +82,26 @@ export default function PrivacyPolicyPage() {
       </p>
       <ul className="list-disc pl-6 space-y-2 mt-3">
         <li>
-          <strong>Stripe</strong> — payment processing and subscription billing. See{' '}
+          <strong>Stripe:</strong> payment processing and subscription billing. See{' '}
           <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-teal-600 underline">Stripe&rsquo;s Privacy Policy</a>.
         </li>
         <li>
-          <strong>Resend</strong> — delivery of transactional and account emails.
+          <strong>Resend:</strong> delivery of transactional and account emails.
         </li>
         <li>
-          <strong>OpenAI</strong> — generates your AI application plan. When you use that feature,
+          <strong>OpenAI:</strong> generates your AI application plan. When you use that feature,
           relevant profile and saved-school information is sent to OpenAI to produce the plan.
         </li>
         <li>
-          <strong>Vercel</strong> — website hosting, plus privacy-friendly analytics and performance
+          <strong>Vercel:</strong> website hosting, plus privacy-friendly analytics and performance
           monitoring.
         </li>
         <li>
-          <strong>Turso (libSQL)</strong> — secure cloud database hosting where your account and
+          <strong>Turso (libSQL):</strong> secure cloud database hosting where your account and
           profile data are stored.
         </li>
         <li>
-          <strong>Google and Microsoft</strong> — only if you choose to sign in with one of these
+          <strong>Google and Microsoft:</strong> only if you choose to sign in with one of these
           providers, for authentication.
         </li>
       </ul>
@@ -114,7 +114,7 @@ export default function PrivacyPolicyPage() {
       <H2>4. How We Protect Your Information</H2>
       <ul className="list-disc pl-6 space-y-2 mt-3">
         <li>All traffic to and from the Service is encrypted in transit using HTTPS/TLS.</li>
-        <li>Passwords are never stored in plain text — they are hashed with bcrypt.</li>
+        <li>Passwords are never stored in plain text; they are hashed with bcrypt.</li>
         <li>Sessions use signed, HTTP-only cookies (JWTs), reducing exposure to client-side theft.</li>
         <li>Payment card data is handled directly by Stripe, a PCI-DSS Level 1 certified provider; we never receive or store full card numbers.</li>
         <li>Access to stored data is restricted to authorized operations of the Service, and access to administrative functions is limited to designated administrators.</li>

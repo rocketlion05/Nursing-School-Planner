@@ -69,7 +69,7 @@ export default function LeadMagnetForm({ source = 'free-checklist' }: { source?:
         </button>
       </div>
       {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
-      <p className="text-xs text-gray-400 mt-2">Free. No spam — just the checklist and the occasional helpful nursing-school tip.</p>
+      <p className="text-xs text-gray-400 mt-2">Free. No spam, just the checklist and the occasional helpful nursing-school tip.</p>
     </form>
   )
 }

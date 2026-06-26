@@ -48,7 +48,7 @@ export async function generateMetadata(props: PageProps<'/programs/[id]'>): Prom
 
 const DQ_BADGE: Record<string, { label: string; cls: string }> = {
   verified: { label: 'Requirements verified', cls: 'bg-green-100 text-green-700' },
-  partial: { label: 'Requirements partially verified — see note below', cls: 'bg-amber-100 text-amber-700' },
+  partial: { label: 'Requirements partially verified, see note below', cls: 'bg-amber-100 text-amber-700' },
   placeholder: { label: 'Requirements not fully verified', cls: 'bg-gray-100 text-gray-500' },
 }
 
@@ -161,10 +161,10 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
         <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
           <span>
-            <strong>About these numbers</strong> — {program.university} doesn&apos;t publish complete
+            <strong>About these numbers:</strong> {program.university} doesn&apos;t publish complete
             admission requirements publicly. Values marked <em>(reasonable estimate)</em> are
             approximated from comparable BSN programs (school type, selectivity, and region) so you
-            can gauge your odds — it&apos;s the best picture possible short of contacting their
+            can gauge your odds. It&apos;s the best picture possible short of contacting their
             admissions office directly. Treat your fit score as a guide, and confirm the real
             requirements with the school before applying.
           </span>
@@ -175,7 +175,7 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
         <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
           <span>
-            <strong>Exploratory estimate</strong> — requirements for this program are still being verified.
+            <strong>Exploratory estimate:</strong> requirements for this program are still being verified.
             Always check the school&apos;s official website before applying.
           </span>
         </div>
@@ -185,9 +185,9 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
         <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-sm text-blue-800">
           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
           <span>
-            <strong>Partially verified</strong> — not all official admission information for this program is publicly available.
+            <strong>Partially verified:</strong> not all official admission information for this program is publicly available.
             {hasEstimates
-              ? ' Values marked (reasonable estimate) are approximated from comparable BSN programs — the best estimate possible without contacting the admissions office directly. '
+              ? ' Values marked (reasonable estimate) are approximated from comparable BSN programs, the best estimate possible without contacting the admissions office directly. '
               : ' The requirements shown represent the best reasonable estimate based on available sources. '}
             Always confirm details directly with the school before applying.
           </span>
@@ -202,9 +202,9 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
             <Row label="Min. Overall GPA" value={program.minOverallGPA != null ? `${program.minOverallGPA.toFixed(2)}` : 'Not specified'} estimated={est.includes('minOverallGPA')} />
             <Row label="Min. Science GPA" value={program.minScienceGPA != null ? `${program.minScienceGPA.toFixed(2)}` : 'Not specified'} estimated={est.includes('minScienceGPA')} />
             <Row label="Entrance Exam" value={program.examType ?? 'None required'} estimated={est.includes('examType')} />
-            <Row label="Min. Exam Score" value={program.minExamScore != null ? `${program.minExamScore}%` : '—'} estimated={est.includes('minExamScore')} />
+            <Row label="Min. Exam Score" value={program.minExamScore != null ? `${program.minExamScore}%` : 'Not specified'} estimated={est.includes('minExamScore')} />
             <Row label="CASPer Required" value={program.casperRequired ? 'Yes' : 'No'} />
-            <Row label="Application Deadline" value={program.deadlines ?? '—'} />
+            <Row label="Application Deadline" value={program.deadlines ?? 'Not specified'} />
             <Row label="Program Type" value={program.programType} />
           </dl>
           {program.notes && (
@@ -227,7 +227,7 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
               <p className="text-sm text-gray-600 mb-4">{fit.explanation}</p>
               {hasEstimates && (
                 <p className="text-xs text-amber-700 mb-4 -mt-2">
-                  Calculated partly from estimated requirements — see the note above.
+                  Calculated partly from estimated requirements. See the note above.
                 </p>
               )}
               {fit.gpaNote && (
@@ -306,8 +306,8 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
 
         {stats.total === 0 ? (
           <p className="text-sm text-gray-500 mb-4">
-            No outcomes reported yet for {program.university}. Be the first to share what it took —
-            it helps other applicants gauge their real odds.
+            No outcomes reported yet for {program.university}. Be the first to share what it took, and
+            help other applicants gauge their real odds.
           </p>
         ) : (
           <>

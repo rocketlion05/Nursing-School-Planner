@@ -147,7 +147,7 @@ export default function GapReportButton({ profile, gap, programs }: Props) {
       }
 
       // Programs by status
-      section('Programs — Fit Overview')
+      section('Programs: Fit Overview')
       const grouped = new Map<FitStatus, ReportProgram[]>()
       programs.forEach(p => {
         if (!grouped.has(p.status)) grouped.set(p.status, [])
@@ -179,7 +179,7 @@ export default function GapReportButton({ profile, gap, programs }: Props) {
             ? `missing ${p.missingCount} course${p.missingCount !== 1 ? 's' : ''}`
             : p.examNote ?? ''
           line(
-            `  ${p.university}, ${p.state}${detail ? '  —  ' + detail : ''}`,
+            `  ${p.university}, ${p.state}${detail ? ': ' + detail : ''}`,
             9, false, [75, 85, 99],
           )
         })

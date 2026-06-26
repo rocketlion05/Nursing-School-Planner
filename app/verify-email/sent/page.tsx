@@ -23,7 +23,7 @@ const COPY: Record<
   },
   unverified: {
     heading: 'Verify your email to continue',
-    body: 'Your account isn’t active yet. We sent a verification link when you signed up — click it to log in. Need a new one? Resend it below.',
+    body: 'Your account isn’t active yet. We sent a verification link when you signed up; click it to log in. Need a new one? Resend it below.',
     tone: 'warn',
   },
   invalid: {

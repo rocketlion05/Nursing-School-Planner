@@ -1,6 +1,6 @@
 ---
 title: How to Get Into Nursing School in Texas (2026 BSN Admissions Guide)
-description: A step-by-step guide to getting into a BSN nursing program in Texas — GPA expectations, the TEAS and HESI A2 exams, prerequisites, and how to strengthen a competitive application.
+description: A step-by-step guide to getting into a BSN nursing program in Texas, covering GPA expectations, the TEAS and HESI A2 exams, prerequisites, and how to strengthen a competitive application.
 date: 2026-06-23
 ---
 
@@ -8,7 +8,7 @@ Texas has one of the largest networks of BSN (Bachelor of Science in Nursing) pr
 
 ## 1. Understand the GPA that actually matters
 
-Most Texas BSN programs evaluate two GPAs: your **overall (cumulative) GPA** and your **prerequisite/science GPA**. The science GPA — your grades in Anatomy & Physiology I and II, Microbiology, and Chemistry — usually carries the most weight.
+Most Texas BSN programs evaluate two GPAs: your **overall (cumulative) GPA** and your **prerequisite/science GPA**. The science GPA, your grades in Anatomy & Physiology I and II, Microbiology, and Chemistry, usually carries the most weight.
 
 - Competitive public programs often expect a prerequisite GPA of **3.0 or higher**.
 - Many regional and private programs admit with a **2.5–2.75** minimum, but a higher GPA dramatically improves your odds.
@@ -18,8 +18,8 @@ Most Texas BSN programs evaluate two GPAs: your **overall (cumulative) GPA** and
 
 Texas programs use one of two entrance exams:
 
-- **ATI TEAS** (Test of Essential Academic Skills) — the most common.
-- **HESI A2** (Health Education Systems, Inc. Admission Assessment) — used by Baylor, Texas A&M, and several others.
+- **ATI TEAS** (Test of Essential Academic Skills), the most common.
+- **HESI A2** (Health Education Systems, Inc. Admission Assessment), used by Baylor, Texas A&M, and several others.
 
 Check each school individually: a few require a specific overall percentage (e.g. 65%), others require minimum scores in specific sections (Reading, Math, Science, English), and a handful require no entrance exam at all. Most programs cap the number of attempts and enforce a waiting period between retakes.
 
@@ -29,7 +29,7 @@ The typical Texas BSN prerequisite list includes Anatomy & Physiology I & II, Mi
 
 ## 4. Strengthen the rest of your application
 
-- Many programs (UT Health San Antonio, Texas A&M, and others) require a **Kira Talent video interview or writing sample** — practice answering short prompts on camera.
+- Many programs (UT Health San Antonio, Texas A&M, and others) require a **Kira Talent video interview or writing sample**, so practice answering short prompts on camera.
 - A clear, specific **personal statement** about why you want to be a nurse helps in holistic review.
 - Healthcare experience (CNA, EMT, volunteering, scribing) is rarely required but consistently helps.
 

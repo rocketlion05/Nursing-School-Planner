@@ -1,6 +1,6 @@
 ---
 title: How to Get Into Nursing School in Arkansas (2026 BSN Admissions Guide)
-description: What Arkansas BSN nursing programs require in 2026 — GPA minimums, the TEAS exam, prerequisites, and how to build a competitive application to schools like UAMS, UA Fayetteville, and UCA.
+description: What Arkansas BSN nursing programs require in 2026, including GPA minimums, the TEAS exam, prerequisites, and how to build a competitive application to schools like UAMS, UA Fayetteville, and UCA.
 date: 2026-06-22
 ---
 
@@ -18,7 +18,7 @@ Arkansas BSN programs look at both your cumulative GPA and your prerequisite GPA
 
 Most Arkansas programs use the **ATI TEAS** entrance exam. A few important nuances:
 
-- The **University of Central Arkansas requires no entrance exam at all** — admission is GPA-driven.
+- The **University of Central Arkansas requires no entrance exam at all**: admission is GPA-driven.
 - The **University of Arkansas requires both the TEAS and CASPer** (a situational-judgment test).
 - Several programs accept a "Proficient" TEAS level (around 59%+) rather than a fixed numeric cutoff.
 
@@ -30,13 +30,13 @@ Common Arkansas prerequisites include Anatomy & Physiology I & II, Microbiology,
 
 ## 4. Plan your application timeline
 
-Arkansas programs run on varied cycles — some admit once per year, others each Fall and Spring. The University of Arkansas applies through **NursingCAS**. Map out each school's deadline early; missing a single annual cycle can cost you a full year.
+Arkansas programs run on varied cycles: some admit once per year, others each Fall and Spring. The University of Arkansas applies through **NursingCAS**. Map out each school's deadline early; missing a single annual cycle can cost you a full year.
 
 ## 5. Round out a competitive file
 
 - A focused personal statement helps in holistic review.
 - Healthcare experience (CNA, volunteering) strengthens borderline applications.
-- Keep immunizations, background check, and transcripts ready — many programs require them at or shortly after admission.
+- Keep immunizations, background check, and transcripts ready, since many programs require them at or shortly after admission.
 
 ## Compare your odds across every Arkansas school
 

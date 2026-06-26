@@ -37,7 +37,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         error: profile.cyclePassExpired
-          ? 'Your cycle pass has expired — repurchase for your next cycle.'
+          ? 'Your cycle pass has expired. Repurchase for your next cycle.'
           : 'The AI Academic Advisor is a Pro feature.',
       },
       { status: 403 },
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
         }
       } catch (err) {
         console.error('advisor stream error:', err)
-        controller.enqueue(encoder.encode('\n\n[Sorry — I had trouble answering. Please try again.]'))
+        controller.enqueue(encoder.encode('\n\n[Sorry, I had trouble answering. Please try again.]'))
       } finally {
         controller.close()
       }

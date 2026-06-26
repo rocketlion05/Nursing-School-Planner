@@ -2,12 +2,12 @@ import type { Metadata } from 'next'
 import { getProfile } from '@/app/actions/profile'
 
 export const metadata: Metadata = {
-  title: 'Pricing — Free & Premium Plans',
+  title: 'Pricing: Free & Premium Plans',
   description:
     'Start free and upgrade with the one-time Cycle Pass ($29) for the AI academic advisor, unlimited favorites, gap-analysis PDF, and more. No subscription.',
   alternates: { canonical: 'https://www.nursingschoolplanner.com/pricing' },
   openGraph: {
-    title: 'Pricing — Nursing School Planner',
+    title: 'Pricing: Nursing School Planner',
     description:
       'Free plan available. Unlock Pro for your application cycle with the one-time $29 Cycle Pass.',
     url: 'https://www.nursingschoolplanner.com/pricing',
@@ -32,7 +32,7 @@ const FREE_FEATURES = [
 const PREMIUM_FEATURES = [
   'Everything in Free',
   'Unlimited saved favorites',
-  'AI academic advisor — ask anything, get your plan & best-fit schools',
+  'AI academic advisor: ask anything, get your plan & best-fit schools',
   'Gap analysis PDF report (profile, fit scores, missing prereqs)',
   'TEAS/HESI score breakdown + unlock insights',
   'What-if GPA & score simulator',
@@ -57,7 +57,7 @@ export default async function PricingPage({
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-gray-900 mb-3">Simple, Student-Friendly Pricing</h1>
         <p className="text-gray-500 max-w-xl mx-auto">
-          Start free, then unlock Pro with the one-time Cycle Pass — full Pro access for 180 days,
+          Start free, then unlock Pro with the one-time Cycle Pass: full Pro access for 180 days,
           plenty of time for your application cycle. No subscription, no auto-renew. Have a promo
           code? Redeem it below for a free month.
         </p>
@@ -65,7 +65,7 @@ export default async function PricingPage({
 
       {canceled && (
         <div className="max-w-md mx-auto mb-6 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2 text-center">
-          Payment was canceled — no charge was made. You can try again anytime.
+          Payment was canceled. No charge was made, and you can try again anytime.
         </div>
       )}
       {nobilling && (
@@ -94,7 +94,7 @@ export default async function PricingPage({
         <div className="max-w-md mx-auto mb-8 text-center">
           <div className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg py-2.5 px-4 flex items-center justify-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
-            Your cycle pass has expired — repurchase below for your next cycle.
+            Your cycle pass has expired. Repurchase below for your next cycle.
           </div>
         </div>
       )}
@@ -108,7 +108,7 @@ export default async function PricingPage({
             $0 <span className="text-base font-normal text-gray-400">always</span>
           </div>
           <p className="text-sm text-gray-500 mt-2 mb-4">
-            No credit card needed — everything you need to start planning.
+            No credit card needed. Everything you need to start planning.
           </p>
 
           <ul className="space-y-2 mb-6 flex-1">

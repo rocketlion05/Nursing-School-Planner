@@ -102,7 +102,7 @@ export function computeFit(profile: ProfileData | null, program: ProgramData): F
   if (program.minOverallGPA !== null) {
     if (profile.overallGPA === null) {
       penalties += 1
-      gpaNote = `Overall GPA minimum is ${program.minOverallGPA.toFixed(2)} — enter your GPA to see your full fit.`
+      gpaNote = `Overall GPA minimum is ${program.minOverallGPA.toFixed(2)}. Enter your GPA to see your full fit.`
       nextSteps.push('Enter your overall GPA in your profile.')
     } else {
       const margin = profile.overallGPA - program.minOverallGPA
@@ -138,14 +138,14 @@ export function computeFit(profile: ProfileData | null, program: ProgramData): F
     const score = getStudentExamScore(profile, program.examType)
     if (score === null) {
       penalties += 2
-      examNote = `${program.examType} required${program.minExamScore ? ` (min ${program.minExamScore}%)` : ''} — no score on file.`
+      examNote = `${program.examType} required${program.minExamScore ? ` (min ${program.minExamScore}%)` : ''}: no score on file.`
       nextSteps.push(`Take the ${program.examType}${program.minExamScore ? ` and score at least ${program.minExamScore}%` : ''}.`)
     } else if (program.minExamScore !== null) {
       const margin = score - program.minExamScore
       if (margin < 0) {
         penalties += 2
         examNote = `Your ${program.examType} score (${score}%) is below the ${program.minExamScore}% minimum.`
-        nextSteps.push(`Retake the ${program.examType} — you need at least ${program.minExamScore}% (currently ${score}%).`)
+        nextSteps.push(`Retake the ${program.examType}: you need at least ${program.minExamScore}% (currently ${score}%).`)
       } else if (margin < 5) {
         penalties += 1
         examNote = `Your ${program.examType} score (${score}%) meets the minimum of ${program.minExamScore}%, but with a narrow margin.`
@@ -164,7 +164,7 @@ export function computeFit(profile: ProfileData | null, program: ProgramData): F
       nextSteps.push('Register for and complete the CASPer exam.')
     } else if (profile.casperQuartile <= 1) {
       penalties += 2
-      nextSteps.push('Consider retaking CASPer — a higher quartile improves your competitiveness.')
+      nextSteps.push('Consider retaking CASPer; a higher quartile improves your competitiveness.')
     }
   }
 
@@ -193,6 +193,6 @@ export function computeFit(profile: ProfileData | null, program: ProgramData): F
     completedCourses,
     examNote,
     gpaNote,
-    nextSteps: nextSteps.length > 0 ? nextSteps : ['Keep up the great work — you look strong for this program!'],
+    nextSteps: nextSteps.length > 0 ? nextSteps : ['Keep up the great work; you look strong for this program!'],
   }
 }

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     'Sign up free to save your nursing school profile, track prerequisites, and see your fit scores for BSN programs across the U.S.',
   alternates: { canonical: 'https://www.nursingschoolplanner.com/signup' },
   openGraph: {
-    title: 'Create Your Free Account — Nursing School Planner',
+    title: 'Create Your Free Account: Nursing School Planner',
     description:
       'Sign up free. Save your profile, track prerequisites, and compare your stats against 100+ BSN programs nationwide.',
     url: 'https://www.nursingschoolplanner.com/signup',

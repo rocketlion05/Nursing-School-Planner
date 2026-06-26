@@ -99,7 +99,7 @@ export default function AdminCodeManager({ initialCodes }: { initialCodes: Acces
         <h2 className="text-lg font-semibold text-gray-900">Access Codes</h2>
       </div>
       <p className="text-sm text-gray-500 mb-4">
-        1-month codes give a free month of Pro. Lifetime codes give permanent Pro — for content
+        1-month codes give a free month of Pro. Lifetime codes give permanent Pro, for content
         creators. Custom codes let you pick the name and how many people can redeem it.
       </p>
 
@@ -204,7 +204,7 @@ export default function AdminCodeManager({ initialCodes }: { initialCodes: Acces
       )}
 
       {codes.length === 0 ? (
-        <p className="text-gray-400 text-sm">No codes yet — generate one above.</p>
+        <p className="text-gray-400 text-sm">No codes yet. Generate one above.</p>
       ) : (
         <>
           <p className="text-xs font-medium text-gray-500 mb-2">

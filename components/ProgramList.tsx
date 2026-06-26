@@ -333,11 +333,11 @@ export default function ProgramList({ programs, isAuthed, isPremium, lists: init
                 {program.dataQuality === 'placeholder' &&
                   (program.estimatedFields.length > 0 ? (
                     <p className="text-xs text-amber-600 mt-1 italic">
-                      Based on estimated requirements — open Details for the full breakdown.
+                      Based on estimated requirements. Open Details for the full breakdown.
                     </p>
                   ) : (
                     <p className="text-xs text-gray-400 mt-1 italic">
-                      Requirements not fully verified — check the school&apos;s website before applying.
+                      Requirements not fully verified. Check the school&apos;s website before applying.
                     </p>
                   ))}
               </div>

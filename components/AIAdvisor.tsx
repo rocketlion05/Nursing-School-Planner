@@ -79,7 +79,7 @@ export default function AIAdvisor({ studentName }: { studentName: string }) {
           <div className="text-sm text-gray-600">
             <p className="mb-3">
               Hi{firstName ? ` ${firstName}` : ''}! I&apos;m your nursing-school advisor. Ask me anything about your
-              path to a BSN — or start with one of these:
+              path to a BSN, or start with one of these:
             </p>
             <div className="flex flex-wrap gap-2">
               {STARTERS.map(s => (

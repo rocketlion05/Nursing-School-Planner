@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og'
 
-export const alt = 'Nursing School Planner — Navigate Your Path to Nursing School'
+export const alt = 'Nursing School Planner: Navigate Your Path to Nursing School'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 

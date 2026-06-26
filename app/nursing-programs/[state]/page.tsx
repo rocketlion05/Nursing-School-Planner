@@ -22,7 +22,7 @@ export async function generateMetadata(props: PageProps<'/nursing-programs/[stat
   const code = slugToStateCode(state)
   if (!code) return {}
   const name = STATE_NAMES[code]
-  const title = `Nursing Programs in ${name} — BSN Schools & Requirements`
+  const title = `Nursing Programs in ${name}: BSN Schools & Requirements`
   const description = `Compare accredited BSN nursing programs in ${name}. See GPA requirements, TEAS/HESI entrance exams, prerequisites, and links to each school's official admissions page.`
   const url = `${SITE_URL}/nursing-programs/${state}`
   return {

@@ -41,7 +41,7 @@ export function CyclePassStatus({ expiry }: { expiry: string | null }) {
           </>
         ) : (
           <>
-            <span className="font-semibold">Cycle Pass active</span> — full Pro access through{' '}
+            <span className="font-semibold">Cycle Pass active.</span> Full Pro access through{' '}
             <strong>{formatDate(expiry)}</strong>.
           </>
         )}
@@ -59,7 +59,7 @@ export function CyclePassExpiredNotice() {
     <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm">
       <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
       <div className="text-amber-900">
-        <span className="font-semibold">Your cycle pass has expired</span> — repurchase for your next
+        <span className="font-semibold">Your cycle pass has expired.</span> Repurchase for your next
         cycle.{' '}
         <Link href="/pricing" className="font-semibold underline">
           Repurchase now

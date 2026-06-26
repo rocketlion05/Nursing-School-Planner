@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 
 export const metadata: Metadata = {
-  title: 'Admin — School Requests',
+  title: 'Admin: School Requests',
   robots: { index: false, follow: false },
 }
 import { getCurrentUser } from '@/app/lib/dal'
@@ -133,7 +133,7 @@ export default async function AdminRequestsPage({
                           <span className="block">{reqUser.email}</span>
                           <span className="text-gray-400">@{reqUser.username}</span>
                         </>
-                      ) : r.requestedBy ?? '—'}
+                      ) : r.requestedBy ?? 'Unknown'}
                     </td>
                     <td className="px-4 py-3 text-gray-500 text-xs">
                       {new Date(r.createdAt).toLocaleDateString()}

@@ -76,7 +76,7 @@ export default function ChanceCalculator({ programs }: { programs: ProgramData[]
   async function share() {
     const origin = typeof window !== 'undefined' ? window.location.origin : ''
     const url = `${origin}/chance-calculator?${resultParams()}`
-    const text = `I checked my nursing school chances — I'm a Safe or Match for ${result.counts.Safe + result.counts.Match} BSN programs!`
+    const text = `I checked my nursing school chances, and I'm a Safe or Match for ${result.counts.Safe + result.counts.Match} BSN programs!`
     try {
       if (navigator.share) await navigator.share({ title: 'Nursing School Chances', text, url })
       else { await navigator.clipboard.writeText(url); alert('Share link copied!') }
@@ -205,7 +205,7 @@ export default function ChanceCalculator({ programs }: { programs: ProgramData[]
             <div>
               <p className="font-semibold text-gray-900">Want the full picture?</p>
               <p className="text-sm text-gray-600 mt-0.5">
-                Create a free account to save schools, track deadlines, and see your exact gaps for every program — plus an AI application plan.
+                Create a free account to save schools, track deadlines, and see your exact gaps for every program, plus an AI application plan.
               </p>
               <Link href="/signup" className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-teal-700 hover:text-teal-900">
                 Create your free account <ChevronRight className="w-4 h-4" />

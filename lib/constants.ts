@@ -25,4 +25,4 @@ export const FREE_TIER_FAVORITE_LIMIT = 2
 export const DISCLAIMER =
   'This tool is for planning purposes only. It does NOT guarantee admission. ' +
   'Always verify official requirements, deadlines, and policies directly with each nursing program before applying. ' +
-  'Use this as a guide, not an official source. Program requirements change — data shown here may be approximate or outdated.'
+  'Use this as a guide, not an official source. Program requirements change, and data shown here may be approximate or outdated.'

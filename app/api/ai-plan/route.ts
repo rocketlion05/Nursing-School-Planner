@@ -26,7 +26,7 @@ export async function POST() {
     return NextResponse.json(
       {
         error: profile.cyclePassExpired
-          ? 'Your cycle pass has expired — repurchase for your next cycle.'
+          ? 'Your cycle pass has expired. Repurchase for your next cycle.'
           : 'The AI Application Plan is a Pro feature.',
       },
       { status: 403 },
@@ -86,7 +86,7 @@ export async function POST() {
       } catch (err) {
         console.error('ai-plan stream error:', err)
         controller.enqueue(
-          encoder.encode('\n\n[Sorry — the plan could not be generated. Please try again.]'),
+          encoder.encode('\n\n[Sorry, the plan could not be generated. Please try again.]'),
         )
       } finally {
         controller.close()

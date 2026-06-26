@@ -40,7 +40,7 @@ export async function redeemAccessCode(code: string): Promise<{ success: boolean
     // premiumUntil null + tier cycle = unlimited Pro (subscription, admin grant, or
     // lifetime code) — a dated month code must never shorten that.
     if (!lifetime && profile.tier === 'cycle' && profile.premiumUntil === null) {
-      return { success: false, error: 'You already have unlimited Pro access — no code needed!' }
+      return { success: false, error: 'You already have unlimited Pro access, no code needed!' }
     }
 
     // Consume a use atomically so concurrent redemptions can't exceed maxUses.
@@ -177,7 +177,7 @@ export async function createCustomCode(input: {
     revalidatePath('/admin/requests')
     return { row: toRow(created) }
   } catch {
-    return { error: 'That code already exists — pick a different one.' }
+    return { error: 'That code already exists. Pick a different one.' }
   }
 }
 

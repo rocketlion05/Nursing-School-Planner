@@ -122,6 +122,9 @@ export default function Navbar({ displayName, isAdmin = false }: { displayName: 
               <Link href="/pricing" className={navLinkCls(pathname.startsWith('/pricing'))}>
                 Pricing
               </Link>
+              <Link href="/about" className={navLinkCls(pathname.startsWith('/about'))}>
+                About
+              </Link>
             </>
           ) : (
             <>
@@ -130,6 +133,7 @@ export default function Navbar({ displayName, isAdmin = false }: { displayName: 
               <Link href="/study-tools" className={navLinkCls(pathname.startsWith('/study-tools'))}>Study Tools</Link>
               <Link href="/guides" className={navLinkCls(pathname.startsWith('/guides'))}>Guides</Link>
               <Link href="/pricing" className={navLinkCls(pathname.startsWith('/pricing'))}>Pricing</Link>
+              <Link href="/about" className={navLinkCls(pathname.startsWith('/about'))}>About</Link>
             </>
           )}
         </nav>
@@ -240,6 +244,9 @@ export default function Navbar({ displayName, isAdmin = false }: { displayName: 
               <Link href="/pricing" className={clsx('block', navLinkCls(pathname.startsWith('/pricing')))}>
                 Pricing
               </Link>
+              <Link href="/about" className={clsx('block', navLinkCls(pathname.startsWith('/about')))}>
+                About
+              </Link>
 
               {/* User section */}
               <div className="border-t border-gray-100 pt-2 mt-2 space-y-0.5">
@@ -270,6 +277,7 @@ export default function Navbar({ displayName, isAdmin = false }: { displayName: 
               <Link href="/study-tools" className={clsx('block', navLinkCls(pathname.startsWith('/study-tools')))}>Study Tools</Link>
               <Link href="/guides" className={clsx('block', navLinkCls(pathname.startsWith('/guides')))}>Guides</Link>
               <Link href="/pricing" className={clsx('block', navLinkCls(pathname.startsWith('/pricing')))}>Pricing</Link>
+              <Link href="/about" className={clsx('block', navLinkCls(pathname.startsWith('/about')))}>About</Link>
               <div className="border-t border-gray-100 pt-2 mt-2 space-y-0.5">
                 <Link href="/login" className={clsx('block', navLinkCls(false))}>Log in</Link>
                 <Link href="/signup" className="block px-3 py-1.5 rounded-md text-sm font-semibold bg-teal-600 text-white hover:bg-teal-700 transition-colors">

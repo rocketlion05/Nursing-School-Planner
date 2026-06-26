@@ -19,7 +19,7 @@ export default function ContactForm() {
         </div>
         <h2 className="font-semibold text-gray-900 mb-1">Message sent!</h2>
         <p className="text-sm text-gray-500">
-          Thanks for reaching out — we&apos;ll get back to you by email as soon as we can.
+          Thanks for reaching out. We&apos;ll get back to you by email as soon as we can.
         </p>
       </div>
     )

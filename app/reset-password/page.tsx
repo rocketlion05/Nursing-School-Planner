@@ -38,8 +38,8 @@ export default async function ResetPasswordPage({
         ) : (
           <div className="text-sm text-gray-600">
             <p className="mb-4">
-              This reset link is missing its token or is malformed. Reset links expire after 1 hour —
-              please request a fresh one.
+              This reset link is missing its token or is malformed. Reset links expire after 1 hour,
+              so please request a fresh one.
             </p>
             <Link
               href="/forgot-password"

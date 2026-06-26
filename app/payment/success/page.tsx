@@ -53,7 +53,7 @@ export default async function PaymentSuccessPage({
       </div>
       <h1 className="text-2xl font-bold text-gray-900 mb-2">You&apos;re all set!</h1>
       <p className="text-gray-500 mb-6">
-        {user?.username ? `Hey ${user.username} — y` : 'Y'}our Pro access is now active. Unlimited
+        {user?.username ? `Hey ${user.username}, y` : 'Y'}our Pro access is now active. Unlimited
         favorites, full gap analysis, and school requests are unlocked.
       </p>
       <div className="flex flex-col sm:flex-row gap-3 justify-center">

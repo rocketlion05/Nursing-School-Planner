@@ -93,7 +93,7 @@ export function computeGapSummary(
   if (commonMissingCourses.length > 0) {
     const top = commonMissingCourses[0]
     recommendations.push(
-      `Priority: Enroll in ${top.label} — it's required by ${top.count} of your target programs.`,
+      `Priority: Enroll in ${top.label}. It's required by ${top.count} of your target programs.`,
     )
   }
 
@@ -111,7 +111,7 @@ export function computeGapSummary(
     )
   } else {
     recommendations.push(
-      `You have ${counts.Safe} Safe and ${counts.Match} Match program(s) — you're in a good position to apply!`,
+      `You have ${counts.Safe} Safe and ${counts.Match} Match program(s). You're in a good position to apply!`,
     )
   }
 
@@ -213,7 +213,7 @@ export function computeRetakeRecommendations(
       type: 'exam',
       impact,
       priority: impact >= 2 ? 'high' : 'medium',
-      message: `Retaking the ${insight.examType} is one of your highest-leverage moves — scoring ${insight.nextThresholdScore}%+ would make you competitive at ${impact} more program${plural(impact)}.`,
+      message: `Retaking the ${insight.examType} is one of your highest-leverage moves: scoring ${insight.nextThresholdScore}%+ would make you competitive at ${impact} more program${plural(impact)}.`,
     })
   }
 
@@ -256,7 +256,7 @@ export function computeRetakeRecommendations(
         type: 'prereq',
         impact,
         priority: impact >= 2 ? 'high' : 'medium',
-        message: `Finishing your outstanding prerequisites would move ${impact} program${plural(impact)} into Safe or Match — focus your course planning here.`,
+        message: `Finishing your outstanding prerequisites would move ${impact} program${plural(impact)} into Safe or Match. Focus your course planning here.`,
       })
     }
   }
@@ -271,7 +271,7 @@ export function computeRetakeRecommendations(
       impact: 0,
       priority: 'low',
       message: scoreable
-        ? "You're meeting the requirements for your competitive programs — you're in a strong position to apply this cycle. Keep your prerequisites on track."
+        ? "You're meeting the requirements for your competitive programs; you're in a strong position to apply this cycle. Keep your prerequisites on track."
         : 'No single change unlocks more programs right now. Focus on steadily improving your GPA and finishing prerequisites, then re-check your fit.',
     })
   }

@@ -86,7 +86,7 @@ function Stat({ label, value, highlight }: { label: string; value?: string; high
     <div className="bg-gray-50 rounded-lg px-3 py-2">
       <p className="text-xs text-gray-500">{label}</p>
       <p className={`text-sm font-semibold ${highlight ? 'text-teal-700' : 'text-gray-900'}`}>
-        {value ?? <span className="text-gray-300 font-normal">—</span>}
+        {value ?? <span className="text-gray-300 font-normal">N/A</span>}
       </p>
     </div>
   )

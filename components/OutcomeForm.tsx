@@ -109,7 +109,7 @@ export default function OutcomeForm({ programId }: { programId: string }) {
         </button>
         <button type="button" onClick={() => setOpen(false)} className="text-sm text-gray-500 hover:text-gray-700">Cancel</button>
       </div>
-      <p className="text-xs text-gray-400">No names, no accounts — just the stats. Helps future applicants gauge their odds.</p>
+      <p className="text-xs text-gray-400">No names, no accounts, just the stats. Helps future applicants gauge their odds.</p>
     </form>
   )
 }

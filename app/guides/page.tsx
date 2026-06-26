@@ -7,12 +7,12 @@ import { SITE_URL } from '@/lib/seo'
 export const metadata: Metadata = {
   title: 'Nursing School Guides & Admissions Advice',
   description:
-    'Free guides to getting into nursing school — BSN admissions, TEAS and HESI A2 exam prep, GPA and prerequisite planning, and state-by-state requirements across the U.S.',
+    'Free guides to getting into nursing school: BSN admissions, TEAS and HESI A2 exam prep, GPA and prerequisite planning, and state-by-state requirements across the U.S.',
   alternates: { canonical: `${SITE_URL}/guides` },
   openGraph: {
     title: 'Nursing School Guides & Admissions Advice',
     description:
-      'Free guides to getting into nursing school — BSN admissions, TEAS and HESI A2 prep, GPA planning, and state requirements.',
+      'Free guides to getting into nursing school: BSN admissions, TEAS and HESI A2 prep, GPA planning, and state requirements.',
     url: `${SITE_URL}/guides`,
     type: 'website',
   },
@@ -28,7 +28,7 @@ export default async function GuidesIndexPage() {
         <h1 className="text-3xl font-bold text-gray-900">Nursing School Guides</h1>
       </div>
       <p className="text-gray-500 mb-6">
-        Practical, no-nonsense advice on getting into a BSN program — admissions, entrance exams,
+        Practical, no-nonsense advice on getting into a BSN program: admissions, entrance exams,
         GPA and prerequisites, and what each state expects.
       </p>
 
@@ -38,7 +38,7 @@ export default async function GuidesIndexPage() {
       >
         <span className="text-2xl">📋</span>
         <span className="text-sm text-teal-900">
-          <strong>Free download:</strong> the BSN Prerequisite &amp; Application Checklist — everything you
+          <strong>Free download:</strong> the BSN Prerequisite &amp; Application Checklist, everything you
           need to apply, in one printable PDF. <span className="underline">Get it →</span>
         </span>
       </Link>

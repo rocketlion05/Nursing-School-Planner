@@ -5,7 +5,7 @@ import JsonLd from '@/components/JsonLd'
 import Disclaimer from '@/components/Disclaimer'
 import { SITE_URL } from '@/lib/seo'
 
-const BASE_TITLE = 'Nursing School Chances Calculator — Will I Get In?'
+const BASE_TITLE = 'Nursing School Chances Calculator: Will I Get In?'
 const BASE_DESC =
   'Free calculator: enter your GPA and TEAS/HESI score to instantly see how many BSN nursing programs you’re a Safe, Match, or Reach for. No signup required.'
 
@@ -78,7 +78,7 @@ export default async function ChanceCalculatorPage() {
       <h1 className="text-3xl font-bold text-gray-900">Nursing School Chances Calculator</h1>
       <p className="text-gray-600 mt-3 mb-8 max-w-2xl">
         Enter your GPA and entrance-exam score to instantly see how many accredited BSN nursing
-        programs you&apos;re a <strong>Safe</strong>, <strong>Match</strong>, or <strong>Reach</strong> for —
+        programs you&apos;re a <strong>Safe</strong>, <strong>Match</strong>, or <strong>Reach</strong> for,
         scored against each school&apos;s real requirements. Free, no signup.
       </p>
 

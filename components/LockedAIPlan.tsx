@@ -39,7 +39,7 @@ export default function LockedAIPlan() {
           </div>
           <h3 className="font-bold text-gray-900 mb-1">Unlock your AI advisor</h3>
           <p className="text-sm text-gray-500 mb-4">
-            Chat with an AI academic advisor that knows your stats and our program data — ask it to
+            Chat with an AI academic advisor that knows your stats and our program data. Ask it to
             build your plan, pick your best-fit schools, or answer any application question.
           </p>
           <Link

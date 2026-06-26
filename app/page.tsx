@@ -68,7 +68,7 @@ export default async function Home() {
           <BookOpen className="w-8 h-8 text-teal-600 mb-3" />
           <h3 className="font-semibold text-gray-900 mb-2">Enter Your Profile</h3>
           <p className="text-sm text-gray-600">
-            GPA, science courses, TEAS/HESI scores, and more — saved to your account and never shared.
+            GPA, science courses, TEAS/HESI scores, and more, saved to your account and never shared.
           </p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-6">

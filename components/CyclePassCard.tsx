@@ -43,7 +43,7 @@ export default function CyclePassCard({
         <div className="mb-4 rounded-lg border border-teal-200 bg-white px-3 py-2.5 text-xs text-gray-600 flex gap-2">
           <CalendarClock className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
           <span>
-            Your pass is active for <strong className="text-gray-900">180 days</strong> — buy today and
+            Your pass is active for <strong className="text-gray-900">180 days</strong>. Buy today and
             you&apos;re covered through <strong className="text-gray-900">{formatDate(previewExpiry)}</strong>.
           </span>
         </div>

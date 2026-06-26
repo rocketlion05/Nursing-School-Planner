@@ -46,12 +46,12 @@ type Plan = {
 export const PLANS: Record<PlanId, Plan> = {
   cycle: {
     id: 'cycle',
-    name: 'Cycle Pass — Nursing School Planner',
+    name: 'Nursing School Planner Cycle Pass',
     amount: 2900,
     mode: 'payment',
     label: '$29 one-time',
     description:
-      'Full Pro access for 180 days from purchase — plenty of time for your application cycle. One-time payment, no subscription, no auto-renew.',
+      'Full Pro access for 180 days from purchase, plenty of time for your application cycle. One-time payment, no subscription, no auto-renew.',
   },
 }
 

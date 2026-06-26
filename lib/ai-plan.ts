@@ -9,27 +9,30 @@ export const AI_PLAN_SYSTEM_PROMPT =
   'profile and target schools, generate a realistic semester-by-semester action ' +
   'plan. Be specific, practical, and encouraging. Include: which courses to take ' +
   'each term, when to register for and take TEAS/HESI, when to apply to each ' +
-  'school, and 3 top priority actions for right now. Keep it under 400 words.'
+  'school, and 3 top priority actions for right now. Keep it under 400 words. ' +
+  'Write in a natural, plain style and do not use em dashes; use commas, colons, ' +
+  'or periods instead.'
 
 /** Conversational academic-advisor persona for the chat on /plan. */
 export const AI_ADVISOR_SYSTEM_PROMPT =
   "You are a warm, knowledgeable academic advisor for pre-nursing students applying to BSN " +
   "programs, chatting one-on-one with a student. Use ONLY the STUDENT CONTEXT block (their " +
-  "profile and the programs in our database) to answer — it is the source of truth.\n" +
+  "profile and the programs in our database) to answer; it is the source of truth.\n" +
   "- If they ask you to build an academic plan, give a clear semester-by-semester plan: which " +
-  "courses to take each term, when to take the TEAS/HESI, and when to apply — end with the top 3 " +
+  "courses to take each term, when to take the TEAS/HESI, and when to apply, and end with the top 3 " +
   "actions to take now.\n" +
   "- If they ask about their best school options, recommend specific programs from their Safe and " +
   "Match lists and say why, then mention any worthwhile Reach schools.\n" +
   "- You have the FULL program directory below (every school in our database) with this student's " +
   "fit and key requirements for each. Use it to answer questions about any specific school by name. " +
-  "If a school they ask about IS in the directory, give its requirements and their fit directly — " +
+  "If a school they ask about IS in the directory, give its requirements and their fit directly; " +
   "don't say you lack data. If a school is NOT in the directory, say it isn't in our database yet " +
   "and suggest its official admissions page.\n" +
   "- NEVER invent a school, GPA cutoff, deadline, exam, or requirement that isn't in the context.\n" +
   "- Keep replies focused (usually under ~350 words), supportive, and honest about reaches. Use " +
   "markdown: short headings, bullet lists, and **bold** for key numbers. Address the student by " +
-  "first name when you know it.";
+  "first name when you know it.\n" +
+  "- Write in a natural, plain style. Do not use em dashes (—); use commas, colons, or periods instead.";
 
 /** Suggested opening prompts shown before the student types anything. */
 export const AI_ADVISOR_STARTERS = [
@@ -84,7 +87,7 @@ export function buildPlanContext(
     .filter(k => !profile.coursesCompleted.includes(k))
     .map(k => COURSE_MAP[k])
   lines.push(
-    `- Prerequisites still needed: ${remaining.length ? remaining.join(', ') : 'None — all common prereqs done'}`,
+    `- Prerequisites still needed: ${remaining.length ? remaining.join(', ') : 'None, all common prereqs done'}`,
   )
 
   // Entrance exams / Casper
@@ -122,7 +125,7 @@ export function buildPlanContext(
       if (p.examType) reqs.push(`${p.examType}${p.minExamScore !== null ? ` ≥ ${p.minExamScore}%` : ''}`)
       if (p.casperRequired) reqs.push('CASPer required')
       if (p.deadlines) reqs.push(`deadlines: ${p.deadlines}`)
-      const reqStr = reqs.length ? ` — requirements: ${reqs.join(', ')}` : ' — requirements not published'
+      const reqStr = reqs.length ? ` (requirements: ${reqs.join(', ')})` : ' (requirements not published)'
       lines.push(
         `- ${p.university} (${p.city}, ${p.state}) [current fit: ${p.fit.status}]${reqStr}`,
       )
@@ -173,7 +176,7 @@ export function buildAdvisorContext(
   const completed = profile.coursesCompleted.map(k => COURSE_MAP[k] ?? k)
   const remaining = Object.keys(COURSE_MAP).filter(k => !profile.coursesCompleted.includes(k)).map(k => COURSE_MAP[k])
   lines.push(`- Prerequisites completed: ${completed.length ? completed.join(', ') : 'None yet'}`)
-  lines.push(`- Prerequisites still needed: ${remaining.length ? remaining.join(', ') : 'None — all common prereqs done'}`)
+  lines.push(`- Prerequisites still needed: ${remaining.length ? remaining.join(', ') : 'None, all common prereqs done'}`)
   lines.push(`- Exams: TEAS ${profile.teasScore !== null ? profile.teasScore + '%' : 'not taken'}; HESI A2 ${profile.hesiScore !== null ? profile.hesiScore + '%' : 'not taken'}`)
 
   lines.push('', 'FIT ACROSS OUR PROGRAMS')
@@ -188,7 +191,7 @@ export function buildAdvisorContext(
   )
   lines.push(
     '',
-    `ALL PROGRAMS IN OUR DATABASE (${ranked.length}) — the student's fit + key requirements for each. ` +
+    `ALL PROGRAMS IN OUR DATABASE (${ranked.length}): the student's fit + key requirements for each. ` +
       'Recommend best options from the Safe and Match ones. Answer questions about any school listed here directly.',
   )
   for (const p of ranked) {
@@ -199,7 +202,7 @@ export function buildAdvisorContext(
     if (p.casperRequired) reqs.push('CASPer')
     if (p.deadlines) reqs.push(`deadline ${p.deadlines}`)
     lines.push(
-      `- ${p.university} (${p.city}, ${p.state}) [${p.fit.status}]${reqs.length ? ' — ' + reqs.join(', ') : ' — requirements not published'}`,
+      `- ${p.university} (${p.city}, ${p.state}) [${p.fit.status}]${reqs.length ? ': ' + reqs.join(', ') : ': requirements not published'}`,
     )
   }
   return lines.join('\n')

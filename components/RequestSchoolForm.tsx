@@ -40,7 +40,7 @@ export default function RequestSchoolForm() {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
         <CheckCircle className="w-10 h-10 text-green-600 mx-auto mb-3" />
-        <h2 className="font-semibold text-gray-900 mb-1">Request submitted — thank you!</h2>
+        <h2 className="font-semibold text-gray-900 mb-1">Request submitted. Thank you!</h2>
         <p className="text-sm text-gray-500 mb-4">
           We&apos;ll review {university || 'the school'} and add it to the database.
         </p>

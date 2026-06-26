@@ -4,10 +4,10 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Compare BSN Programs Side by Side',
   description:
-    'Compare two BSN nursing programs side by side — GPA requirements, entrance exams, prerequisites, and your personal fit score for each program.',
+    'Compare two BSN nursing programs side by side: GPA requirements, entrance exams, prerequisites, and your personal fit score for each program.',
   alternates: { canonical: 'https://www.nursingschoolplanner.com/compare' },
   openGraph: {
-    title: 'Compare BSN Programs Side by Side — Nursing School Planner',
+    title: 'Compare BSN Programs Side by Side: Nursing School Planner',
     description: 'Compare GPA requirements, entrance exams, and fit scores for any two BSN programs.',
     url: 'https://www.nursingschoolplanner.com/compare',
     type: 'website',
@@ -133,13 +133,13 @@ export default async function ComparePage({
       </div>
       <p className="text-gray-500 mb-6">
         Side-by-side comparison of your selected schools
-        {profile ? '.' : ' — complete your profile to see your fit for each.'}
+        {profile ? '.' : '. Complete your profile to see your fit for each.'}
       </p>
 
       {wasTruncated && (
         <div className="mb-6 text-sm bg-amber-50 border border-amber-200 text-amber-800 rounded-lg px-4 py-3">
           {isPremium
-            ? `You can compare up to ${COMPARE_LIMIT_PREMIUM} schools at once — showing the first ${COMPARE_LIMIT_PREMIUM}.`
+            ? `You can compare up to ${COMPARE_LIMIT_PREMIUM} schools at once, so we're showing the first ${COMPARE_LIMIT_PREMIUM}.`
             : (
               <>
                 Free accounts can compare {COMPARE_LIMIT_FREE} schools.{' '}

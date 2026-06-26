@@ -35,7 +35,7 @@ export default function FreeChecklistPage() {
         <h1 className="text-3xl font-bold text-gray-900">The BSN Prerequisite &amp; Application Checklist</h1>
         <p className="text-gray-600 mt-3">
           A free, printable checklist that walks you through everything you need to apply to nursing
-          school — prerequisites, GPA, entrance exams, documents, and deadlines.
+          school: prerequisites, GPA, entrance exams, documents, and deadlines.
         </p>
       </div>
 
