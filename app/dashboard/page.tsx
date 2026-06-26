@@ -10,21 +10,10 @@ import { getProfile } from '@/app/actions/profile'
 import { getDeadlines } from '@/app/actions/deadlines'
 import { prisma } from '@/lib/prisma'
 import { computeFit } from '@/lib/scoring'
-import FitBadge from '@/components/FitBadge'
+import CompareSelect from '@/components/CompareSelect'
 import { CyclePassStatus, CyclePassExpiredNotice } from '@/components/CyclePassNotice'
-import { CheckCircle, Circle, BookOpen, ClipboardList, Heart, ArrowRight, AlertCircle, CalendarClock, ListChecks, Scale } from 'lucide-react'
+import { CheckCircle, Circle, BookOpen, ClipboardList, Heart, ArrowRight, AlertCircle, CalendarClock, ListChecks } from 'lucide-react'
 import type { ProgramData, FitStatus } from '@/types'
-
-const DQ_LABELS: Record<string, string> = {
-  verified: 'Verified',
-  partial: 'Partially verified',
-  placeholder: 'Unverified',
-}
-const DQ_COLORS: Record<string, string> = {
-  verified: 'bg-green-100 text-green-700',
-  partial: 'bg-amber-100 text-amber-700',
-  placeholder: 'bg-gray-100 text-gray-500',
-}
 
 function daysUntil(fromISO: string, toISO: string): number {
   return Math.round((Date.parse(`${toISO}T00:00:00Z`) - Date.parse(`${fromISO}T00:00:00Z`)) / 86_400_000)
@@ -50,6 +39,8 @@ export default async function DashboardPage() {
   ])
 
   const isPremium = profile?.tier === 'cycle'
+  // Matches the compare page's tier caps (free 2 / premium 6).
+  const compareLimit = isPremium ? 6 : 2
   const defaultList = lists.find(l => l.isDefault)
   const namedLists = lists.filter(l => !l.isDefault)
 
@@ -134,17 +125,7 @@ export default async function DashboardPage() {
         <div className="flex items-center gap-2 mb-4">
           <Heart className="w-5 h-5 text-rose-400" />
           <h2 className="font-semibold text-gray-900">Saved Programs</h2>
-          <div className="ml-auto flex items-center gap-3">
-            {favPrograms.length >= 2 && (
-              <Link
-                href={`/compare?ids=${favPrograms.map(p => p.id).join(',')}`}
-                className="inline-flex items-center gap-1 text-sm text-teal-600 hover:underline"
-              >
-                <Scale className="w-3.5 h-3.5" /> Compare
-              </Link>
-            )}
-            <Link href="/programs" className="text-sm text-teal-600 hover:underline">Browse all</Link>
-          </div>
+          <Link href="/programs" className="ml-auto text-sm text-teal-600 hover:underline">Browse all</Link>
         </div>
 
         {favPrograms.length === 0 ? (
@@ -160,40 +141,19 @@ export default async function DashboardPage() {
             </Link>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 text-left">
-                  <th className="pb-2 font-medium text-gray-500">Program</th>
-                  <th className="pb-2 font-medium text-gray-500">State</th>
-                  <th className="pb-2 font-medium text-gray-500">Tier</th>
-                  <th className="pb-2 font-medium text-gray-500">Fit</th>
-                  <th className="pb-2 font-medium text-gray-500">Data</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {favPrograms.map(p => (
-                  <tr key={p.id} className="hover:bg-gray-50">
-                    <td className="py-2 pr-4">
-                      <Link href={`/programs/${p.urlSlug ?? p.id}`} className="text-teal-600 hover:underline font-medium">
-                        {p.university}
-                      </Link>
-                    </td>
-                    <td className="py-2 pr-4 text-gray-500">{p.state}</td>
-                    <td className="py-2 pr-4 text-gray-500">{p.tier}</td>
-                    <td className="py-2 pr-4">
-                      <FitBadge status={p.fit.status} size="sm" />
-                    </td>
-                    <td className="py-2">
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${DQ_COLORS[p.dataQuality] ?? 'bg-gray-100 text-gray-500'}`}>
-                        {DQ_LABELS[p.dataQuality] ?? p.dataQuality}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <CompareSelect
+            variant="table"
+            limit={compareLimit}
+            items={favPrograms.map(p => ({
+              id: p.id,
+              university: p.university,
+              urlSlug: p.urlSlug,
+              state: p.state,
+              tier: p.tier,
+              fitStatus: p.fit.status,
+              dataQuality: p.dataQuality,
+            }))}
+          />
         )}
       </section>
 
@@ -215,26 +175,15 @@ export default async function DashboardPage() {
                   </span>
                 </div>
                 {l.items.length > 0 && (
-                  <ul className="mt-2 space-y-1">
-                    {l.items.map(i => (
-                      <li key={i.program.id} className="text-sm">
-                        <Link
-                          href={`/programs/${i.program.urlSlug ?? i.program.id}`}
-                          className="text-teal-600 hover:underline"
-                        >
-                          {i.program.university}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {l.items.length >= 2 && (
-                  <Link
-                    href={`/compare?ids=${l.items.map(i => i.program.id).join(',')}`}
-                    className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-teal-600 hover:text-teal-800"
-                  >
-                    <Scale className="w-3.5 h-3.5" /> Compare these
-                  </Link>
+                  <CompareSelect
+                    variant="list"
+                    limit={compareLimit}
+                    items={l.items.map(i => ({
+                      id: i.program.id,
+                      university: i.program.university,
+                      urlSlug: i.program.urlSlug,
+                    }))}
+                  />
                 )}
               </div>
             ))}
