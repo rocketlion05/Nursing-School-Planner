@@ -48,6 +48,7 @@ export default function ChanceCalculator({ programs }: { programs: ProgramData[]
       casperQuartile: null, casperPercentile: null,
       otherExamName: null, otherExamScore: null,
       tier: 'free' as const, premiumUntil: null,
+      cyclePassExpiry: null, cyclePassExpired: false,
     }
     const pool = stateFilter === 'All' ? programs : programs.filter(p => p.state === stateFilter)
     const scored = scorePrograms(profile, pool)

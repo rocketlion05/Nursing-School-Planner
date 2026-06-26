@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { prisma } from '@/lib/prisma'
 import { getCurrentUser } from '@/app/lib/dal'
 import { isAdminEmail } from '@/lib/admin'
-import { hasActivePremium } from '@/lib/premium'
+import { hasActivePremium, activeCyclePassExpiry, latestCyclePassExpiry } from '@/lib/premium'
 import type { ProfileData } from '@/types'
 
 export type ProfileFormInput = {
@@ -70,8 +70,16 @@ export async function getProfile(): Promise<ProfileData | null> {
   const user = await getCurrentUser()
   if (!user) return null
 
-  const raw = await prisma.profile.findUnique({ where: { userId: user.id } })
+  const raw = await prisma.profile.findUnique({
+    where: { userId: user.id },
+    include: { cyclePasses: { select: { expiryDate: true } } },
+  })
   if (!raw) return null
+
+  const isAdmin = isAdminEmail(user.email)
+  const isPremium = isAdmin || hasActivePremium(raw)
+  const activeExpiry = activeCyclePassExpiry(raw.cyclePasses)
+  const latestExpiry = latestCyclePassExpiry(raw.cyclePasses)
 
   return {
     id: raw.id,
@@ -89,10 +97,14 @@ export async function getProfile(): Promise<ProfileData | null> {
     casperPercentile: raw.casperPercentile,
     otherExamName: raw.otherExamName,
     otherExamScore: raw.otherExamScore,
-    // Effective tier: admins always have Pro; otherwise honor the stored tier but
-    // treat lapsed time-boxed (1-month code) access as free. Stored tier is left
-    // untouched in the DB — this is computed per request.
-    tier: (isAdminEmail(user.email) || hasActivePremium(raw) ? 'cycle' : 'free') as 'free' | 'cycle',
+    // Effective tier: admins always have Pro; otherwise Pro if an active Cycle
+    // Pass or unexpired access-code grant exists. Stored tier is left untouched
+    // in the DB — this is computed per request.
+    tier: (isPremium ? 'cycle' : 'free') as 'free' | 'cycle',
     premiumUntil: raw.premiumUntil ? raw.premiumUntil.toISOString() : null,
+    // Active Cycle Pass window (furthest-future), for dashboard / checkout display.
+    cyclePassExpiry: activeExpiry ? activeExpiry.toISOString() : null,
+    // True when the user bought a pass, it has lapsed, and nothing else grants Pro.
+    cyclePassExpired: latestExpiry != null && activeExpiry == null && !isPremium,
   }
 }

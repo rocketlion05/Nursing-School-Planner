@@ -24,7 +24,11 @@ export async function POST() {
   // Pro only — getProfile() already accounts for admins and lapsed access.
   if (profile.tier !== 'cycle') {
     return NextResponse.json(
-      { error: 'The AI Application Plan is a Pro feature.' },
+      {
+        error: profile.cyclePassExpired
+          ? 'Your cycle pass has expired — repurchase for your next cycle.'
+          : 'The AI Application Plan is a Pro feature.',
+      },
       { status: 403 },
     )
   }

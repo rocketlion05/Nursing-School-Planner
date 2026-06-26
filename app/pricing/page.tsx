@@ -17,8 +17,9 @@ export const metadata: Metadata = {
 import { getCurrentUser } from '@/app/lib/dal'
 import AccessCodeForm from '@/components/AccessCodeForm'
 import CyclePassCard from '@/components/CyclePassCard'
+import { getCyclePassPreview } from '@/app/lib/cycle-pass-server'
 import { PLANS } from '@/lib/stripe'
-import { Check, Zap } from 'lucide-react'
+import { Check, Zap, AlertCircle } from 'lucide-react'
 
 const FREE_FEATURES = [
   'View fit scores for all programs (Safe/Match/Reach)',
@@ -48,6 +49,8 @@ export default async function PricingPage({
   const [profile, user] = await Promise.all([getProfile(), getCurrentUser()])
   const tier = profile?.tier ?? 'free'
   const isPro = tier === 'cycle'
+  // Pre-purchase window preview, based on the user's saved schools right now.
+  const preview = !isPro ? await getCyclePassPreview(profile?.id ?? null, new Date()) : null
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
@@ -76,11 +79,22 @@ export default async function PricingPage({
         <div className="max-w-md mx-auto mb-8 text-center">
           <div className="text-sm text-teal-700 font-semibold bg-teal-100 rounded-lg py-2 px-4 flex items-center justify-center gap-2">
             <Zap className="w-4 h-4" /> Pro is active on your account
-            {profile?.premiumUntil && (
+            {(profile?.cyclePassExpiry ?? profile?.premiumUntil) && (
               <span className="font-normal text-teal-600">
-                · until {new Date(profile.premiumUntil).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                · {profile?.cyclePassExpiry ? 'through' : 'until'}{' '}
+                {new Date((profile?.cyclePassExpiry ?? profile?.premiumUntil)!).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </span>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Expired Cycle Pass — repurchase prompt. */}
+      {profile?.cyclePassExpired && (
+        <div className="max-w-md mx-auto mb-8 text-center">
+          <div className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-lg py-2.5 px-4 flex items-center justify-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            Your cycle pass has expired — repurchase below for your next cycle.
           </div>
         </div>
       )}
@@ -123,6 +137,7 @@ export default async function PricingPage({
           isPro={isPro}
           features={PREMIUM_FEATURES}
           description={PLANS.cycle.description}
+          preview={preview}
         />
 
       </div>

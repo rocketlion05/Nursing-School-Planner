@@ -25,6 +25,10 @@ export interface ProfileData {
   tier: 'free' | 'cycle'
   /** ISO date when time-boxed (1-month code) access lapses; null = no expiry. */
   premiumUntil: string | null
+  /** ISO expiry of the active Cycle Pass (furthest-future), or null if none active. */
+  cyclePassExpiry: string | null
+  /** True when a bought Cycle Pass has lapsed and nothing else grants Pro. */
+  cyclePassExpired: boolean
 }
 
 export interface ProgramData {

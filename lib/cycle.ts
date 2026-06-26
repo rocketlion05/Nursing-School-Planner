@@ -1,29 +1,10 @@
-// Application-cycle helpers for the one-time Cycle Pass. Pure + dependency-free so
-// both the client (pricing selector) and the server (checkout action + webhook)
-// share the exact same date logic. Never call new Date() at module scope.
-
-export type CycleTerm = 'Fall' | 'Spring'
-
-/**
- * When a Cycle Pass for a given cycle stops granting Pro — the END of that
- * application round. The pass window runs from purchase (when the student starts
- * applying) through the close of the round: the application + decision/waitlist
- * season resolves right as the target term begins. Fall round → Sept 1; Spring
- * round → Feb 1 (UTC, to avoid timezone drift).
- */
-export function cycleEndDate(term: CycleTerm, year: number): Date {
-  return term === 'Fall'
-    ? new Date(Date.UTC(year, 8, 1)) // Sept 1
-    : new Date(Date.UTC(year, 1, 1)) // Feb 1
-}
-
-export function cycleLabel(term: CycleTerm, year: number): string {
-  return `${term} ${year}`
-}
-
-export function isCycleTerm(v: unknown): v is CycleTerm {
-  return v === 'Fall' || v === 'Spring'
-}
+// Application-term helpers for the profile's "Target start term" selector. Pure +
+// dependency-free; the caller passes the current time so past terms drop off
+// automatically. Never call new Date() at module scope.
+//
+// (The one-time Cycle Pass no longer uses a term/year selector — its window is a
+// fixed expiry computed at purchase from the buyer's saved-school deadlines; see
+// lib/cycle-pass.ts.)
 
 // The three start terms a nursing applicant can target, with the (approximate)
 // month each one begins. Used to generate the profile's "Target start term"
@@ -51,23 +32,4 @@ export function availableTargetTerms(now: Date, count = 8): string[] {
   }
   out.sort((a, b) => a.ms - b.ms)
   return out.slice(0, count).map(o => o.label)
-}
-
-export type CycleOption = { term: CycleTerm; year: number; label: string }
-
-/**
- * The upcoming application cycles a student can still buy a pass for (cycle end is
- * in the future), soonest first. Caller passes the current time.
- */
-export function availableCycles(now: Date): CycleOption[] {
-  const startYear = now.getUTCFullYear()
-  const out: (CycleOption & { ms: number })[] = []
-  for (let y = startYear; y <= startYear + 2; y++) {
-    for (const term of ['Spring', 'Fall'] as const) {
-      const ms = cycleEndDate(term, y).getTime()
-      if (ms > now.getTime()) out.push({ term, year: y, label: cycleLabel(term, y), ms })
-    }
-  }
-  out.sort((a, b) => a.ms - b.ms)
-  return out.slice(0, 6).map(({ term, year, label }) => ({ term, year, label }))
 }

@@ -97,6 +97,8 @@ export default function ProfileForm({ initialProfile, userEmail, stateOptions, t
     otherExamScore: otherExamScore ? parseFloat(otherExamScore) : null,
     tier: p?.tier ?? 'free',
     premiumUntil: p?.premiumUntil ?? null,
+    cyclePassExpiry: p?.cyclePassExpiry ?? null,
+    cyclePassExpired: p?.cyclePassExpired ?? false,
   }
 
   return (

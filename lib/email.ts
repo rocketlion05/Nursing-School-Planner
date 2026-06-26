@@ -204,23 +204,37 @@ export async function sendLeadDripEmail(email: string, stage: number): Promise<b
  * Confirms Pro access. When `expiresAt` is provided (a 1-month free access code),
  * the email states the access window; otherwise it reads as ongoing (paid plan).
  */
-export async function sendProConfirmationEmail(email: string, opts?: { expiresAt?: Date }) {
+export async function sendProConfirmationEmail(
+  email: string,
+  opts?: { expiresAt?: Date; kind?: 'code' | 'cyclepass' },
+) {
   const expiresAt = opts?.expiresAt
-  const windowLine = expiresAt
-    ? `<p>You've unlocked <strong>1 month of Pro for free</strong> — your access runs until <strong>${expiresAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</strong>. Here's what's unlocked:</p>`
+  const kind = opts?.kind ?? 'code'
+  const dateStr = expiresAt?.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  const isCyclePass = kind === 'cyclepass' && expiresAt
+  const isCode = kind === 'code' && expiresAt
+
+  const windowLine = isCyclePass
+    ? `<p>Your <strong>Cycle Pass</strong> is active — full Pro access runs through <strong>${dateStr}</strong>. Here's what's unlocked:</p>`
+    : isCode
+    ? `<p>You've unlocked <strong>1 month of Pro for free</strong> — your access runs until <strong>${dateStr}</strong>. Here's what's unlocked:</p>`
     : `<p>Your Pro access is active. Here's what's unlocked:</p>`
-  const footerLine = expiresAt
+  const footerLine = isCyclePass
+    ? `<p style="color:#6b7280;font-size:13px">Your pass window is fixed and won't change — when it ends on ${dateStr} you'll move back to the free plan and can repurchase for your next cycle. Questions? Just reply to this email.</p>`
+    : isCode
     ? `<p style="color:#6b7280;font-size:13px">When your free month ends you'll move back to the free plan — you can subscribe anytime to keep Pro. Questions? Just reply to this email.</p>`
     : `<p style="color:#6b7280;font-size:13px">Questions? Reply to this email and we'll get back to you.</p>`
   await send({
     to: email,
-    subject: expiresAt
+    subject: isCyclePass
+      ? 'Your Cycle Pass is active — Nursing School Planner'
+      : isCode
       ? 'Your free month of Pro is active — Nursing School Planner'
       : 'Your Pro access is active — Nursing School Planner',
     html: `
       <div style="font-family:sans-serif;max-width:540px;margin:0 auto;color:#111">
         ${logoHeader}
-        <h2 style="color:#0d9488">${expiresAt ? 'Pro unlocked — free for a month!' : 'Pro activated!'}</h2>
+        <h2 style="color:#0d9488">${isCyclePass ? 'Cycle Pass activated!' : isCode ? 'Pro unlocked — free for a month!' : 'Pro activated!'}</h2>
         ${windowLine}
         <ul>
           <li><strong>Unlimited favorites</strong> — save as many programs as you want</li>

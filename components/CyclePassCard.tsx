@@ -1,27 +1,31 @@
 'use client'
 
-import { useMemo, useState, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { track } from '@vercel/analytics'
-import { Check, CreditCard, LogIn } from 'lucide-react'
+import { Check, CreditCard, LogIn, CalendarClock } from 'lucide-react'
 import { createCheckoutSession } from '@/app/actions/stripe'
-import { availableCycles } from '@/lib/cycle'
+
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+}
 
 export default function CyclePassCard({
   isAuthed,
   isPro,
   features,
   description,
+  preview,
 }: {
   isAuthed: boolean
   isPro: boolean
   features: string[]
   description: string
+  /** Pre-purchase expiry preview; null when logged out (no saved schools known). */
+  preview: { expiry: string; basedOnSchools: boolean; schoolsWithDeadline: number } | null
 }) {
-  const cycles = useMemo(() => availableCycles(new Date()), [])
-  const [idx, setIdx] = useState(0)
   const [isPending, startTransition] = useTransition()
-  const sel = cycles[idx] ?? cycles[0]
+  const [error, setError] = useState<string | null>(null)
 
   return (
     <div className="relative rounded-2xl border-2 border-teal-400 bg-teal-50/40 p-6 flex flex-col">
@@ -34,22 +38,26 @@ export default function CyclePassCard({
       </div>
       <p className="text-sm text-gray-500 mt-2 mb-3">{description}</p>
 
-      {!isPro && (
-        <div className="mb-4">
-          <label htmlFor="cycle-select" className="block text-xs font-medium text-gray-600 mb-1">
-            Which cycle are you applying for?
-          </label>
-          <select
-            id="cycle-select"
-            value={idx}
-            onChange={e => setIdx(Number(e.target.value))}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-teal-500 focus:outline-none"
-          >
-            {cycles.map((c, i) => (
-              <option key={c.label} value={i}>{c.label}</option>
-            ))}
-          </select>
-          <p className="text-xs text-gray-400 mt-1">Pro access runs through your selected cycle.</p>
+      {/* Pre-purchase window preview — the expiry is fixed at purchase from your
+          saved schools' deadlines. */}
+      {!isPro && preview && (
+        <div className="mb-4 rounded-lg border border-teal-200 bg-white px-3 py-2.5 text-xs text-gray-600 flex gap-2">
+          <CalendarClock className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
+          <span>
+            {preview.basedOnSchools ? (
+              <>
+                Your pass will be active through{' '}
+                <strong className="text-gray-900">{formatDate(preview.expiry)}</strong> based on your
+                current saved schools. Add all your target schools before purchasing to set your window.
+              </>
+            ) : (
+              <>
+                Defaults to <strong className="text-gray-900">180 days from today</strong> (
+                {formatDate(preview.expiry)}) — <Link href="/programs" className="text-teal-700 underline">add your schools</Link>{' '}
+                before purchasing to set your exact window.
+              </>
+            )}
+          </span>
         </div>
       )}
 
@@ -67,18 +75,27 @@ export default function CyclePassCard({
           <Check className="w-4 h-4" /> Pro active
         </div>
       ) : isAuthed ? (
-        <button
-          onClick={() => {
-            if (!sel) return
-            track('checkout_started', { plan: 'cycle' })
-            startTransition(() => createCheckoutSession('cycle', { term: sel.term, year: sel.year }))
-          }}
-          disabled={isPending || !sel}
-          className="w-full py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-60 transition-colors"
-        >
-          <CreditCard className="w-4 h-4" />
-          {isPending ? 'Redirecting…' : `Get the ${sel?.label ?? ''} pass`}
-        </button>
+        <>
+          <button
+            onClick={() => {
+              setError(null)
+              track('checkout_started', { plan: 'cycle' })
+              startTransition(async () => {
+                try {
+                  await createCheckoutSession('cycle')
+                } catch {
+                  setError('Could not start checkout. Please try again.')
+                }
+              })
+            }}
+            disabled={isPending}
+            className="w-full py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-60 transition-colors"
+          >
+            <CreditCard className="w-4 h-4" />
+            {isPending ? 'Redirecting…' : 'Get the Cycle Pass'}
+          </button>
+          {error && <p className="text-xs text-red-600 mt-2 text-center">{error}</p>}
+        </>
       ) : (
         <Link
           href="/login?next=/pricing"

@@ -34,10 +34,16 @@ export async function getUserActivityStats(): Promise<UserActivityStats | null> 
       prisma.user.count(),
       // Count pros through the User relation, NOT prisma.profile.count — Profile.userId
       // is nullable, so legacy anonymous/orphan profiles (no account) would otherwise
-      // inflate this. Mirrors hasActivePremium(): tier 'cycle' and not lapsed.
+      // inflate this. Mirrors hasActivePremium(): an active Cycle Pass, OR tier
+      // 'cycle' (access code / legacy) that hasn't lapsed.
       prisma.user.count({
         where: {
-          profile: { tier: 'cycle', OR: [{ premiumUntil: null }, { premiumUntil: { gt: new Date() } }] },
+          profile: {
+            OR: [
+              { tier: 'cycle', OR: [{ premiumUntil: null }, { premiumUntil: { gt: new Date() } }] },
+              { cyclePasses: { some: { expiryDate: { gt: new Date() } } } },
+            ],
+          },
         },
       }),
       prisma.user.count({ where: { lastActiveAt: { gte: dayAgo } } }),

@@ -34,7 +34,14 @@ export async function POST(req: Request) {
   const profile = await getProfile()
   if (!profile) return NextResponse.json({ error: 'Complete your profile first.' }, { status: 400 })
   if (profile.tier !== 'cycle') {
-    return NextResponse.json({ error: 'The AI Academic Advisor is a Pro feature.' }, { status: 403 })
+    return NextResponse.json(
+      {
+        error: profile.cyclePassExpired
+          ? 'Your cycle pass has expired — repurchase for your next cycle.'
+          : 'The AI Academic Advisor is a Pro feature.',
+      },
+      { status: 403 },
+    )
   }
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({ error: 'AI advising is not configured yet (missing OPENAI_API_KEY).' }, { status: 503 })

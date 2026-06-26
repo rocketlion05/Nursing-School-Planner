@@ -11,6 +11,7 @@ import { getDeadlines } from '@/app/actions/deadlines'
 import { prisma } from '@/lib/prisma'
 import { computeFit } from '@/lib/scoring'
 import FitBadge from '@/components/FitBadge'
+import { CyclePassStatus, CyclePassExpiredNotice } from '@/components/CyclePassNotice'
 import { CheckCircle, Circle, BookOpen, ClipboardList, Heart, ArrowRight, AlertCircle, CalendarClock, ListChecks } from 'lucide-react'
 import type { ProgramData, FitStatus } from '@/types'
 
@@ -96,6 +97,10 @@ export default async function DashboardPage() {
           </p>
         )}
       </div>
+
+      {/* Cycle Pass status — active window + 14-day expiry warning, or expired prompt */}
+      {profile?.cyclePassExpiry && <CyclePassStatus expiry={profile.cyclePassExpiry} />}
+      {profile?.cyclePassExpired && <CyclePassExpiredNotice />}
 
       {/* Next-steps checklist */}
       {!allDone && (

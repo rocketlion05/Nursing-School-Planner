@@ -1,36 +1,34 @@
 'use server'
 
 import { redirect } from 'next/navigation'
+import { prisma } from '@/lib/prisma'
 import { requireUser } from '@/app/lib/dal'
 import { stripe, PLANS, isPlanId, type PlanId } from '@/lib/stripe'
-import { cycleEndDate, cycleLabel, isCycleTerm, type CycleTerm } from '@/lib/cycle'
+import { computeCyclePassExpiry } from '@/lib/cycle-pass'
+import { getSavedSchoolDeadlines } from '@/app/lib/cycle-pass-server'
 
 function baseUrl(): string {
   return process.env.OAUTH_REDIRECT_BASE_URL?.replace(/\/$/, '') ?? 'http://localhost:3000'
 }
 
-export async function createCheckoutSession(
-  planIdInput: PlanId,
-  cycleInput?: { term: string; year: number },
-): Promise<void> {
+export async function createCheckoutSession(planIdInput: PlanId): Promise<void> {
   const user = await requireUser() // redirects to /login if not authed
 
-  // Only the one-time Cycle Pass exists. Validate the chosen cycle server-side and
-  // derive the access-expiry date here (never trust a date from the client). Access
-  // runs through the end of the selected cycle; clamp to a sane future if past.
+  // Only the one-time Cycle Pass exists. The pass window is FIXED at purchase:
+  // furthest saved-school deadline + 60 days, else 180 days. Compute it here,
+  // server-side, from the saved schools at this moment — never trust the client —
+  // and carry it in metadata so the webhook writes the immutable expiry.
   if (!isPlanId(planIdInput)) throw new Error('Unknown plan.')
   const plan = PLANS.cycle
   const base = baseUrl()
 
-  const term: CycleTerm = isCycleTerm(cycleInput?.term) ? cycleInput!.term : 'Fall'
   const now = new Date()
-  let year = Number(cycleInput?.year)
-  if (!Number.isInteger(year) || year < now.getUTCFullYear() || year > now.getUTCFullYear() + 3) {
-    year = now.getUTCFullYear() + 1
-  }
-  let end = cycleEndDate(term, year)
-  if (end.getTime() <= now.getTime()) end = new Date(now.getTime() + 270 * 86_400_000) // ~9mo safety
-  const label = cycleLabel(term, year)
+  const profile = await prisma.profile.findUnique({
+    where: { userId: user.id },
+    select: { id: true },
+  })
+  const deadlines = profile ? await getSavedSchoolDeadlines(profile.id) : []
+  const expiry = computeCyclePassExpiry(now, deadlines)
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
@@ -44,15 +42,15 @@ export async function createCheckoutSession(
           currency: 'usd',
           unit_amount: plan.amount,
           product_data: {
-            name: `${plan.name} (${label})`,
+            name: plan.name,
             description: plan.description,
           },
         },
       },
     ],
-    // The Cycle Pass carries its derived expiry + label so the webhook can set
-    // the time-boxed Pro grant.
-    metadata: { plan: 'cycle', cyclePremiumUntil: end.toISOString(), cycleLabel: label },
+    // The Cycle Pass carries its fixed expiry so the webhook can create the pass
+    // record with an immutable window.
+    metadata: { plan: 'cycle', cyclePassExpiry: expiry.toISOString() },
     success_url: `${base}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${base}/pricing?canceled=1`,
   })

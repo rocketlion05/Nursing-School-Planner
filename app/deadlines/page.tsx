@@ -10,6 +10,7 @@ import { getProfile } from '@/app/actions/profile'
 import { getDeadlines } from '@/app/actions/deadlines'
 import { prisma } from '@/lib/prisma'
 import DeadlineManager from '@/components/DeadlineManager'
+import { CyclePassExpiredNotice } from '@/components/CyclePassNotice'
 import { CalendarClock, Lock } from 'lucide-react'
 
 export default async function DeadlinesPage() {
@@ -26,6 +27,12 @@ export default async function DeadlinesPage() {
       <p className="text-gray-500 mb-6">
         Track each school&apos;s application deadline and get email reminders at 30, 14, and 7 days out.
       </p>
+
+      {!isPremium && profile?.cyclePassExpired && (
+        <div className="mb-6">
+          <CyclePassExpiredNotice />
+        </div>
+      )}
 
       {isPremium ? (
         <PremiumDeadlines />

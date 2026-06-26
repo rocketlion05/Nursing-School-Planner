@@ -25,7 +25,7 @@ async function getCtx(): Promise<Ctx | null> {
   if (!user) return null
   const profile = await prisma.profile.findUnique({
     where: { userId: user.id },
-    select: { id: true, tier: true, premiumUntil: true },
+    select: { id: true, tier: true, premiumUntil: true, cyclePasses: { select: { expiryDate: true } } },
   })
   if (!profile) return null
   return { profileId: profile.id, isPremium: isAdminEmail(user.email) || hasActivePremium(profile) }

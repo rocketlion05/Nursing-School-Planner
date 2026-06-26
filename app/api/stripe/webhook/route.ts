@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
+import { recordCyclePass } from '@/app/lib/cycle-pass-server'
 import { sendProConfirmationEmail } from '@/lib/email'
 
 // Stripe requires the raw body to verify the webhook signature.
@@ -39,31 +40,34 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ received: true })
       }
 
-      // Cycle Pass (one-time) carries a derived expiry + cycle label in metadata;
-      // it grants time-boxed Pro. Subscriptions have no such metadata → unlimited.
-      const cycleUntilRaw = session.metadata?.cyclePremiumUntil
-      const cycleUntil = cycleUntilRaw ? new Date(cycleUntilRaw) : null
-      const isCyclePass = cycleUntil != null && !Number.isNaN(cycleUntil.getTime())
-      const cycleLabel = session.metadata?.cycleLabel
+      // The Cycle Pass (one-time) carries its FIXED expiry in metadata. Create a
+      // brand-new immutable pass record (idempotent on the session id). A
+      // subscription / non-cycle checkout (none currently) has no such metadata →
+      // legacy unlimited tier grant.
+      const expiryRaw = session.metadata?.cyclePassExpiry
+      const expiry = expiryRaw ? new Date(expiryRaw) : null
+      const isCyclePass = expiry != null && !Number.isNaN(expiry.getTime())
 
       try {
-        // Upsert the profile tier to 'cycle' (Pro). Subscriptions have no expiry
-        // (premiumUntil null). The Cycle Pass expires at the end of the chosen
-        // cycle and records that cycle as the student's target term.
-        const data = isCyclePass
-          ? { tier: 'cycle', premiumUntil: cycleUntil, ...(cycleLabel ? { targetTerm: cycleLabel } : {}) }
-          : { tier: 'cycle', premiumUntil: null }
-        await prisma.profile.upsert({
-          where:  { userId },
-          create: { userId, ...data },
-          update: data,
-        })
-        console.log(`Upgraded user ${userId} to Pro${isCyclePass ? ` (Cycle Pass until ${cycleUntil!.toISOString()})` : ''} (session ${session.id})`)
-        // Send confirmation email — look up user email from userId
-        const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
-        if (user?.email) sendProConfirmationEmail(user.email, isCyclePass ? { expiresAt: cycleUntil! } : undefined).catch(() => {})
+        if (isCyclePass) {
+          const created = await recordCyclePass(userId, session.id, expiry)
+          console.log(`Cycle Pass for user ${userId} until ${expiry.toISOString()} (session ${session.id})${created ? '' : ' [already recorded]'}`)
+          if (created) {
+            const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
+            if (user?.email) sendProConfirmationEmail(user.email, { expiresAt: expiry, kind: 'cyclepass' }).catch(() => {})
+          }
+        } else {
+          await prisma.profile.upsert({
+            where:  { userId },
+            create: { userId, tier: 'cycle', premiumUntil: null },
+            update: { tier: 'cycle', premiumUntil: null },
+          })
+          console.log(`Upgraded user ${userId} to Pro (unlimited, session ${session.id})`)
+          const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true } })
+          if (user?.email) sendProConfirmationEmail(user.email).catch(() => {})
+        }
       } catch (err) {
-        console.error('Failed to upgrade user tier:', err)
+        console.error('Failed to record purchase:', err)
         return NextResponse.json({ error: 'DB error' }, { status: 500 })
       }
     }

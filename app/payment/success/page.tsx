@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
+import { recordCyclePass } from '@/app/lib/cycle-pass-server'
 import { getCurrentUser } from '@/app/lib/dal'
 import { CheckCircle, ArrowRight } from 'lucide-react'
 
@@ -23,21 +24,20 @@ export default async function PaymentSuccessPage({
     try {
       const session = await stripe.checkout.sessions.retrieve(session_id)
       if (session.payment_status === 'paid' && session.client_reference_id) {
-        // Mirror the webhook's grant logic so this late-arrival fallback can't
-        // overwrite the time-boxed Cycle Pass expiry with unlimited access. The
-        // Cycle Pass carries its derived expiry + label in the session metadata.
-        const cycleUntilRaw = session.metadata?.cyclePremiumUntil
-        const cycleUntil = cycleUntilRaw ? new Date(cycleUntilRaw) : null
-        const isCyclePass = cycleUntil != null && !Number.isNaN(cycleUntil.getTime())
-        const cycleLabel = session.metadata?.cycleLabel
-        const data = isCyclePass
-          ? { tier: 'cycle', premiumUntil: cycleUntil, ...(cycleLabel ? { targetTerm: cycleLabel } : {}) }
-          : { tier: 'cycle', premiumUntil: null }
-        await prisma.profile.upsert({
-          where:  { userId: session.client_reference_id },
-          create: { userId: session.client_reference_id, ...data },
-          update: data,
-        })
+        // Mirror the webhook so this late-arrival fallback records the same
+        // immutable pass. recordCyclePass is idempotent on the session id, so it
+        // never creates a second pass or changes an existing expiry.
+        const expiryRaw = session.metadata?.cyclePassExpiry
+        const expiry = expiryRaw ? new Date(expiryRaw) : null
+        if (expiry && !Number.isNaN(expiry.getTime())) {
+          await recordCyclePass(session.client_reference_id, session.id, expiry)
+        } else {
+          await prisma.profile.upsert({
+            where:  { userId: session.client_reference_id },
+            create: { userId: session.client_reference_id, tier: 'cycle', premiumUntil: null },
+            update: { tier: 'cycle', premiumUntil: null },
+          })
+        }
       }
     } catch {
       // Non-fatal — webhook will handle it

@@ -13,6 +13,7 @@ import Disclaimer from '@/components/Disclaimer'
 import FitBadge from '@/components/FitBadge'
 import AIAdvisor from '@/components/AIAdvisor'
 import LockedAIPlan from '@/components/LockedAIPlan'
+import { CyclePassExpiredNotice } from '@/components/CyclePassNotice'
 import GapReportButton, { type ReportProgram } from '@/components/GapReportButton'
 import WhatIfSimulator, { LockedWhatIf, type SimProgram } from '@/components/WhatIfSimulator'
 import RetakeRecommendations from '@/components/RetakeRecommendations'
@@ -98,6 +99,13 @@ export default async function PlanPage() {
           <GapReportButton profile={profile} gap={gap} programs={reportPrograms} />
         )}
       </div>
+
+      {/* Expired cycle pass — repurchase prompt above the locked Pro features */}
+      {profile.cyclePassExpired && (
+        <div className="mb-6">
+          <CyclePassExpiredNotice />
+        </div>
+      )}
 
       {/* AI academic advisor (chat) — Pro unlocks it; free users see a locked teaser */}
       {isPremium ? (

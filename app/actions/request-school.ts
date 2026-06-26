@@ -23,7 +23,7 @@ export type SchoolRequestResult = { ok: boolean; error?: string; needsUpgrade?: 
 async function isPremium(userId: string): Promise<boolean> {
   const profile = await prisma.profile.findUnique({
     where: { userId },
-    select: { tier: true, premiumUntil: true },
+    select: { tier: true, premiumUntil: true, cyclePasses: { select: { expiryDate: true } } },
   })
   return hasActivePremium(profile)
 }

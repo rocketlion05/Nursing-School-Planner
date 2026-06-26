@@ -49,7 +49,7 @@ export async function toggleFavorite(
 
     const profile = await prisma.profile.findUnique({
       where: { id: profileId },
-      select: { tier: true, premiumUntil: true },
+      select: { tier: true, premiumUntil: true, cyclePasses: { select: { expiryDate: true } } },
     })
     const savedCount = await prisma.listItem.count({ where: { listId } })
 
