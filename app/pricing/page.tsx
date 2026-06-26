@@ -57,8 +57,8 @@ export default async function PricingPage({
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold text-gray-900 mb-3">Simple, Student-Friendly Pricing</h1>
         <p className="text-gray-500 max-w-xl mx-auto">
-          Start free, then unlock Pro with the one-time Cycle Pass — full Pro access through the
-          application season you&apos;re applying in. No subscription, no auto-renew. Have a promo
+          Start free, then unlock Pro with the one-time Cycle Pass — full Pro access for 180 days,
+          plenty of time for your application cycle. No subscription, no auto-renew. Have a promo
           code? Redeem it below for a free month.
         </p>
       </div>

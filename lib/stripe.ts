@@ -51,7 +51,7 @@ export const PLANS: Record<PlanId, Plan> = {
     mode: 'payment',
     label: '$29 one-time',
     description:
-      'Full Pro access for one application cycle — pick the term and year you’re applying for. One-time payment, no subscription, no auto-renew.',
+      'Full Pro access for 180 days from purchase — plenty of time for your application cycle. One-time payment, no subscription, no auto-renew.',
   },
 }
 
