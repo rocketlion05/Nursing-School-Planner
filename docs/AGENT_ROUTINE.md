@@ -51,12 +51,19 @@ Nursing source + cron day, and create it via `mcp__scheduled-tasks__create_sched
 npx tsx scripts/list-school-requests.ts --prod          # read live requests
 # (agent edits prisma/programs-data.ts — requirements, officialUrl, new schools)
 npx tsx prisma/seed.ts --prod                            # push to LIVE DB (prints REMOTE/PROD)
+npx tsx scripts/populate-app-deadlines.ts --prod         # AFTER seed: refresh Cycle Pass deadline cols
 npx tsx scripts/resolve-request.ts <id> --added    --note "Added as <slug>" --prod
 npx tsx scripts/resolve-request.ts <id> --wont-add --note "Not a BSN program" --prod
 npx tsx scripts/make-favicon.ts                          # regenerate the white-circle favicons
 ```
 
 > First run on a fresh DB only: `npx tsx scripts/deploy-db.ts --prod` (idempotent migrations).
+
+> **Always run `populate-app-deadlines.ts --prod` right after every `seed.ts --prod`.** The one-time
+> Cycle Pass computes a buyer's FIXED expiry window from structured `Program.appDeadlineMonth`/
+> `appDeadlineDay` columns parsed from the free-text `deadlines`. The seed does **not** touch those
+> columns, so a newly-added school stays `null` (buyer falls back to a 180-day window) and a changed
+> deadline goes stale until this idempotent re-parse runs. It writes only to the DB — nothing to commit.
 
 ## Data rules (so agents write valid, trustworthy records)
 

@@ -14,9 +14,12 @@ import { libsqlConfig } from '../lib/libsql-config'
 import { parseFurthestDeadline } from '../lib/parse-deadline'
 
 loadEnv()
-const prisma = new PrismaClient({ adapter: new PrismaLibSql(libsqlConfig()) })
+const cfg = libsqlConfig()
+const prisma = new PrismaClient({ adapter: new PrismaLibSql(cfg) })
 
 async function main() {
+  const target = cfg.url.startsWith('file:') ? `LOCAL (${cfg.url})` : `REMOTE/PROD (${cfg.url})`
+  console.log(`Re-parsing deadlines -> ${target}`)
   const programs = await prisma.program.findMany({
     select: { id: true, university: true, deadlines: true },
   })
