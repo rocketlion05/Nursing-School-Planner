@@ -12,7 +12,7 @@ import { prisma } from '@/lib/prisma'
 import { computeFit } from '@/lib/scoring'
 import FitBadge from '@/components/FitBadge'
 import { CyclePassStatus, CyclePassExpiredNotice } from '@/components/CyclePassNotice'
-import { CheckCircle, Circle, BookOpen, ClipboardList, Heart, ArrowRight, AlertCircle, CalendarClock, ListChecks } from 'lucide-react'
+import { CheckCircle, Circle, BookOpen, ClipboardList, Heart, ArrowRight, AlertCircle, CalendarClock, ListChecks, Scale } from 'lucide-react'
 import type { ProgramData, FitStatus } from '@/types'
 
 const DQ_LABELS: Record<string, string> = {
@@ -134,7 +134,17 @@ export default async function DashboardPage() {
         <div className="flex items-center gap-2 mb-4">
           <Heart className="w-5 h-5 text-rose-400" />
           <h2 className="font-semibold text-gray-900">Saved Programs</h2>
-          <Link href="/programs" className="ml-auto text-sm text-teal-600 hover:underline">Browse all</Link>
+          <div className="ml-auto flex items-center gap-3">
+            {favPrograms.length >= 2 && (
+              <Link
+                href={`/compare?ids=${favPrograms.map(p => p.id).join(',')}`}
+                className="inline-flex items-center gap-1 text-sm text-teal-600 hover:underline"
+              >
+                <Scale className="w-3.5 h-3.5" /> Compare
+              </Link>
+            )}
+            <Link href="/programs" className="text-sm text-teal-600 hover:underline">Browse all</Link>
+          </div>
         </div>
 
         {favPrograms.length === 0 ? (
@@ -205,9 +215,26 @@ export default async function DashboardPage() {
                   </span>
                 </div>
                 {l.items.length > 0 && (
-                  <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                    {l.items.map(i => i.program.university).join(', ')}
-                  </p>
+                  <ul className="mt-2 space-y-1">
+                    {l.items.map(i => (
+                      <li key={i.program.id} className="text-sm">
+                        <Link
+                          href={`/programs/${i.program.urlSlug ?? i.program.id}`}
+                          className="text-teal-600 hover:underline"
+                        >
+                          {i.program.university}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {l.items.length >= 2 && (
+                  <Link
+                    href={`/compare?ids=${l.items.map(i => i.program.id).join(',')}`}
+                    className="inline-flex items-center gap-1 mt-3 text-sm font-medium text-teal-600 hover:text-teal-800"
+                  >
+                    <Scale className="w-3.5 h-3.5" /> Compare these
+                  </Link>
                 )}
               </div>
             ))}
