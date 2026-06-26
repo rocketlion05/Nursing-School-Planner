@@ -3,8 +3,7 @@
 // automatically. Never call new Date() at module scope.
 //
 // (The one-time Cycle Pass no longer uses a term/year selector — its window is a
-// fixed expiry computed at purchase from the buyer's saved-school deadlines; see
-// lib/cycle-pass.ts.)
+// fixed expiry of purchase + 180 days; see lib/cycle-pass.ts.)
 
 // The three start terms a nursing applicant can target, with the (approximate)
 // month each one begins. Used to generate the profile's "Target start term"
