@@ -40,6 +40,6 @@ Arkansas programs run on varied cycles: some admit once per year, others each Fa
 
 ## Compare your odds across every Arkansas school
 
-Requirements vary widely from UAMS to UCA to the regional campuses. Use the [Nursing School Planner](/programs) to check your GPA and prerequisites against real Arkansas BSN requirements and see your fit for each program, or browse [all Arkansas nursing programs](/nursing-programs/arkansas) together.
+Requirements vary widely from UAMS to UCA to the regional campuses. Not sure where you stand? Start with [what GPA you need for nursing school](/guides/what-gpa-do-you-need-for-nursing-school) and our [nursing prerequisites checklist](/guides/nursing-school-prerequisites-checklist). Then use the [Nursing School Planner](/programs) to check your GPA and prerequisites against real Arkansas BSN requirements and see your fit for each program, or browse [all Arkansas nursing programs](/nursing-programs/arkansas) together.
 
 *This guide is for planning purposes only. Always confirm current requirements on each school's official admissions page before applying.*

@@ -1,0 +1,19 @@
+content: add nursing-school GPA guide + prerequisites checklist guide
+
+Two new evergreen, high-intent guides targeting common pre-nursing
+searches, complementing the existing state-specific guides:
+
+- what-gpa-do-you-need-for-nursing-school.md — cumulative vs.
+  prerequisite vs. science GPA, real verified BSN minimums (UAMS,
+  UCA, Angelo State, Baylor, Concordia, ACU), minimum-vs-competitive,
+  and GPA-raising strategy.
+- nursing-school-prerequisites-checklist.md — the core prerequisite
+  course list, the C-or-better rule, science-recency limits (UAFS),
+  and how to sequence courses.
+
+Both link to /programs, the Texas and Arkansas hubs, /guides, the
+existing TEAS-vs-HESI guide, and several verified /programs/<slug>
+pages. Also added cross-links from the Texas and Arkansas admissions
+guides to the two new articles.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>

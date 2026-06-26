@@ -39,6 +39,6 @@ Several Texas programs use **NursingCAS**, a centralized application. Deadlines 
 
 ## Know your odds before you apply
 
-Every school weighs GPA, exam scores, and prerequisites differently. Use the [Nursing School Planner](/programs) to compare your stats against real Texas BSN program requirements and see whether each school is a Safe, Match, or Reach for you. You can also browse [all Texas nursing programs](/nursing-programs/texas) in one place.
+Every school weighs GPA, exam scores, and prerequisites differently. If you're still mapping out the basics, see [what GPA you need for nursing school](/guides/what-gpa-do-you-need-for-nursing-school) and our [nursing prerequisites checklist](/guides/nursing-school-prerequisites-checklist). Then use the [Nursing School Planner](/programs) to compare your stats against real Texas BSN program requirements and see whether each school is a Safe, Match, or Reach for you. You can also browse [all Texas nursing programs](/nursing-programs/texas) in one place.
 
 *This guide is for planning purposes only. Always confirm current requirements on each school's official admissions page before applying.*

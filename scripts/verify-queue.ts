@@ -4,10 +4,14 @@
  *
  *   npx tsx scripts/verify-queue.ts            # default batch of 12 (JSON on stdout)
  *   npx tsx scripts/verify-queue.ts 20         # custom batch size
+ *   npx tsx scripts/verify-queue.ts TX         # only Texas schools (default batch)
+ *   npx tsx scripts/verify-queue.ts 30 TX      # 30 Texas schools
  *
- * Ordering: schools never verified come first, then the least-recently-verified,
- * based on prisma/verification-log.json (slug -> ISO timestamp). After re-verifying a
- * batch, the routine calls `scripts/mark-verified.ts <slug...>` to bump their timestamps.
+ * Args are order-independent: a number sets the batch size, a 2-letter code filters
+ * by state. Ordering: schools never verified (no "Verified" date yet) come FIRST, then
+ * the least-recently-verified, based on prisma/verification-log.json (slug -> ISO
+ * timestamp). This is how undated schools get surfaced and filled in. After re-verifying
+ * a batch, the routine calls `scripts/mark-verified.ts <slug...>` to bump their timestamps.
  *
  * Reads only programs-data.ts + the log file — no DB connection, so it's safe and fast.
  */
@@ -27,10 +31,15 @@ function loadLog(): Record<string, string> {
 }
 
 function main() {
-  const batchSize = Number(process.argv[2]) || 12
+  // Order-independent args: a number = batch size, a 2-letter token = state code.
+  const args = process.argv.slice(2)
+  const batchSize = Number(args.find(a => /^\d+$/.test(a))) || 12
+  const state = args.find(a => /^[A-Za-z]{2}$/.test(a))?.toUpperCase()
+
   const log = loadLog()
 
-  const ranked = SEED_PROGRAMS
+  const pool = state ? SEED_PROGRAMS.filter(p => p.state === state) : SEED_PROGRAMS
+  const ranked = pool
     .map(p => ({
       slug: p.slug,
       university: p.university,
@@ -49,10 +58,11 @@ function main() {
 
   const batch = ranked.slice(0, batchSize)
   console.log(JSON.stringify(batch, null, 2))
+  const neverVerified = ranked.filter(r => r.lastVerified === null)
   console.error(
-    `\nBatch of ${batch.length}/${SEED_PROGRAMS.length}. ` +
-    `${ranked.filter(r => r.lastVerified === null).length} never verified; ` +
-    `next call rotates to the following ${batchSize}.`,
+    `\n${state ? state + ': ' : ''}batch of ${batch.length}/${pool.length}. ` +
+    `${neverVerified.length} never verified (no date yet)${neverVerified.length ? ': ' + neverVerified.map(r => r.slug).join(', ') : ''}. ` +
+    `Re-check these against official sources, then run mark-verified.ts on every one you check.`,
   )
 }
 
