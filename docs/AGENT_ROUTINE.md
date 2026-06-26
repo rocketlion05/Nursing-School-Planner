@@ -88,10 +88,18 @@ timestamp), read at build time by `lib/programs.ts` + the program detail page.
 
 Every state research run must stamp it: after applying verified edits, run
 `npx tsx scripts/mark-verified.ts <slug> [<slug> ...]` for **every school checked against official
-sources this run** (changed or not). That bumps each slug's timestamp to today; `git add -A` + push
-commits the log, and the next deploy surfaces the new "Verified <date>". Only stamp schools you
-actually re-checked — the date must mean "last reviewed against official sources," never a guess.
-(`scripts/verify-queue.ts` reads the same log to rank least-recently-verified schools first.)
+sources this run** (changed or not), **including every NEW school added** (a school you just
+researched is verified, so stamp it the same run). That bumps each slug's timestamp to today;
+`git add -A` + push commits the log, and the next deploy surfaces the new "Verified <date>". Only
+stamp schools you actually re-checked — the date must mean "last reviewed against official sources,"
+never a guess.
+
+**Goal: every school carries a date.** Schools with no entry in the log show no "Verified" date, so
+each state agent must actively close that gap, not just rotate. Run `npx tsx scripts/verify-queue.ts
+<STATE>` (e.g. `verify-queue.ts TX`) — it ranks that state's schools never-verified-first and names
+the undated ones in its stderr summary. Pull every undated school into the run, re-check it, and
+stamp it; afterward `verify-queue.ts <STATE>` should report "0 never verified" (aside from any school
+whose official source genuinely couldn't be reached). With no state arg it covers all programs.
 
 ## The routine prompts
 
