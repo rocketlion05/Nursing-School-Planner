@@ -85,10 +85,9 @@ model Profile {
 }
 
 // A purchased one-time Cycle Pass. Each purchase creates a brand-new row with a
-// FIXED expiry computed ONCE at purchase (furthest saved-school deadline + 60
-// days, or purchase + 180 days if none). `expiryDate` is IMMUTABLE after
-// creation — nothing ever updates it (adding schools never recalculates). A user
-// may hold several passes; the furthest-future expiry grants premium.
+// FIXED expiry of purchase + 180 days, computed ONCE at purchase and IMMUTABLE
+// thereafter — nothing ever updates it. A user may hold several passes; the
+// furthest-future expiry grants premium.
 model CyclePass {
   id              String   @id @default(cuid())
   profileId       String
@@ -134,13 +133,6 @@ model Program {
   minExamScore    Float?
   casperRequired  Boolean    @default(false)
   deadlines       String?
-  // Structured "furthest" application deadline as a recurring month/day (1-12 /
-  // 1-31), parsed from the free-text `deadlines` by scripts/populate-app-deadlines.ts.
-  // Resolved to its next future occurrence when a Cycle Pass expiry is computed at
-  // purchase. Null when no deadline could be parsed (those schools fall back to the
-  // 180-day default).
-  appDeadlineMonth Int?
-  appDeadlineDay   Int?
   notes           String?
   dataQuality     String     @default("placeholder") // placeholder | partial | verified
   // JSON array of requirement field names whose values are AI estimates rather

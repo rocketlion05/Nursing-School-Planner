@@ -15,14 +15,14 @@ export default function CyclePassCard({
   isPro,
   features,
   description,
-  preview,
+  previewExpiry,
 }: {
   isAuthed: boolean
   isPro: boolean
   features: string[]
   description: string
-  /** Pre-purchase expiry preview; null when logged out (no saved schools known). */
-  preview: { expiry: string; basedOnSchools: boolean; schoolsWithDeadline: number } | null
+  /** ISO expiry a pass bought today would have (purchase + 180 days); null when Pro. */
+  previewExpiry: string | null
 }) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
@@ -38,25 +38,13 @@ export default function CyclePassCard({
       </div>
       <p className="text-sm text-gray-500 mt-2 mb-3">{description}</p>
 
-      {/* Pre-purchase window preview — the expiry is fixed at purchase from your
-          saved schools' deadlines. */}
-      {!isPro && preview && (
+      {/* Pre-purchase window preview — a flat 180 days, fixed at purchase. */}
+      {!isPro && previewExpiry && (
         <div className="mb-4 rounded-lg border border-teal-200 bg-white px-3 py-2.5 text-xs text-gray-600 flex gap-2">
           <CalendarClock className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
           <span>
-            {preview.basedOnSchools ? (
-              <>
-                Your pass will be active through{' '}
-                <strong className="text-gray-900">{formatDate(preview.expiry)}</strong> based on your
-                current saved schools. Add all your target schools before purchasing to set your window.
-              </>
-            ) : (
-              <>
-                Defaults to <strong className="text-gray-900">180 days from today</strong> (
-                {formatDate(preview.expiry)}) — <Link href="/programs" className="text-teal-700 underline">add your schools</Link>{' '}
-                before purchasing to set your exact window.
-              </>
-            )}
+            Your pass is active for <strong className="text-gray-900">180 days</strong> — buy today and
+            you&apos;re covered through <strong className="text-gray-900">{formatDate(previewExpiry)}</strong>.
           </span>
         </div>
       )}

@@ -1,11 +1,6 @@
--- Structured (recurring month/day) application deadline parsed from Program.deadlines,
--- used to compute a Cycle Pass's fixed expiry at purchase.
-ALTER TABLE "Program" ADD COLUMN "appDeadlineMonth" INTEGER;
-ALTER TABLE "Program" ADD COLUMN "appDeadlineDay" INTEGER;
-
--- One row per purchased Cycle Pass. expiryDate is computed once at purchase and
--- is immutable thereafter. stripeSessionId is unique for idempotent webhook /
--- success-page writes.
+-- One row per purchased Cycle Pass. expiryDate is computed once at purchase
+-- (purchase + 180 days) and is immutable thereafter. stripeSessionId is unique
+-- for idempotent webhook / success-page writes.
 CREATE TABLE "CyclePass" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "profileId" TEXT NOT NULL,

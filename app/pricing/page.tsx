@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 import { getCurrentUser } from '@/app/lib/dal'
 import AccessCodeForm from '@/components/AccessCodeForm'
 import CyclePassCard from '@/components/CyclePassCard'
-import { getCyclePassPreview } from '@/app/lib/cycle-pass-server'
+import { computeCyclePassExpiry } from '@/lib/cycle-pass'
 import { PLANS } from '@/lib/stripe'
 import { Check, Zap, AlertCircle } from 'lucide-react'
 
@@ -49,8 +49,8 @@ export default async function PricingPage({
   const [profile, user] = await Promise.all([getProfile(), getCurrentUser()])
   const tier = profile?.tier ?? 'free'
   const isPro = tier === 'cycle'
-  // Pre-purchase window preview, based on the user's saved schools right now.
-  const preview = !isPro ? await getCyclePassPreview(profile?.id ?? null, new Date()) : null
+  // Pre-purchase window preview: a flat 180 days from today.
+  const previewExpiry = !isPro ? computeCyclePassExpiry(new Date()).toISOString() : null
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
@@ -137,7 +137,7 @@ export default async function PricingPage({
           isPro={isPro}
           features={PREMIUM_FEATURES}
           description={PLANS.cycle.description}
-          preview={preview}
+          previewExpiry={previewExpiry}
         />
 
       </div>
