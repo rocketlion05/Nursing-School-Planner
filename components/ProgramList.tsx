@@ -301,8 +301,14 @@ export default function ProgramList({ programs, isAuthed, isPremium, lists: init
 
               {/* Content */}
               <div className="flex-1 min-w-0">
-                <div className="flex flex-wrap items-start gap-2 mb-1">
-                  <span className="font-medium text-gray-900 truncate">{program.university}</span>
+                <h3 className="font-medium text-gray-900 leading-snug break-words mb-1.5">
+                  {program.university}
+                </h3>
+                <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                  {/* Fit badge sits with the tags on mobile; desktop shows it in the right column */}
+                  <span className="sm:hidden">
+                    <FitBadge status={program.fit.status} size="sm" />
+                  </span>
                   <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{program.state}</span>
                   {program.tier === 'Top US' && (
                     <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">Top US</span>
@@ -325,7 +331,7 @@ export default function ProgramList({ programs, isAuthed, isPremium, lists: init
                     </span>
                   )}
                 </p>
-                <p className="text-sm text-gray-600 line-clamp-1">
+                <p className="text-sm text-gray-600 line-clamp-2 sm:line-clamp-1">
                   {program.fit.status === 'No profile' && !isAuthed
                     ? 'Log in to see your fit for this program.'
                     : program.fit.explanation}
@@ -340,10 +346,17 @@ export default function ProgramList({ programs, isAuthed, isPremium, lists: init
                       Requirements not fully verified. Check the school&apos;s website before applying.
                     </p>
                   ))}
+                {/* Details link on mobile (desktop has it in the right column) */}
+                <Link
+                  href={`/programs/${program.urlSlug ?? program.id}`}
+                  className="sm:hidden mt-2 inline-flex items-center gap-0.5 text-sm font-medium text-teal-600 hover:text-teal-800"
+                >
+                  Details <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
 
-              {/* Right side */}
-              <div className="shrink-0 flex flex-col items-end gap-2">
+              {/* Right side (desktop only) */}
+              <div className="shrink-0 hidden sm:flex flex-col items-end gap-2">
                 <FitBadge status={program.fit.status} />
                 <Link
                   href={`/programs/${program.urlSlug ?? program.id}`}
@@ -402,7 +415,7 @@ export default function ProgramList({ programs, isAuthed, isPremium, lists: init
 
 function FilterGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex flex-wrap items-center gap-1.5">
       <span className="text-xs text-gray-400 font-medium mr-1">{label}:</span>
       {children}
     </div>
