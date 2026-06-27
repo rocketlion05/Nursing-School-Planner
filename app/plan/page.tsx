@@ -14,6 +14,7 @@ import FitBadge from '@/components/FitBadge'
 import AIAdvisor from '@/components/AIAdvisor'
 import LockedAIPlan from '@/components/LockedAIPlan'
 import { CyclePassExpiredNotice } from '@/components/CyclePassNotice'
+import ShareChancesButtons from '@/components/ShareChancesButtons'
 import GapReportButton, { type ReportProgram } from '@/components/GapReportButton'
 import WhatIfSimulator, { LockedWhatIf, type SimProgram } from '@/components/WhatIfSimulator'
 import RetakeRecommendations from '@/components/RetakeRecommendations'
@@ -115,6 +116,14 @@ export default async function PlanPage() {
       )}
 
       {/* Status Summary */}
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <h2 className="font-semibold text-gray-900">Your fit at a glance</h2>
+        <ShareChancesButtons
+          imageParams={`safe=${gap.counts.Safe}&match=${gap.counts.Match}&reach=${gap.counts.Reach}&steps=${gap.counts['Additional Steps Needed']}`}
+          sharePath="/chance-calculator"
+          competitive={gap.counts.Safe + gap.counts.Match}
+        />
+      </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {statuses.map(status => (
           <div key={status} className={`rounded-xl p-4 text-center ${STATUS_COLORS[status]}`}>
