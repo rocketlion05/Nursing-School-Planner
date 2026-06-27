@@ -8,9 +8,13 @@ const VLOG = verificationLog as Record<string, string>
 
 /**
  * All programs, cached in the Vercel Data Cache so the heavy ~100-row Turso query
- * isn't re-run on every request. Program/requirement data changes only when the
- * research agents reseed + redeploy (which busts the cache), so a 1-hour
- * revalidate is plenty fresh. User-specific scoring stays per-request.
+ * isn't re-run on every request. The research agents reseed the prod DB weekly
+ * WITHOUT a code change, and a reseed does NOT bust this cache on its own — so the
+ * revalidate window is the max staleness after new schools land. A short window
+ * (~2 min) keeps new schools/edits showing up promptly while stale-while-revalidate
+ * keeps TTFB fast (users get the cached copy instantly; the DB requery happens in
+ * the background). Bump the version in the key (`all-programs-vN`) to force an
+ * immediate refresh on a deploy. User-specific scoring stays per-request.
  */
 export const getAllPrograms = unstable_cache(
   async (): Promise<ProgramData[]> => {
@@ -22,6 +26,6 @@ export const getAllPrograms = unstable_cache(
       lastVerifiedAt: (p.slug && VLOG[p.slug]) || null,
     }))
   },
-  ['all-programs'],
-  { revalidate: 3600, tags: ['programs'] },
+  ['all-programs-v2'],
+  { revalidate: 120, tags: ['programs'] },
 )
