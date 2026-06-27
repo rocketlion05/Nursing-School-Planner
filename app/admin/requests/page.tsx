@@ -12,6 +12,7 @@ import { getUserActivityStats } from '@/app/actions/admin'
 import { listAccessCodes } from '@/app/actions/access-code'
 import AdminRefreshButton from '@/components/AdminRefreshButton'
 import AdminCodeManager from '@/components/AdminCodeManager'
+import AdminUsersList from '@/components/AdminUsersList'
 import { updateRequestStatus } from './actions'
 import { Users, Activity, Zap } from 'lucide-react'
 
@@ -88,6 +89,7 @@ export default async function AdminRequestsPage({
             <ActivityCard label="Active · 7 days" active={activity.activeWeek} signups={activity.newWeek} />
             <ActivityCard label="Active · 30 days" active={activity.activeMonth} signups={activity.newMonth} />
           </div>
+          <AdminUsersList />
         </div>
       )}
 

@@ -56,3 +56,28 @@ export async function getUserActivityStats(): Promise<UserActivityStats | null> 
 
   return { totalUsers, proUsers, activeToday, activeWeek, activeMonth, newToday, newWeek, newMonth }
 }
+
+export type AdminUserRow = {
+  id: string
+  username: string
+  email: string
+  /** ISO date the account was created. */
+  createdAt: string
+}
+
+/** All registered users (newest first) for the admin Users list. Admin-only. */
+export async function listUsers(): Promise<AdminUserRow[]> {
+  const user = await getCurrentUser()
+  if (!isAdminEmail(user?.email)) return []
+
+  const users = await prisma.user.findMany({
+    select: { id: true, username: true, email: true, createdAt: true },
+    orderBy: { createdAt: 'desc' },
+  })
+  return users.map(u => ({
+    id: u.id,
+    username: u.username,
+    email: u.email,
+    createdAt: u.createdAt.toISOString(),
+  }))
+}
