@@ -28,6 +28,7 @@ const STATUS_COLORS: Record<FitStatus, string> = {
   'Additional Steps Needed': 'bg-red-100 text-red-700',
   'No profile': 'bg-gray-100 text-gray-600',
   Unverified: 'bg-slate-100 text-slate-600',
+  'Direct Admit': 'bg-indigo-100 text-indigo-700',
 }
 
 export default async function PlanPage() {

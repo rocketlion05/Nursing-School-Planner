@@ -41,6 +41,7 @@ export function computeGapSummary(
     'Additional Steps Needed': 0,
     'No profile': 0,
     Unverified: 0,
+    'Direct Admit': 0,
   }
 
   scoredPrograms.forEach(p => {

@@ -155,7 +155,7 @@ export function buildPlanContext(
   return lines.join('\n')
 }
 
-const FIT_RANK: Record<string, number> = { Safe: 0, Match: 1, Reach: 2, 'Additional Steps Needed': 3, Unverified: 4, 'No profile': 5 }
+const FIT_RANK: Record<string, number> = { Safe: 0, Match: 1, Reach: 2, 'Direct Admit': 3, 'Additional Steps Needed': 4, Unverified: 5, 'No profile': 6 }
 
 /**
  * Context block for the conversational advisor: the student's profile, their fit
@@ -180,7 +180,7 @@ export function buildAdvisorContext(
   lines.push(`- Exams: TEAS ${profile.teasScore !== null ? profile.teasScore + '%' : 'not taken'}; HESI A2 ${profile.hesiScore !== null ? profile.hesiScore + '%' : 'not taken'}`)
 
   lines.push('', 'FIT ACROSS OUR PROGRAMS')
-  lines.push(`- Safe: ${gap.counts.Safe}, Match: ${gap.counts.Match}, Reach: ${gap.counts.Reach}, Additional Steps Needed: ${gap.counts['Additional Steps Needed']}, Unverified: ${gap.counts.Unverified}`)
+  lines.push(`- Safe: ${gap.counts.Safe}, Match: ${gap.counts.Match}, Reach: ${gap.counts.Reach}, Additional Steps Needed: ${gap.counts['Additional Steps Needed']}, Direct Admit: ${gap.counts['Direct Admit']}, Unverified: ${gap.counts.Unverified}`)
   if (gap.commonMissingCourses.length) lines.push(`- Most-needed prerequisites: ${gap.commonMissingCourses.map(c => `${c.label} (${c.count})`).join(', ')}`)
   if (gap.examsNeeded.length) lines.push(`- Exams to take/retake: ${gap.examsNeeded.join(', ')}`)
 

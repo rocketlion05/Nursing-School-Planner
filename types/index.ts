@@ -1,4 +1,4 @@
-export type FitStatus = 'Safe' | 'Match' | 'Reach' | 'Additional Steps Needed' | 'No profile' | 'Unverified'
+export type FitStatus = 'Safe' | 'Match' | 'Reach' | 'Additional Steps Needed' | 'No profile' | 'Unverified' | 'Direct Admit'
 
 export interface CourseItem {
   key: string

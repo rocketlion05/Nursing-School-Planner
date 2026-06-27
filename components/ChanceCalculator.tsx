@@ -153,6 +153,12 @@ export default function ChanceCalculator({ programs }: { programs: ProgramData[]
               </div>
             ))}
           </div>
+          {result.counts['Direct Admit'] > 0 && (
+            <p className="text-xs text-gray-400 mt-2">
+              {result.counts['Direct Admit']} direct-admit program{result.counts['Direct Admit'] === 1 ? '' : 's'} admit
+              first-year students through the university, so there&apos;s no nursing-specific cutoff to score.
+            </p>
+          )}
           {result.counts.Unverified > 0 && (
             <p className="text-xs text-gray-400 mt-2">
               {result.counts.Unverified} more program{result.counts.Unverified === 1 ? '' : 's'} don&apos;t publish enough

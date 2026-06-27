@@ -56,11 +56,12 @@ const STATUS_COLORS: Record<FitStatus, string> = {
   'Additional Steps Needed': 'bg-red-50 text-red-700',
   'No profile': 'bg-gray-50 text-gray-600',
   Unverified: 'bg-slate-50 text-slate-600',
+  'Direct Admit': 'bg-indigo-50 text-indigo-700',
 }
 
 function tally(profile: ProfileData, programs: SimProgram[]) {
   const counts: Record<FitStatus, number> = {
-    Safe: 0, Match: 0, Reach: 0, 'Additional Steps Needed': 0, 'No profile': 0, Unverified: 0,
+    Safe: 0, Match: 0, Reach: 0, 'Additional Steps Needed': 0, 'No profile': 0, Unverified: 0, 'Direct Admit': 0,
   }
   programs.forEach(p => {
     counts[computeFit(profile, p as unknown as ProgramData).status]++

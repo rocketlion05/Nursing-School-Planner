@@ -10,22 +10,13 @@ function getStudentExamScore(profile: ProfileData, examType: string | null): num
 }
 
 export function computeFit(profile: ProfileData | null, program: ProgramData): FitResult {
-  if (!profile) {
-    return {
-      status: 'No profile',
-      explanation: 'Complete your profile to see your fit for this program.',
-      missingCourses: [],
-      completedCourses: [],
-      examNote: null,
-      gpaNote: null,
-      nextSteps: ['Complete your profile to see your fit score.'],
-    }
-  }
-
-  // --- Unscoreable: no verified requirement data to evaluate against ---
-  // Without any requirements (placeholder programs), every profile would otherwise
-  // come back "Safe" — a dangerously misleading green light for schools like Duke
-  // or UT Austin. Surface honest uncertainty instead.
+  // --- No requirement signals: either a direct-admit program or unresearched ---
+  // A program with no GPA/exam/prerequisite data can't be scored. WHY it has no
+  // data matters: a program we've verified as direct-admit (you apply to the
+  // university as a first-year student, no nursing-specific cutoffs) is a real,
+  // accurate state — not a gap. Distinguish it from a genuinely unresearched row
+  // so we don't slap a misleading "Unverified" warning on schools like UCLA, NYU,
+  // or Penn State. This is profile-independent, so it's checked before the profile.
   const hasRequirementData =
     program.requiredCourses.length > 0 ||
     program.minOverallGPA !== null ||
@@ -33,6 +24,19 @@ export function computeFit(profile: ProfileData | null, program: ProgramData): F
     program.examType !== null ||
     program.casperRequired
   if (!hasRequirementData) {
+    const researched = program.dataQuality === 'verified' || program.dataQuality === 'partial'
+    if (researched) {
+      return {
+        status: 'Direct Admit',
+        explanation:
+          "This is a direct-admit program: you apply to the university as a first-year student, so there's no separate nursing entrance exam or prerequisite-GPA cutoff to score against. Review the school's first-year admission criteria and official page for details.",
+        missingCourses: [],
+        completedCourses: [],
+        examNote: null,
+        gpaNote: null,
+        nextSteps: ["Review this school's first-year / direct-admit criteria on its official nursing page."],
+      }
+    }
     return {
       status: 'Unverified',
       explanation:
@@ -42,6 +46,18 @@ export function computeFit(profile: ProfileData | null, program: ProgramData): F
       examNote: null,
       gpaNote: null,
       nextSteps: ["Verify this program's requirements on the school's official website."],
+    }
+  }
+
+  if (!profile) {
+    return {
+      status: 'No profile',
+      explanation: 'Complete your profile to see your fit for this program.',
+      missingCourses: [],
+      completedCourses: [],
+      examNote: null,
+      gpaNote: null,
+      nextSteps: ['Complete your profile to see your fit score.'],
     }
   }
 

@@ -59,7 +59,7 @@ export default async function DashboardPage() {
   const upcomingDeadlines = deadlines.filter(d => d.deadlineDate >= todayISO).slice(0, 4)
 
   // Fit counts for the summary bar
-  const fitCounts: Record<FitStatus, number> = { Safe: 0, Match: 0, Reach: 0, 'Additional Steps Needed': 0, 'No profile': 0, Unverified: 0 }
+  const fitCounts: Record<FitStatus, number> = { Safe: 0, Match: 0, Reach: 0, 'Additional Steps Needed': 0, 'No profile': 0, Unverified: 0, 'Direct Admit': 0 }
   favPrograms.forEach(p => { fitCounts[p.fit.status] = (fitCounts[p.fit.status] ?? 0) + 1 })
 
   // Profile completeness checklist

@@ -23,7 +23,7 @@ type Props = {
   preferredStates: string[]
 }
 
-const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach', 'Additional Steps Needed', 'Unverified']
+const STATUS_OPTIONS: Array<FitStatus | 'All'> = ['All', 'Safe', 'Match', 'Reach', 'Additional Steps Needed', 'Direct Admit', 'Unverified']
 const VIEW_OPTIONS = ['All', 'Top US', 'Preferred States'] as const
 
 const COMPARE_LIMIT_FREE = 2
