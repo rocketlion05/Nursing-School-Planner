@@ -18,6 +18,8 @@ export async function generateMetadata(props: PageProps<'/chance-calculator'>): 
   if (has) {
     const q = new URLSearchParams()
     for (const k of ['safe', 'match', 'reach', 'steps', 'state']) { const v = get(k); if (v != null) q.set(k, v) }
+    // Link/OG unfurls want the landscape 1200x630 variant.
+    q.set('format', 'wide')
     const safe = Number(get('safe') ?? 0), match = Number(get('match') ?? 0)
     const competitive = safe + match
     const title = competitive > 0
