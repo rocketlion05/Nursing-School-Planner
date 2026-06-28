@@ -14,9 +14,11 @@ import { SITE_URL } from '@/lib/seo'
 import { summarizeOutcomes } from '@/lib/outcomes'
 import { formatVerified } from '@/lib/verified'
 import verificationLog from '@/prisma/verification-log.json'
+import faqsData from '@/prisma/faqs.json'
 import OutcomeForm from '@/components/OutcomeForm'
 
 const VLOG = verificationLog as Record<string, string>
+const FAQS = faqsData as Record<string, { q: string; a: string }[]>
 
 // Resolve a program by its pretty urlSlug first, falling back to the raw cuid id
 // (so old /programs/<cuid> links keep working).
@@ -95,9 +97,25 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
     ],
   }
 
+  // Unique, data-grounded FAQ per school (prisma/faqs.json, keyed by slug) — makes
+  // each program page distinct rather than a thin template, and emits FAQPage JSON-LD.
+  const faqs = (raw.slug && FAQS[raw.slug]) || []
+  const faqSchema = faqs.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(f => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      }
+    : null
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <JsonLd data={breadcrumbSchema} />
+      {faqSchema && <JsonLd data={faqSchema} />}
       <Link href="/programs" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 mb-6">
         <ChevronLeft className="w-4 h-4" /> Back to Programs
       </Link>
@@ -333,6 +351,23 @@ export default async function ProgramDetailPage(props: PageProps<'/programs/[id]
 
         <OutcomeForm programId={raw.id} />
       </div>
+
+      {/* Unique per-school FAQ — distinct content + FAQPage structured data */}
+      {faqs.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+          <h2 className="font-semibold text-gray-900 mb-4">
+            Frequently asked questions about {program.university}&apos;s nursing program
+          </h2>
+          <div className="divide-y divide-gray-100">
+            {faqs.map((f, i) => (
+              <div key={i} className="py-3 first:pt-0 last:pb-0">
+                <h3 className="text-sm font-semibold text-gray-900 mb-1">{f.q}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{f.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <Disclaimer compact />
     </div>

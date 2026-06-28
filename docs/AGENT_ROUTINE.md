@@ -41,6 +41,12 @@ Nursing source + cron day, and create it via `mcp__scheduled-tasks__create_sched
 - **Guides:** markdown files in [`content/guides/`](../content/guides) with a `title` /
   `description` / `date` frontmatter block. New files appear at `/guides/<filename>` and in
   the sitemap on the next deploy — no DB involved.
+- **Per-school FAQs:** [`prisma/faqs.json`](../prisma/faqs.json), keyed by program `slug`, holds a
+  unique, data-grounded Q&A set for each program. The detail page renders it as a Frequently Asked
+  Questions section plus `FAQPage` JSON-LD, so every school page is meaningfully unique (not a thin
+  near-duplicate of the others) and Google will index it. Regenerate with `scripts/gen-faqs.ts`
+  (idempotent — only fills schools missing a FAQ, i.e. newly added ones). It is grounded strictly
+  in `programs-data.ts`; never hand-write FAQ facts. Like guides, it's just a committed file — no DB.
 - **Requests inbox:** the `SchoolRequest` table (`scripts/list-school-requests.ts --prod`).
 - **Prod credentials:** gitignored `.env.production.local`. The `--prod` flag on the DB
   scripts loads it; without `--prod` they use `.env` (local `dev.db`).
@@ -51,6 +57,7 @@ Nursing source + cron day, and create it via `mcp__scheduled-tasks__create_sched
 npx tsx scripts/list-school-requests.ts --prod          # read live requests
 # (agent edits prisma/programs-data.ts — requirements, officialUrl, new schools)
 npx tsx prisma/seed.ts --prod                            # push to LIVE DB (prints REMOTE/PROD)
+npx tsx scripts/gen-faqs.ts                              # unique per-school FAQ -> prisma/faqs.json (needs OPENAI_API_KEY)
 npx tsx scripts/resolve-request.ts <id> --added    --note "Added as <slug>" --prod
 npx tsx scripts/resolve-request.ts <id> --wont-add --note "Not a BSN program" --prod
 npx tsx scripts/make-favicon.ts                          # regenerate the white-circle favicons
