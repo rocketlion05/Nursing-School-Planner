@@ -1199,6 +1199,36 @@
       "a": "Transfer students must apply by March 1 for the Fall semester and by November 1 for the Spring semester at the University of San Francisco."
     }
   ],
+  "fl-adventhealth-university-orlando": [
+    {
+      "q": "What are the admission requirements for AdventHealth University's Traditional BSN program?",
+      "a": "To gain admission to AdventHealth University's Traditional BSN program, you need a minimum overall GPA of 3.0 and a 3.0 GPA in the cognate prerequisite courses. Additionally, you must achieve a minimum composite score of 62.5% on the TEAS exam."
+    },
+    {
+      "q": "What prerequisite courses are needed for the Traditional BSN program at AdventHealth University?",
+      "a": "AdventHealth University's Traditional BSN program requires completion of several prerequisite courses, including Chemistry, Anatomy and Physiology I and II, Microbiology, Developmental Psychology, Statistics, and English Composition. Each course must be passed with a grade of C or higher."
+    },
+    {
+      "q": "Is AdventHealth University's nursing program direct-admit?",
+      "a": "No, AdventHealth University's Traditional BSN program is not direct-admit. Admission is competitive, requiring the minimum GPA and TEAS score as part of the application process."
+    },
+    {
+      "q": "When is the application deadline for the Traditional BSN program at AdventHealth University?",
+      "a": "The application deadline for the Day Option of the Traditional BSN program at AdventHealth University is approximately August 31 for the fall semester."
+    },
+    {
+      "q": "How competitive is admission to AdventHealth University's Traditional BSN program?",
+      "a": "Admission to AdventHealth University's Traditional BSN program is competitive. Applicants must meet the minimum GPA requirements and TEAS score, and there are approximately 70 seats available in the program."
+    },
+    {
+      "q": "Does AdventHealth University require the CASPer exam for the Traditional BSN program?",
+      "a": "No, the CASPer exam is not required for the Traditional BSN program at AdventHealth University. It only applies to the Physician Assistant program."
+    },
+    {
+      "q": "How do I apply to AdventHealth University's Traditional BSN program?",
+      "a": "To apply to the Traditional BSN program at AdventHealth University, you should visit the official admissions page on their website for detailed application instructions and requirements."
+    }
+  ],
   "fl-barry-university-miami-shores": [
     {
       "q": "What are the GPA requirements for Barry University's Traditional BSN program?",
@@ -1227,6 +1257,36 @@
     {
       "q": "How do I apply to Barry University's Traditional BSN program?",
       "a": "To apply to Barry University's Traditional BSN program, you should follow the application process outlined on their official admissions page, which includes submitting your academic records and entrance exam scores."
+    }
+  ],
+  "fl-bethune-cookman-university-daytona-beach": [
+    {
+      "q": "What are the prerequisites for Bethune-Cookman University's Traditional BSN program?",
+      "a": "To apply for the Traditional BSN program at Bethune-Cookman University, you need to complete prerequisites including English I and II, College Algebra, General Biology, Anatomy and Physiology I and II, Introductory Chemistry, and Developmental Psychology."
+    },
+    {
+      "q": "Is there an entrance exam required for the Traditional BSN program at Bethune-Cookman University?",
+      "a": "Bethune-Cookman University's Traditional BSN program does require an entrance exam, specifically the NLN Nursing Entrance Exam (NEX). This exam must be taken on campus, and you are allowed a maximum of two attempts."
+    },
+    {
+      "q": "What is the minimum GPA requirement for admission to the Traditional BSN program at Bethune-Cookman University?",
+      "a": "To be considered for the Traditional BSN program at Bethune-Cookman University, you must have a minimum overall GPA of 3.0."
+    },
+    {
+      "q": "How competitive is admission to the Traditional BSN program at Bethune-Cookman University?",
+      "a": "Admission to the Traditional BSN program at Bethune-Cookman University is competitive, as you need to meet the minimum GPA requirement and pass the entrance exam with specific benchmarks."
+    },
+    {
+      "q": "When is the application deadline for the Traditional BSN program at Bethune-Cookman University?",
+      "a": "The application deadline for the Traditional BSN program at Bethune-Cookman University is not published here. It's best to check the official admissions page for the most accurate information."
+    },
+    {
+      "q": "Does Bethune-Cookman University offer a direct-admit BSN program?",
+      "a": "No, Bethune-Cookman University's Traditional BSN program is not a direct-admit program. Admission is competitive, requiring a minimum GPA and successful completion of the entrance exam."
+    },
+    {
+      "q": "Can I take the NLN Nursing Entrance Exam multiple times for Bethune-Cookman University's BSN program?",
+      "a": "Yes, you can take the NLN Nursing Entrance Exam for Bethune-Cookman University's Traditional BSN program up to two times, but your scores must be under three years old."
     }
   ],
   "fl-florida-a-m-university-tallahassee": [
@@ -1349,6 +1409,66 @@
       "a": "Yes, Florida International University requires that all science prerequisite courses be completed with a grade of C or better and within the last 10 years."
     }
   ],
+  "fl-florida-national-university-hialeah": [
+    {
+      "q": "What is the application deadline for Florida National University's BSN program?",
+      "a": "Florida National University does not publish the application deadline here. Please check the official admissions page for the most accurate information."
+    },
+    {
+      "q": "Does Florida National University require the TEAS for nursing?",
+      "a": "Yes, Florida National University requires the ATI TEAS exam with a minimum combined score of 65%. This exam must be proctored in person and is valid for one year, with a maximum of two attempts allowed."
+    },
+    {
+      "q": "What is the minimum GPA requirement for the BSN program at Florida National University?",
+      "a": "The minimum cumulative GPA requirement for admission to the BSN program at Florida National University is 3.0 in General Education courses."
+    },
+    {
+      "q": "Are there any prerequisites for Florida National University's BSN program?",
+      "a": "Florida National University does not list any prerequisites for admission to the BSN program. However, some courses may be completed within the curriculum."
+    },
+    {
+      "q": "How competitive is admission to Florida National University's BSN program?",
+      "a": "Admission to the BSN program at Florida National University involves several components, including a minimum GPA, TEAS score, reference letters, a 500-word essay, an entrance interview, and background/drug screening, which suggests a competitive admission process."
+    },
+    {
+      "q": "How do I apply to Florida National University's BSN program?",
+      "a": "To apply to Florida National University's BSN program, you will need to submit your application along with the required documents, including reference letters and your essay. For detailed application instructions, please refer to the official admissions page."
+    },
+    {
+      "q": "Is Florida National University's nursing program direct-admit?",
+      "a": "No, Florida National University's nursing program is not direct-admit. Admission is competitive, requiring a minimum GPA and TEAS score, along with additional application components."
+    }
+  ],
+  "fl-florida-southern-college-lakeland": [
+    {
+      "q": "Is Florida Southern College's nursing program direct-admit?",
+      "a": "Yes, Florida Southern College offers a direct-admit pre-licensure BSN program for freshmen. You simply select Nursing as your intended major when applying to the university."
+    },
+    {
+      "q": "What are the application deadlines for the Traditional BSN program at Florida Southern College?",
+      "a": "The application deadlines for Florida Southern College's Traditional BSN program align with general first-year deadlines. The early decision/early action priority deadline is November 1, while the regular priority deadlines are December 1 and March 1."
+    },
+    {
+      "q": "What prerequisites are required for the Traditional BSN program at Florida Southern College?",
+      "a": "Before starting the Traditional BSN program at Florida Southern College, students must complete A&P I (lab), A&P II (lab), and Chemistry (lab). Microbiology and statistics are taken during the program."
+    },
+    {
+      "q": "Is there an entrance exam required for Florida Southern College's BSN program?",
+      "a": "No, there is no entrance exam required for the Traditional BSN program at Florida Southern College. There is also no CASPer exam needed."
+    },
+    {
+      "q": "What GPA do you need to maintain in Florida Southern College's nursing program?",
+      "a": "While there is no published minimum GPA for freshman admission to Florida Southern College's Traditional BSN program, a 3.0 GPA is required for progression in the program."
+    },
+    {
+      "q": "How do I apply to the Traditional BSN program at Florida Southern College?",
+      "a": "To apply to the Traditional BSN program at Florida Southern College, you need to apply as a first-year student and select Nursing as your intended major. There is no separate nursing application required."
+    },
+    {
+      "q": "How competitive is admission to Florida Southern College's BSN program?",
+      "a": "Admission to Florida Southern College's Traditional BSN program is not described as competitive in the traditional sense, as it is a direct-admit program for freshmen. However, you should ensure you meet the necessary prerequisites and maintain the required GPA for progression."
+    }
+  ],
   "fl-florida-state-university-tallahassee": [
     {
       "q": "What are the application deadlines for Florida State University's BSN program?",
@@ -1407,6 +1527,186 @@
     {
       "q": "What is the duration of the Traditional BSN program at Jacksonville University?",
       "a": "The Traditional BSN program at Jacksonville University is designed to be completed in 28 months, leading to a pre-licensure Bachelor of Science in Nursing."
+    }
+  ],
+  "fl-keiser-university-fort-lauderdale": [
+    {
+      "q": "What are the prerequisites for Keiser University's Traditional BSN program?",
+      "a": "To apply for Keiser University's Traditional BSN program, students must complete prerequisites in Anatomy & Physiology I, Anatomy & Physiology II, General Chemistry I with lab, and Microbiology with lab, achieving a grade of B or better in each."
+    },
+    {
+      "q": "Is there an entrance exam required for Keiser University's BSN program?",
+      "a": "Keiser University's Traditional BSN program does not require an entrance exam like the TEAS or HESI. Instead, applicants must take the Wonderlic SLE exam, achieving a minimum score of 23."
+    },
+    {
+      "q": "What is the minimum GPA required for Keiser University's Traditional BSN program?",
+      "a": "Applicants to Keiser University's Traditional BSN program must have a minimum cumulative high school GPA of 3.0 and a prerequisite GPA of 3.0 as well."
+    },
+    {
+      "q": "How long does it take to complete the Traditional BSN program at Keiser University?",
+      "a": "Keiser University's Traditional BSN program is designed to be completed in approximately 32 months, spanning 8 semesters and requiring a total of 120 credits."
+    },
+    {
+      "q": "Does Keiser University have a direct-admit BSN program?",
+      "a": "Keiser University's Traditional BSN program is not a direct-admit program. Admission is competitive, and students must meet specific GPA and prerequisite requirements."
+    },
+    {
+      "q": "What additional requirements are there for admission to Keiser University's BSN program?",
+      "a": "In addition to academic qualifications, applicants to Keiser University's Traditional BSN program must also undergo an interview, background check, and drug/health screening."
+    },
+    {
+      "q": "When is the application deadline for Keiser University's Traditional BSN program?",
+      "a": "The application deadline for Keiser University's Traditional BSN program is not published here. Prospective students should check the official admissions page for the most accurate information."
+    }
+  ],
+  "fl-nova-southeastern-university-fort-lauderdale": [
+    {
+      "q": "What are the application deadlines for Nova Southeastern University's BSN program?",
+      "a": "For Nova Southeastern University's Traditional BSN program, the application deadlines are August 1 for Fall admission and December 1 for Winter admission. Applications are submitted via NursingCAS along with a supplemental application to NSU."
+    },
+    {
+      "q": "Does Nova Southeastern University require the TEAS for nursing?",
+      "a": "Yes, Nova Southeastern University requires the ATI TEAS entrance exam for admission to its Traditional BSN program. However, there is no numeric minimum score published."
+    },
+    {
+      "q": "What GPA do you need for Nova Southeastern University's BSN program?",
+      "a": "To be considered for the Traditional BSN program at Nova Southeastern University, you need a minimum overall GPA of 3.0 and a minimum science GPA of 2.75."
+    },
+    {
+      "q": "What prerequisite courses are required for Nova Southeastern University's BSN program?",
+      "a": "The Traditional BSN program at Nova Southeastern University requires several prerequisite courses, including Anatomy and Physiology I and II with lab, Microbiology, Chemistry, Applied Statistics, Nutrition, English Composition, and Human Growth & Development."
+    },
+    {
+      "q": "Is Nova Southeastern University's nursing program direct-admit?",
+      "a": "No, Nova Southeastern University’s Traditional BSN program is not direct-admit. Admission is competitive, and you must meet the GPA and prerequisite requirements to be considered."
+    },
+    {
+      "q": "How do I apply to Nova Southeastern University's BSN program?",
+      "a": "To apply for the Traditional BSN program at Nova Southeastern University, you need to submit your application through NursingCAS and complete a supplemental application for NSU by the specified deadlines."
+    },
+    {
+      "q": "How competitive is admission to Nova Southeastern University's BSN program?",
+      "a": "Admission to Nova Southeastern University's Traditional BSN program is competitive, as candidates must meet the minimum GPA requirements and complete all prerequisite courses."
+    }
+  ],
+  "fl-palm-beach-atlantic-university-west-palm-beach": [
+    {
+      "q": "What is the application deadline for Palm Beach Atlantic University's BSN program?",
+      "a": "For Palm Beach Atlantic University's Traditional BSN program, you need to apply to the university by April 15 for fall admission and November 15 for spring admission."
+    },
+    {
+      "q": "Does Palm Beach Atlantic University require the TEAS for nursing?",
+      "a": "Yes, Palm Beach Atlantic University requires the ATI TEAS Version 7 exam for admission to the Traditional BSN program, with a minimum score of 68.7 on one in-person proctored attempt."
+    },
+    {
+      "q": "What GPA do you need for Palm Beach Atlantic University's BSN program?",
+      "a": "To be eligible for the Traditional BSN program at Palm Beach Atlantic University, you must have a minimum overall GPA of 3.0 and a minimum science/math GPA of 3.0."
+    },
+    {
+      "q": "Is Palm Beach Atlantic University's nursing program direct-admit?",
+      "a": "No, Palm Beach Atlantic University's Traditional BSN program is not direct-admit. Admission is competitive, and the program prefers students with a GPA of 3.5 or higher."
+    },
+    {
+      "q": "What prerequisite courses does Palm Beach Atlantic University require for the BSN program?",
+      "a": "The prerequisites for Palm Beach Atlantic University's Traditional BSN program include Biology I with lab, Anatomy and Physiology I & II with lab, Principles of Chemistry with lab, Principles of Microbiology with lab, Life Span Development, College Algebra, General Psychology, and Elementary Statistics."
+    },
+    {
+      "q": "How competitive is admission to Palm Beach Atlantic University's BSN program?",
+      "a": "Admission to the Traditional BSN program at Palm Beach Atlantic University is competitive, with a preference for applicants who have a GPA of 3.5 or higher."
+    },
+    {
+      "q": "How do I apply to Palm Beach Atlantic University's BSN program?",
+      "a": "To apply for the Traditional BSN program at Palm Beach Atlantic University, you must first apply to the university itself by the specified deadlines."
+    }
+  ],
+  "fl-saint-leo-university-saint-leo": [
+    {
+      "q": "What is the admission model for Saint Leo University's BSN program?",
+      "a": "Saint Leo University's Traditional BSN program is a direct-admit program for first-year students. You apply to the university as a first-year student."
+    },
+    {
+      "q": "What GPA do you need to enter the nursing major at Saint Leo University?",
+      "a": "To enter the nursing major at Saint Leo University, you need a minimum cumulative GPA of 3.3."
+    },
+    {
+      "q": "Does Saint Leo University require an entrance exam for the BSN program?",
+      "a": "Yes, Saint Leo University requires the ATI TEAS exam for its BSN program, with a minimum composite score of 72%."
+    },
+    {
+      "q": "What prerequisite courses are needed for admission to the BSN program at Saint Leo University?",
+      "a": "Saint Leo University requires the following prerequisite courses: Anatomy & Physiology I and II, Microbiology, Statistics, Lifespan Development, and English Composition."
+    },
+    {
+      "q": "When is the application deadline for the BSN program at Saint Leo University?",
+      "a": "The application for the BSN program at Saint Leo University opens on August 6. The priority deadline is March 1, and the extended deadline is May 31."
+    },
+    {
+      "q": "Is chemistry a prerequisite for the BSN program at Saint Leo University?",
+      "a": "No, chemistry is not included in the prerequisite courses for Saint Leo University's BSN program."
+    },
+    {
+      "q": "How does the curriculum for the BSN program at Saint Leo University work?",
+      "a": "The curriculum for Saint Leo University's Traditional BSN program consists of two years of arts and sciences followed by two years focused on nursing major courses."
+    }
+  ],
+  "fl-southeastern-university-lakeland": [
+    {
+      "q": "Is Southeastern University's BSN program direct-admit?",
+      "a": "Yes, Southeastern University's Traditional BSN program is direct-admit. You apply to the university as a first-year student without a nursing-specific cutoff."
+    },
+    {
+      "q": "What are the prerequisites for the BSN program at Southeastern University?",
+      "a": "There are no prerequisites listed as pre-admission for Southeastern University's BSN program. Any necessary courses can be completed within the curriculum."
+    },
+    {
+      "q": "Does Southeastern University require an entrance exam for its nursing program?",
+      "a": "No, Southeastern University does not require an entrance exam for admission to its Traditional BSN program."
+    },
+    {
+      "q": "What is the application deadline for the BSN program at Southeastern University?",
+      "a": "The application deadline for Southeastern University's BSN program is not published here. It is recommended to check the official admissions page for the most accurate information."
+    },
+    {
+      "q": "What is the overall GPA requirement for admission to Southeastern University's BSN program?",
+      "a": "Southeastern University does not publish a specific overall GPA requirement for its BSN program. You should verify any GPA expectations directly on the official admissions page."
+    },
+    {
+      "q": "How many credits are required to complete the BSN program at Southeastern University?",
+      "a": "The Traditional BSN program at Southeastern University requires a total of 120 credits for completion."
+    },
+    {
+      "q": "Is Southeastern University's BSN program accredited?",
+      "a": "Yes, the Traditional BSN program at Southeastern University is CCNE-accredited."
+    }
+  ],
+  "fl-st-thomas-university-miami-gardens": [
+    {
+      "q": "What is the admission model for St. Thomas University's BSN program?",
+      "a": "St. Thomas University's Traditional BSN program uses a competitive admission model, meaning that applicants are evaluated based on various criteria."
+    },
+    {
+      "q": "What GPA do you need to apply to the BSN program at St. Thomas University?",
+      "a": "You need a minimum overall GPA of 3.0 across all prerequisite coursework to apply for the BSN program at St. Thomas University."
+    },
+    {
+      "q": "Does St. Thomas University require the TEAS for nursing?",
+      "a": "Yes, St. Thomas University requires the ATI TEAS entrance exam as part of the application process, but there is no published minimum score."
+    },
+    {
+      "q": "What prerequisite courses are required for the BSN program at St. Thomas University?",
+      "a": "The prerequisite courses for St. Thomas University's BSN program include A&P I and II with lab, Chemistry for Health Sciences with lab, Microbiology with lab, English Composition I and II, College Algebra, Intro Psychology, Human Growth & Development, Principles of Nutrition, and Statistics."
+    },
+    {
+      "q": "When is the application deadline for St. Thomas University's BSN program?",
+      "a": "The application deadline for St. Thomas University's BSN program is not published here, so it's best to check the official admissions page for the most accurate information."
+    },
+    {
+      "q": "How competitive is admission to the BSN program at St. Thomas University?",
+      "a": "Admission to St. Thomas University's BSN program is competitive, as selection also considers your prerequisite GPA, references, resume, interview, and an on-site essay."
+    },
+    {
+      "q": "How do I apply to St. Thomas University's BSN program?",
+      "a": "To apply to St. Thomas University's BSN program, you should follow the application instructions provided on their official admissions page."
     }
   ],
   "fl-university-of-central-florida-orlando": [
@@ -1469,6 +1769,36 @@
       "a": "For more detailed information about the University of Florida's Traditional BSN program, including application requirements and deadlines, please visit the official program page."
     }
   ],
+  "fl-university-of-miami-coral-gables": [
+    {
+      "q": "Is the University of Miami's BSN program direct-admit?",
+      "a": "The University of Miami's Traditional BSN program is not direct-admit. Freshman applicants are reviewed through the general University of Miami undergraduate admission process."
+    },
+    {
+      "q": "What are the application deadlines for the BSN program at the University of Miami?",
+      "a": "There are no specific nursing program deadlines published for the BSN program at the University of Miami. Freshman applicants should refer to the general UM admission deadlines, including Early Decision I/II, Early Action, and Regular Decision."
+    },
+    {
+      "q": "What prerequisites are required for the University of Miami's BSN program?",
+      "a": "The prerequisites for the University of Miami's Traditional BSN program include Anatomy, Physiology, Chemistry, Statistics, Nutrition, and Growth & Development."
+    },
+    {
+      "q": "Does the University of Miami require an entrance exam for the BSN program?",
+      "a": "No, the University of Miami does not require an entrance exam for admission to the Traditional BSN program. There is no HESI or CASPer requirement for admission."
+    },
+    {
+      "q": "What GPA do you need for the University of Miami's BSN program?",
+      "a": "The University of Miami does not publish a specific GPA requirement for admission to the Traditional BSN program. However, there are in-program progression thresholds of 3.0 overall GPA and 2.75 for prerequisites."
+    },
+    {
+      "q": "How competitive is admission to the University of Miami's BSN program?",
+      "a": "Admission to the University of Miami's Traditional BSN program is competitive, as it is reviewed through the general undergraduate admission process without a specific nursing GPA published."
+    },
+    {
+      "q": "How do I apply to the University of Miami's BSN program?",
+      "a": "To apply to the University of Miami's Traditional BSN program, you must apply as a first-year student through the general University of Miami undergraduate admission process."
+    }
+  ],
   "fl-university-of-north-florida-jacksonville": [
     {
       "q": "What is the admission model for the University of North Florida's BSN program?",
@@ -1527,6 +1857,36 @@
     {
       "q": "How do I apply to the Traditional BSN program at the University of South Florida?",
       "a": "To apply to the Traditional BSN program at the University of South Florida, you need to submit your application through NursingCAS during the specified application period and also meet the USF admission requirements."
+    }
+  ],
+  "fl-university-of-tampa-tampa": [
+    {
+      "q": "Is The University of Tampa's BSN program direct-admit?",
+      "a": "No, The University of Tampa's BSN program is not direct-admit. Freshmen enter as pre-nursing students and must apply for admission to the nursing program in their sophomore year."
+    },
+    {
+      "q": "What are the prerequisites for The University of Tampa's BSN program?",
+      "a": "The prerequisites for The University of Tampa's BSN program include courses in Anatomy and Physiology I, Anatomy and Physiology II, Microbiology, Chemistry, Lifespan Development, and English Composition. Statistics is required after admission but is not a prerequisite."
+    },
+    {
+      "q": "What is the minimum GPA required for The University of Tampa's BSN program?",
+      "a": "The minimum overall GPA required for The University of Tampa's BSN program is 3.25, along with a 2.5 GPA in the prerequisite courses."
+    },
+    {
+      "q": "Does The University of Tampa require the TEAS for nursing admission?",
+      "a": "Yes, The University of Tampa requires the ATI TEAS exam for nursing admission. While there is no hard minimum score published, a composite score of 72 or higher is recommended."
+    },
+    {
+      "q": "When is the application deadline for The University of Tampa's BSN program?",
+      "a": "The application for The University of Tampa's BSN program opens on July 15 and the deadline for Spring admission is October 15 at 11:59 PM EST."
+    },
+    {
+      "q": "How competitive is admission to The University of Tampa's BSN program?",
+      "a": "Admission to The University of Tampa's BSN program is competitive, as students must meet the minimum GPA requirements and successfully complete the application process after their sophomore year."
+    },
+    {
+      "q": "How do I apply to The University of Tampa's BSN program?",
+      "a": "To apply to The University of Tampa's BSN program, you first need to enroll as a pre-nursing student and then submit your application during your sophomore year by the specified deadline."
     }
   ],
   "fl-university-of-west-florida-pensacola": [
